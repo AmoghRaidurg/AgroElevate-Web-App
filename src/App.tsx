@@ -5,6 +5,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import Marketplace from "./pages/Marketplace";
+import Admin from "./pages/Admin";
 
 const queryClient = new QueryClient();
 
@@ -16,11 +21,11 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/login" lazy={() => import('./pages/Login').then(m => ({ Component: m.default }))} />
-          <Route path="/register" lazy={() => import('./pages/Register').then(m => ({ Component: m.default }))} />
-          <Route path="/dashboard" lazy={() => import('./pages/Dashboard').then(m => ({ Component: m.default }))} />
-          <Route path="/marketplace" lazy={() => import('./pages/Marketplace').then(m => ({ Component: m.default }))} />
-          <Route path="/admin" lazy={() => import('./pages/Admin').then(m => ({ Component: m.default }))} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/admin" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
