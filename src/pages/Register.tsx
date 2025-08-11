@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -25,7 +25,10 @@ type FormValues = z.infer<typeof schema>;
 
 export default function Register() {
   const navigate = useNavigate();
-  const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<FormValues>({ resolver: zodResolver(schema) });
+  const { register, handleSubmit, control, formState: { errors, isSubmitting } } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: { role: 'farmer' }
+  });
 
   const onSubmit = async (values: FormValues) => {
     const { error } = await supabase.auth.signUp({
@@ -62,12 +65,17 @@ export default function Register() {
           </div>
           <div className="sm:col-span-2">
             <Label>Role</Label>
-            <RadioGroup defaultValue={watch('role')} onValueChange={(v) => (document.getElementById('role') as HTMLInputElement).value = v} className="mt-2 grid grid-cols-3 gap-2">
-              <div className="flex items-center space-x-2"><RadioGroupItem value="farmer" id="r1" /><Label htmlFor="r1">Farmer</Label></div>
-              <div className="flex items-center space-x-2"><RadioGroupItem value="middleman" id="r2" /><Label htmlFor="r2">Middleman</Label></div>
-              <div className="flex items-center space-x-2"><RadioGroupItem value="industrialist" id="r3" /><Label htmlFor="r3">Industrialist</Label></div>
-            </RadioGroup>
-            <input id="role" type="hidden" {...register('role')} />
+            <Controller
+              name="role"
+              control={control}
+              render={({ field }) => (
+                <RadioGroup value={field.value} onValueChange={field.onChange} className="mt-2 grid grid-cols-3 gap-2">
+                  <div className="flex items-center space-x-2"><RadioGroupItem value="farmer" id="r1" /><Label htmlFor="r1">Farmer</Label></div>
+                  <div className="flex items-center space-x-2"><RadioGroupItem value="middleman" id="r2" /><Label htmlFor="r2">Middleman</Label></div>
+                  <div className="flex items-center space-x-2"><RadioGroupItem value="industrialist" id="r3" /><Label htmlFor="r3">Industrialist</Label></div>
+                </RadioGroup>
+              )}
+            />
             {errors.role && <p className="text-sm text-destructive mt-1">{errors.role.message}</p>}
           </div>
           <div className="sm:col-span-2">
