@@ -1,12 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
 const Navbar = () => {
   const [email, setEmail] = useState<string | null>(null);
-  const navigate = useNavigate();
-
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -17,9 +15,8 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate("/");
+    window.location.assign("/");
   };
-
   return (
     <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
       <nav className="container mx-auto flex h-16 items-center justify-between">
