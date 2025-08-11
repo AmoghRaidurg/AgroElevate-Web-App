@@ -16,6 +16,11 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/login" lazy={() => import('./pages/Login').then(m => ({ Component: m.default }))} />
+          <Route path="/register" lazy={() => import('./pages/Register').then(m => ({ Component: m.default }))} />
+          <Route path="/dashboard" lazy={() => import('./pages/Dashboard').then(m => ({ Component: m.default }))} />
+          <Route path="/marketplace" lazy={() => import('./pages/Marketplace').then(m => ({ Component: m.default }))} />
+          <Route path="/admin" lazy={() => import('./pages/Admin').then(m => ({ Component: m.default }))} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
