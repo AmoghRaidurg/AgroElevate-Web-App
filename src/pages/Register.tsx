@@ -10,6 +10,7 @@ import { supabase } from '@/lib/supabaseClient';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { SEO } from '@/components/SEO';
+import { toast } from 'sonner';
 
 const schema = z.object({
   name: z.string().min(2),
@@ -31,19 +32,38 @@ export default function Register() {
   });
 
   const onSubmit = async (values: FormValues) => {
-    const { error } = await supabase.auth.signUp({
+    // 1. Sign up auth user
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
-      options: { data: { name: values.name, role: values.role, address: values.address, phone: values.phone, bankAccount: values.bankAccount } }
     });
-    if (error) return alert(error.message);
-    localStorage.setItem('agronexProfile', JSON.stringify({ name: values.name, role: values.role, address: values.address, phone: values.phone, bankAccount: values.bankAccount }));
-    navigate('/dashboard');
+
+    if (authError) return toast.error(authError.message);
+    if (!authData.user) return;
+
+    // 2. Insert profile details into public table
+    const { error: profileError } = await supabase.from('profiles').insert({
+      id: authData.user.id,
+      email: values.email,
+      name: values.name,
+      role: values.role,
+      address: values.address,
+      phone: values.phone,
+      bank_account: values.bankAccount
+    });
+
+    if (profileError) {
+      toast.error("Account created but profile failed. Please contact support.");
+      console.error(profileError);
+    } else {
+      toast.success("Registration successful!");
+      navigate('/dashboard');
+    }
   };
 
   return (
     <div>
-      <SEO title="Register | Agronex" description="Create your Agronex account as Farmer, Middleman, or Industrialist." />
+      <SEO title="Register | Agronex" description="Create your Agronex account." />
       <Navbar />
       <main className="container mx-auto max-w-2xl py-16">
         <h1 className="text-3xl font-semibold mb-6">Create your account</h1>
@@ -76,22 +96,18 @@ export default function Register() {
                 </RadioGroup>
               )}
             />
-            {errors.role && <p className="text-sm text-destructive mt-1">{errors.role.message}</p>}
           </div>
           <div className="sm:col-span-2">
             <Label htmlFor="address">Address</Label>
             <Input id="address" {...register('address')} />
-            {errors.address && <p className="text-sm text-destructive mt-1">{errors.address.message}</p>}
           </div>
           <div>
             <Label htmlFor="phone">Phone</Label>
             <Input id="phone" {...register('phone')} />
-            {errors.phone && <p className="text-sm text-destructive mt-1">{errors.phone.message}</p>}
           </div>
           <div>
             <Label htmlFor="bankAccount">Bank account</Label>
             <Input id="bankAccount" {...register('bankAccount')} />
-            {errors.bankAccount && <p className="text-sm text-destructive mt-1">{errors.bankAccount.message}</p>}
           </div>
           <div className="sm:col-span-2 mt-2">
             <Button type="submit" disabled={isSubmitting} variant="hero" className="w-full">Create account</Button>
