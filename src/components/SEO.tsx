@@ -32,12 +32,12 @@ export const SEO = ({ title, description, canonical, jsonLd }: SEOProps) => {
     }
 
     // JSON-LD structured data
-    const existing = document.getElementById('agronex-jsonld');
+    const existing = document.getElementById('AgroElevate-jsonld');
     if (existing) existing.remove();
     if (jsonLd) {
       const script = document.createElement('script');
       script.type = 'application/ld+json';
-      script.id = 'agronex-jsonld';
+      script.id = 'AgroElevate-jsonld';
       script.text = JSON.stringify(jsonLd);
       document.head.appendChild(script);
     }

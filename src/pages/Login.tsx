@@ -28,7 +28,7 @@ export default function Login() {
   };
   return (
     <div>
-      <SEO title="Login | Agronex" description="Log in to Agronex to access your dashboard and marketplace." />
+      <SEO title="Login | AgroElevate" description="Log in to AgroElevate to access your dashboard and marketplace." />
       <Navbar />
       <main className="container mx-auto max-w-md py-16">
         <h1 className="text-3xl font-semibold mb-6">Log in</h1>

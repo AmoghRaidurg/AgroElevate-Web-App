@@ -7,13 +7,13 @@
 // const listeners: AuthChangeCallback[] = [];
 
 // function getStoredUser(): User {
-//   const raw = localStorage.getItem('agronexUser');
+//   const raw = localStorage.getItem('AgroElevateUser');
 //   return raw ? JSON.parse(raw) : null;
 // }
 
 // function setStoredUser(user: User) {
-//   if (user) localStorage.setItem('agronexUser', JSON.stringify(user));
-//   else localStorage.removeItem('agronexUser');
+//   if (user) localStorage.setItem('AgroElevateUser', JSON.stringify(user));
+//   else localStorage.removeItem('AgroElevateUser');
 //   listeners.forEach(cb => cb('SIGNED_IN', user ? { user } : null));
 // }
 
@@ -29,14 +29,14 @@
 //       } } } } as any;
 //     },
 //     async signInWithPassword({ email }: { email: string; password: string; }) {
-//       const profileRaw = localStorage.getItem('agronexProfile');
+//       const profileRaw = localStorage.getItem('AgroElevateProfile');
 //       const meta = profileRaw ? JSON.parse(profileRaw) : {};
 //       setStoredUser({ email, user_metadata: meta });
 //       return { data: { user: getStoredUser() }, error: null } as any;
 //     },
 //     async signUp({ email, options }: { email: string; password: string; options?: { data?: Record<string, any> } }) {
 //       const meta = options?.data || {};
-//       localStorage.setItem('agronexProfile', JSON.stringify(meta));
+//       localStorage.setItem('AgroElevateProfile', JSON.stringify(meta));
 //       setStoredUser({ email, user_metadata: meta });
 //       return { data: { user: getStoredUser() }, error: null } as any;
 //     },

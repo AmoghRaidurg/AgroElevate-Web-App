@@ -18,7 +18,7 @@ export default function Admin() {
 
   return (
     <div>
-      <SEO title="Admin | Agronex" description="Admin Panel" />
+      <SEO title="Admin | AgroElevate" description="Admin Panel" />
       <Navbar />
       <main className="container mx-auto py-10 space-y-8">
         <h1 className="text-3xl font-semibold">Admin Panel (Live Data)</h1>

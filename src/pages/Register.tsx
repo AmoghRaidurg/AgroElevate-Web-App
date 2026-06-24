@@ -63,7 +63,7 @@ export default function Register() {
 
   return (
     <div>
-      <SEO title="Register | Agronex" description="Create your Agronex account." />
+      <SEO title="Register | AgroElevate" description="Create your AgroElevate account." />
       <Navbar />
       <main className="container mx-auto max-w-2xl py-16">
         <h1 className="text-3xl font-semibold mb-6">Create your account</h1>
