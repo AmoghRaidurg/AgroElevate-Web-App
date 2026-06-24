@@ -1,16 +1,22 @@
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { SEO } from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useEffect, useMemo, useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import { ShoppingCart, Plus, Minus, Store } from 'lucide-react';
-import { getWalletInfo, transferFunds } from '@/lib/wallet';
+import { Store } from 'lucide-react';
+import { getWalletInfo } from '@/lib/wallet';
+import { checkoutOrder } from '@/lib/checkout';
+import { buildFarmerListingMeta } from '@/lib/commerceMeta';
+import { loadTraderInventory, relistTraderInventoryItem, type TraderInventoryItem } from '@/lib/marketplaceData';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { ProductCard, getProductImage } from '@/components/marketplace/ProductCard';
+import { MarketplaceFilters } from '@/components/marketplace/MarketplaceFilters';
+import { CartSheet } from '@/components/marketplace/CartSheet';
+import { DashboardSkeleton } from '@/components/design/skeletons';
 
 interface Product {
   id: string;
@@ -20,443 +26,246 @@ interface Product {
   unit: string;
   quantity: number;
   seller_id: string;
-  description?: string; // used for JSON like {"original_farmer_id": "..."}
-  image_url?: string;
+  description?: string;
 }
 
 export default function Marketplace() {
   const { session, profile } = useAuth();
-
   const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<{ id: string; qty: number }[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
-
-  // Wallet
+  const [cropFilter, setCropFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('name');
   const [walletBalance, setWalletBalance] = useState(0);
-
-  // Trader Inventory
-  const [inventory, setInventory] = useState<any[]>([]);
+  const [inventory, setInventory] = useState<TraderInventoryItem[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [relistOpen, setRelistOpen] = useState(false);
+  const [relistItem, setRelistItem] = useState<TraderInventoryItem | null>(null);
+  const [relistQty, setRelistQty] = useState('');
+  const [relistPrice, setRelistPrice] = useState('');
+  const [relistSubmitting, setRelistSubmitting] = useState(false);
 
   const isFarmer = profile?.role === 'farmer';
   const isTrader = profile?.role === 'middleman';
   const isIndustrialist = profile?.role === 'industrialist';
+  const isCustomer = profile?.role === 'customer';
+  const canPurchase = isTrader || isIndustrialist || isCustomer;
 
-  // ---------------- LOAD DATA ----------------
-  useEffect(() => {
-    const load = async () => {
-      setLoading(true);
-      // Fetch products
-      const { data } = await supabase.from('products').select('*');
-      setProducts(data || []);
+  const refreshTraderInventory = useCallback(async (userId: string) => {
+    const stats = await loadTraderInventory(userId);
+    setInventory(stats.items.filter((i) => i.remainingQty > 0));
+  }, []);
 
-      if (session?.user.id) {
-        // Fetch wallet balance
-        const { balance } = await getWalletInfo(session.user.id);
-        setWalletBalance(balance);
-
-        // Fetch trader inventory (completed purchases)
-        if (isTrader) {
-          const { data: orders } = await supabase
-            .from('orders')
-            .select('*')
-            .eq('buyer_id', session.user.id)
-            .eq('status', 'completed');
-          
-          if (orders) {
-            // Flatten the items from all completed orders
-            const items = orders.flatMap(o => o.items.map((i: any) => ({ ...i, order_id: o.id })));
-            setInventory(items);
-          }
-        }
-      }
-
-      setLoading(false);
-    };
-    load();
-  }, [session, isTrader]);
-
-  // ---------------- SEARCH FILTER ----------------
-  const filteredProducts = useMemo(() => {
-    return products.filter(p =>
-      p.name.toLowerCase().includes(query.toLowerCase()) && p.quantity > 0
-    );
-  }, [query, products]);
-
-  // ---------------- IMAGE HANDLER ----------------
-  const getImage = (name: string) => {
-    const key = name.toLowerCase();
-    if (key.includes('maize')) return '/crops/maize.jpg';
-    if (key.includes('wheat')) return '/crops/wheat.jpg';
-    if (key.includes('rice')) return '/crops/rice.jpg';
-    if (key.includes('potato')) return '/crops/potato.jpg';
-    if (key.includes('tomato')) return '/crops/tomato.jpg';
-    if (key.includes('onion')) return '/crops/onion.jpg';
-    return '/placeholder.svg';
-  };
-
-  // ---------------- CART LOGIC ----------------
-  const addToCart = (id: string) => {
-    if (!isTrader && !isIndustrialist) {
-      toast.error("Only traders & industrialists can purchase");
-      return;
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    const { data } = await supabase.from('products').select('*');
+    setProducts(data || []);
+    if (session?.user.id) {
+      const { balance } = await getWalletInfo(session.user.id);
+      setWalletBalance(balance);
+      if (isTrader) await refreshTraderInventory(session.user.id);
     }
-    setCart(prev => {
-      const found = prev.find(i => i.id === id);
-      if (found) return prev.map(i => i.id === id ? { ...i, qty: i.qty + 1 } : i);
+    setLoading(false);
+  }, [session, isTrader, refreshTraderInventory]);
+
+  useEffect(() => { loadData(); }, [loadData]);
+
+  const cropTypes = useMemo(() => [...new Set(products.map((p) => p.crop_type))].sort(), [products]);
+
+  const filteredProducts = useMemo(() => {
+    let list = products.filter((p) => {
+      if (p.quantity <= 0) return false;
+      if (p.seller_id === session?.user?.id) return false;
+      if (!p.name.toLowerCase().includes(query.toLowerCase())) return false;
+      if (cropFilter !== 'all' && p.crop_type !== cropFilter) return false;
+      return true;
+    });
+    list = [...list].sort((a, b) => {
+      if (sortBy === 'price-asc') return a.price_per_unit - b.price_per_unit;
+      if (sortBy === 'price-desc') return b.price_per_unit - a.price_per_unit;
+      if (sortBy === 'qty') return b.quantity - a.quantity;
+      return a.name.localeCompare(b.name);
+    });
+    return list;
+  }, [query, cropFilter, sortBy, products, session]);
+
+  const addToCart = (id: string) => {
+    if (!canPurchase) return toast.error('Sign in as customer, trader, or industrialist to purchase');
+    const p = products.find((prod) => prod.id === id);
+    if (!p || p.quantity <= 0) return toast.error('Out of stock');
+    setCart((prev) => {
+      const found = prev.find((i) => i.id === id);
+      if (found) {
+        if (found.qty >= p.quantity) { toast.error(`Only ${p.quantity} kg available`); return prev; }
+        return prev.map((i) => (i.id === id ? { ...i, qty: i.qty + 1 } : i));
+      }
       return [...prev, { id, qty: 1 }];
     });
+    setCartOpen(true);
   };
 
   const changeQty = (id: string, delta: number) => {
-    setCart(prev =>
-      prev.map(i => i.id === id ? { ...i, qty: Math.max(1, i.qty + delta) } : i)
-    );
+    const p = products.find((prod) => prod.id === id);
+    const maxQty = p?.quantity ?? 1;
+    setCart((prev) => prev.map((i) => {
+      if (i.id !== id) return i;
+      const next = Math.max(1, i.qty + delta);
+      if (next > maxQty) { toast.error(`Only ${maxQty} kg available`); return { ...i, qty: maxQty }; }
+      return { ...i, qty: next };
+    }));
   };
 
-  const totalAmount = useMemo(() => {
-    return cart.reduce((sum, i) => {
-      const p = products.find(p => p.id === i.id);
-      return sum + (p ? p.price_per_unit * i.qty : 0);
-    }, 0);
-  }, [cart, products]);
+  const totalAmount = useMemo(() => cart.reduce((sum, i) => {
+    const p = products.find((prod) => prod.id === i.id);
+    return sum + (p ? p.price_per_unit * i.qty : 0);
+  }, 0), [cart, products]);
 
-  // ---------------- CHECKOUT ----------------
+  const cartItems = useMemo(() => cart.map((item) => {
+    const p = products.find((prod) => prod.id === item.id);
+    return { id: item.id, name: p?.name ?? '', qty: item.qty, lineTotal: (p?.price_per_unit ?? 0) * item.qty };
+  }), [cart, products]);
+
   const checkout = async () => {
-    if (!session) return toast.error("Login required");
-
-    if (walletBalance < totalAmount) {
-      toast.error("Insufficient wallet balance. Please add funds.");
-      return;
+    if (!session) return toast.error('Login required');
+    for (const item of cart) {
+      const p = products.find((prod) => prod.id === item.id);
+      if (!p || item.qty > p.quantity) return toast.error(`Insufficient stock for ${p?.name ?? 'item'}`);
     }
-
+    if (walletBalance < totalAmount) return toast.error('Insufficient wallet balance. Please add funds.');
     try {
-      // 1. Process wallet transfers for each item
-      for (const item of cart) {
-        const product = products.find(p => p.id === item.id);
-        if (!product) continue;
-
-        const itemTotal = product.price_per_unit * item.qty;
-
-        // Check for Royalty (12.5% to original farmer)
-        let metadata: any = {};
-        try { if (product.description) metadata = JSON.parse(product.description); } catch (e) {}
-
-        if (metadata.original_farmer_id) {
-          const royalty = itemTotal * 0.125;
-          const traderShare = itemTotal - royalty;
-          // Transfer to Trader
-          await transferFunds(session.user.id, product.seller_id, traderShare);
-          // Transfer to Original Farmer
-          await transferFunds(session.user.id, metadata.original_farmer_id, royalty);
-          toast.success(`12.5% Royalty auto-distributed to original farmer!`);
-        } else {
-          // Standard transfer to seller
-          await transferFunds(session.user.id, product.seller_id, itemTotal);
-        }
-
-        // Reduce product quantity
-        const newQty = product.quantity - item.qty;
-        await supabase.from('products').update({ quantity: newQty }).eq('id', product.id);
-      }
-
-      // 2. Record the completed order
-      const enrichedCart = cart.map(item => {
-        const product = products.find(p => p.id === item.id);
-        let metadata: any = {};
-        try { if (product?.description) metadata = JSON.parse(product.description); } catch(e){}
-        return {
-          ...item,
-          name: product?.name,
-          crop_type: product?.crop_type,
-          price_per_unit: product?.price_per_unit,
-          seller_id: product?.seller_id,
-          original_farmer_id: metadata.original_farmer_id || (isFarmer ? session.user.id : product?.seller_id)
-        };
+      const result = await checkoutOrder(cart);
+      const hasTraderRoyalty = isIndustrialist && cart.some((item) => {
+        const product = products.find((p) => p.id === item.id);
+        if (!product?.description) return false;
+        try {
+          const meta = JSON.parse(product.description);
+          return meta.product_kind === 'trader_relist' || !!meta.source_order_item_id;
+        } catch { return false; }
       });
-
-      const { error } = await supabase.from('orders').insert({
-        buyer_id: session.user.id,
-        total_amount: totalAmount,
-        items: enrichedCart,
-        status: 'completed'
-      });
-
-      if (error) throw error;
-
-      toast.success("Order placed successfully!");
+      if (hasTraderRoyalty) toast.success('12.5% royalty credited to original farmer');
+      toast.success(`Order placed! Total: ₹${Number(result.total_amount).toLocaleString()}`);
       setCart([]);
-      
-      // Refresh state
-      const { balance } = await getWalletInfo(session.user.id);
-      setWalletBalance(balance);
-      const { data } = await supabase.from('products').select('*');
-      setProducts(data || []);
-
-    } catch (err) {
-      console.error(err);
-      toast.error("Checkout failed");
+      setCartOpen(false);
+      await loadData();
+    } catch (err: unknown) {
+      const message = err && typeof err === 'object' && 'message' in err ? String((err as { message: string }).message) : 'Checkout failed';
+      toast.error(message);
     }
   };
 
-  // ---------------- FARMER LIST PRODUCT ----------------
-  const listProduce = async (e: any) => {
+  const listProduce = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = new FormData(e.target);
-
+    const form = new FormData(e.currentTarget);
     const { error } = await supabase.from('products').insert({
-      name: form.get('name'),
-      crop_type: form.get('crop_type'),
-      price_per_unit: Number(form.get('price')),
-      quantity: Number(form.get('quantity')),
-      unit: 'kg',
-      seller_id: session?.user.id
+      name: form.get('name'), crop_type: form.get('crop_type'),
+      price_per_unit: Number(form.get('price')), quantity: Number(form.get('quantity')),
+      unit: 'kg', seller_id: session?.user.id,
+      description: session?.user.id ? buildFarmerListingMeta(session.user.id, profile?.role ?? 'farmer') : undefined,
     });
-
-    if (error) return toast.error("Failed to list produce");
-    toast.success("Product listed!");
-    location.reload();
+    if (error) return toast.error('Failed to list produce');
+    toast.success('Product listed!');
+    await loadData();
+    e.currentTarget.reset();
   };
 
-  // ---------------- TRADER RELIST PRODUCT ----------------
-  const reListProduct = async (item: any) => {
-    const price = prompt(`Enter selling price per kg for ${item.name} (Current qty: ${item.qty}kg)`);
-    if (!price || isNaN(Number(price))) return;
-
-    const metadata = { original_farmer_id: item.original_farmer_id };
-
-    const { error } = await supabase.from('products').insert({
-      name: item.name,
-      crop_type: item.crop_type,
-      price_per_unit: Number(price),
-      quantity: item.qty,
-      unit: 'kg',
-      seller_id: session?.user.id,
-      description: JSON.stringify(metadata)
-    });
-
-    if (error) return toast.error("Failed to list product");
-    toast.success("Product listed for Industrialists!");
-    
-    // We ideally should remove/reduce from inventory, but for demo we just reload
-    location.reload();
+  const submitRelist = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!session?.user.id || !relistItem) return;
+    setRelistSubmitting(true);
+    try {
+      await relistTraderInventoryItem(session.user.id, relistItem, Number(relistQty), Number(relistPrice));
+      toast.success('Product listed for Industrialists!');
+      setRelistOpen(false);
+      await loadData();
+    } catch (err: unknown) {
+      const message = err && typeof err === 'object' && 'message' in err ? String((err as { message: string }).message) : 'Failed to list';
+      toast.error(message);
+    } finally {
+      setRelistSubmitting(false);
+    }
   };
 
-  // ---------------- UI ----------------
   return (
-    <div className="bg-slate-50 min-h-screen">
+    <>
       <SEO title="Marketplace | AgroElevate" description="Agri trading platform" />
-      <Navbar />
+      <PageHeader
+        title="Agri Marketplace"
+        subtitle="Discover crops, list produce, and trade with transparency"
+        actions={
+          canPurchase && (
+            <CartSheet cart={cartItems} totalAmount={totalAmount} walletBalance={walletBalance}
+              itemCount={cart.reduce((a, i) => a + i.qty, 0)} onCheckout={checkout} open={cartOpen} onOpenChange={setCartOpen} />
+          )
+        }
+      />
 
-      <main className="container mx-auto py-10 space-y-8">
-
-        {/* HEADER */}
-        <div className="flex justify-between items-center bg-white p-6 rounded-xl shadow-sm border">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Store className="text-primary" /> Agri Marketplace
-            </h1>
-            {session && (
-              <p className="text-muted-foreground mt-2 font-medium">
-                Wallet Balance: <span className="text-green-600">₹{walletBalance.toLocaleString()}</span>
-              </p>
-            )}
-          </div>
-
-          {(isTrader || isIndustrialist) && (
-            <Button variant="hero" size="lg">
-              <ShoppingCart className="mr-2" />
-              Cart ({cart.reduce((a,i)=>a+i.qty,0)})
-            </Button>
-          )}
-        </div>
-
-        <div className="grid lg:grid-cols-3 gap-8">
-          
-          {/* SIDEBAR */}
-          <div className="space-y-6">
-            {/* FARMER PANEL */}
+      {loading ? <DashboardSkeleton /> : (
+        <div className="grid lg:grid-cols-4 gap-6">
+          <div className="space-y-4">
             {isFarmer && (
-              <Card className="shadow-sm">
-                <CardHeader><CardTitle>List Produce</CardTitle></CardHeader>
-                <CardContent>
-                  <form onSubmit={listProduce} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label>Crop Name</Label>
-                      <Input name="name" placeholder="e.g. Wheat" required />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Crop Type</Label>
-                      <Input name="crop_type" placeholder="e.g. Grain" required />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label>Price/kg (₹)</Label>
-                        <Input name="price" type="number" placeholder="0.00" required />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Quantity (kg)</Label>
-                        <Input name="quantity" type="number" placeholder="0" required />
-                      </div>
-                    </div>
-                    <Button type="submit" variant="hero" className="w-full">Submit Listing</Button>
-                  </form>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* TRADER INVENTORY PANEL */}
-            {isTrader && (
-              <Card className="shadow-sm">
-                <CardHeader>
-                  <CardTitle>My Inventory (Purchased)</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {inventory.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Buy products from farmers to see them here.</p>
-                  ) : (
-                    <div className="space-y-4">
-                      {inventory.map((item, idx) => (
-                        <div key={idx} className="p-3 border rounded-lg bg-slate-50 flex justify-between items-center">
-                          <div>
-                            <p className="font-semibold">{item.name}</p>
-                            <p className="text-sm text-muted-foreground">{item.qty} kg (Bought at ₹{item.price_per_unit}/kg)</p>
-                          </div>
-                          <Button size="sm" onClick={() => reListProduct(item)}>
-                            Sell
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-
-            {/* SEARCH */}
-            <Card className="shadow-sm">
-              <CardHeader><CardTitle>Search</CardTitle></CardHeader>
-              <CardContent>
-                <Input
-                  placeholder="Search crops..."
-                  value={query}
-                  onChange={e=>setQuery(e.target.value)}
-                />
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* MAIN PRODUCTS GRID */}
-          <div className="lg:col-span-2">
-            {loading ? (
-              <p>Loading market data...</p>
-            ) : (
-              <div className="grid sm:grid-cols-2 gap-6">
-                {filteredProducts.map(p => {
-                  const cartItem = cart.find(c => c.id === p.id);
-                  let metadata: any = {};
-                  try { if (p.description) metadata = JSON.parse(p.description); } catch(e){}
-                  const isRelisted = !!metadata.original_farmer_id;
-
-                  // Hide Trader's own products from them
-                  if (p.seller_id === session?.user?.id) return null;
-
-                  return (
-                    <Card key={p.id} className="overflow-hidden hover:shadow-xl transition border-none shadow-md">
-                      <div className="relative">
-                        <img
-                          src={getImage(p.name)}
-                          className="h-48 w-full object-cover"
-                        />
-                        {isRelisted && (
-                          <div className="absolute top-2 right-2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full shadow">
-                            Trader Certified
-                          </div>
-                        )}
-                      </div>
-
-                      <CardContent className="p-5 space-y-3">
-                        <div>
-                          <h3 className="text-xl font-semibold capitalize">{p.name}</h3>
-                          <p className="text-sm text-muted-foreground">{p.crop_type}</p>
-                        </div>
-                        
-                        <div className="flex justify-between items-end">
-                          <div>
-                            <p className="text-sm">Available: <span className="font-medium">{p.quantity} kg</span></p>
-                            <p className="text-green-600 font-bold text-2xl mt-1">₹{p.price_per_unit}<span className="text-sm text-muted-foreground">/kg</span></p>
-                          </div>
-                          
-                          {(isTrader || isIndustrialist) && (
-                            <div className="w-32">
-                              {!cartItem ? (
-                                <Button onClick={() => addToCart(p.id)} variant="hero" className="w-full">
-                                  Add
-                                </Button>
-                              ) : (
-                                <div className="flex items-center justify-between border rounded-md">
-                                  <Button variant="ghost" size="icon" className="h-9 w-9" onClick={()=>changeQty(p.id,-1)}><Minus className="h-4 w-4"/></Button>
-                                  <span className="font-medium">{cartItem.qty}</span>
-                                  <Button variant="ghost" size="icon" className="h-9 w-9" onClick={()=>changeQty(p.id,1)}><Plus className="h-4 w-4"/></Button>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                        {isRelisted && isIndustrialist && (
-                          <p className="text-xs text-primary bg-primary/10 p-2 rounded">
-                            ✨ 12.5% of this purchase goes back to the original farmer!
-                          </p>
-                        )}
-                      </CardContent>
-                    </Card>
-                  );
-                })}
+              <div className="glass-card rounded-xl p-5">
+                <h3 className="font-semibold mb-4 flex items-center gap-2"><Store className="h-4 w-4 text-primary" /> List Produce</h3>
+                <form onSubmit={listProduce} className="space-y-3">
+                  <div><Label>Crop Name</Label><Input name="name" placeholder="Wheat" required className="bg-muted/30" /></div>
+                  <div><Label>Crop Type</Label><Input name="crop_type" placeholder="Grain" required className="bg-muted/30" /></div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div><Label>Price/kg</Label><Input name="price" type="number" required min="0.01" step="0.01" className="bg-muted/30" /></div>
+                    <div><Label>Qty (kg)</Label><Input name="quantity" type="number" required min="1" className="bg-muted/30" /></div>
+                  </div>
+                  <Button type="submit" variant="hero" className="w-full">Submit Listing</Button>
+                </form>
               </div>
             )}
+            {isTrader && (
+              <div className="glass-card rounded-xl p-5">
+                <h3 className="font-semibold mb-3">My Inventory</h3>
+                {inventory.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">Buy from farmers to build inventory.</p>
+                ) : inventory.map((item) => (
+                  <div key={item.orderItemId} className="p-3 border border-border/50 rounded-lg mb-2 text-sm">
+                    <div className="flex justify-between gap-2">
+                      <div>
+                        <p className="font-medium">{item.name}</p>
+                        <p className="text-muted-foreground">{item.remainingQty} kg @ ₹{item.pricePerUnit}/kg</p>
+                      </div>
+                      <Button size="sm" onClick={() => { setRelistItem(item); setRelistQty(String(item.remainingQty)); setRelistPrice(''); setRelistOpen(true); }}>Sell</Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            <MarketplaceFilters query={query} onQueryChange={setQuery} cropFilter={cropFilter} onCropFilterChange={setCropFilter}
+              sortBy={sortBy} onSortChange={setSortBy} cropTypes={cropTypes} resultCount={filteredProducts.length} />
+          </div>
+          <div className="lg:col-span-3 grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            {filteredProducts.map((p) => {
+              let isRelisted = false;
+              try { if (p.description) isRelisted = !!JSON.parse(p.description).original_farmer_id; } catch { /* */ }
+              const cartItem = cart.find((c) => c.id === p.id);
+              return (
+                <ProductCard key={p.id}
+                  product={{ ...p, imageUrl: getProductImage(p.name), isRelisted }}
+                  cartQty={cartItem?.qty} canPurchase={canPurchase} showRoyaltyNote={isIndustrialist}
+                  onAdd={() => addToCart(p.id)} onChangeQty={(d) => changeQty(p.id, d)} maxQty={p.quantity}
+                />
+              );
+            })}
           </div>
         </div>
+      )}
 
-        {/* CART SUMMARY */}
-        {(isTrader || isIndustrialist) && cart.length > 0 && (
-          <div className="fixed bottom-6 right-6 bg-white shadow-2xl p-6 rounded-xl w-80 border-t-4 border-primary z-50 animate-in slide-in-from-bottom-5">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-lg">Order Summary</h3>
-              <span className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs font-semibold">{cart.reduce((a,i)=>a+i.qty,0)} items</span>
-            </div>
-            
-            <div className="space-y-2 mb-4 max-h-40 overflow-auto">
-              {cart.map(item => {
-                const p = products.find(p => p.id === item.id);
-                if (!p) return null;
-                return (
-                  <div key={item.id} className="flex justify-between text-sm">
-                    <span>{p.name} (x{item.qty})</span>
-                    <span>₹{p.price_per_unit * item.qty}</span>
-                  </div>
-                )
-              })}
-            </div>
-
-            <div className="border-t pt-3 mb-4">
-              <div className="flex justify-between font-bold text-lg">
-                <span>Total:</span>
-                <span>₹{totalAmount.toLocaleString()}</span>
-              </div>
-              <p className="text-xs text-muted-foreground text-right mt-1">
-                Wallet Balance: ₹{walletBalance.toLocaleString()}
-              </p>
-            </div>
-            
-            <Button className="w-full text-lg h-12 shadow-lg hover:shadow-xl transition-shadow" variant="hero" onClick={checkout}>
-              Pay & Checkout
-            </Button>
-          </div>
-        )}
-
-      </main>
-
-      <Footer />
-    </div>
+      <Dialog open={relistOpen} onOpenChange={setRelistOpen}>
+        <DialogContent className="bg-card border-border">
+          <DialogHeader><DialogTitle>List {relistItem?.name} for Resale</DialogTitle></DialogHeader>
+          <form onSubmit={submitRelist} className="space-y-4 pt-2">
+            <p className="text-sm text-muted-foreground">Available: {relistItem?.remainingQty ?? 0} kg</p>
+            <div><Label>Quantity (kg)</Label><Input type="number" value={relistQty} onChange={(e) => setRelistQty(e.target.value)} required min="1" max={relistItem?.remainingQty ?? 1} /></div>
+            <div><Label>Price/kg (₹)</Label><Input type="number" value={relistPrice} onChange={(e) => setRelistPrice(e.target.value)} required min="0.01" step="0.01" /></div>
+            <Button type="submit" className="w-full" variant="hero" disabled={relistSubmitting}>{relistSubmitting ? 'Listing...' : 'List Product'}</Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

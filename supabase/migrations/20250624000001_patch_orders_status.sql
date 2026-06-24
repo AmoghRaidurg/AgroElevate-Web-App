@@ -1,0 +1,7 @@
+-- OBSOLETE: Do not run this file.
+-- It assumed orders.items JSONB which does not exist in production.
+-- Use upgrade migrations instead:
+--   20250624000010_upgrade_schema_alter.sql
+--   20250624000011_upgrade_orders_status.sql
+--   20250624000012_upgrade_rpc_wallet.sql
+--   20250624000013_upgrade_rpc_checkout.sql

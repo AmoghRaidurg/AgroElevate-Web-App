@@ -1,105 +1,114 @@
 import { supabase } from './supabaseClient';
+import type { WalletHistoryType } from './commerceMeta';
+import { WALLET_TYPE_LABELS } from './commerceMeta';
 
 export interface WalletTransaction {
   id: string;
   amount: number;
-  type: 'deposit' | 'transfer_in' | 'transfer_out';
-  related_user?: string;
+  type: WalletHistoryType;
+  description?: string;
   created_at: string;
+  order_id?: string;
 }
 
-/**
- * Get the current wallet balance and transaction history for a user.
- */
-export async function getWalletInfo(userId: string) {
-  // We fetch all wallet_tx where the user is either the buyer (deposit or transfer_out)
-  // or they are the receiver of a transfer.
-  // Since we use the orders table, a transfer creates TWO rows (one negative, one positive).
-  // Wait, in my previous test, I said we could do 1 row or 2 rows. 
-  // Let's stick to the 1 row per ledger entry (double-entry simulation):
-  // For deposit: buyer_id = user, total_amount = positive, items = [{type: 'deposit'}]
-  // For transfer OUT: buyer_id = sender, total_amount = negative, items = [{type: 'transfer', receiver_id: receiver}]
-  // For transfer IN: buyer_id = receiver, total_amount = positive, items = [{type: 'transfer', sender_id: sender}]
-
-  const { data: orders, error } = await supabase
-    .from('orders')
-    .select('*')
-    .eq('status', 'wallet_tx')
-    .eq('buyer_id', userId)
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching wallet info:', error);
-    return { balance: 0, transactions: [] };
-  }
-
-  let balance = 0;
-  const transactions: WalletTransaction[] = [];
-
-  for (const order of (orders || [])) {
-    balance += order.total_amount;
-
-    const item = order.items && order.items[0];
-    let type: WalletTransaction['type'] = 'deposit';
-    let related_user: string | undefined;
-
-    if (item?.type === 'transfer') {
-      if (order.total_amount < 0) {
-        type = 'transfer_out';
-        related_user = item.receiver_id;
-      } else {
-        type = 'transfer_in';
-        related_user = item.sender_id;
-      }
-    }
-
-    transactions.push({
-      id: order.id,
-      amount: order.total_amount,
-      type,
-      related_user,
-      created_at: order.created_at,
-    });
-  }
-
-  return { balance, transactions };
+export interface WalletInfo {
+  balance: number;
+  transactions: WalletTransaction[];
+  error?: string;
 }
 
-/**
- * Add funds to a user's wallet (Mock Payment).
- */
-export async function addFunds(userId: string, amount: number) {
-  const { error } = await supabase.from('orders').insert({
-    buyer_id: userId,
-    total_amount: amount,
-    status: 'wallet_tx',
-    items: [{ type: 'deposit' }]
+const KNOWN_TYPES = new Set<string>(Object.keys(WALLET_TYPE_LABELS));
+
+function mapHistoryType(rowType: string, amount: number): WalletHistoryType {
+  if (KNOWN_TYPES.has(rowType)) return rowType as WalletHistoryType;
+  if (amount < 0) return 'purchase';
+  return 'transfer_in';
+}
+
+export async function getWalletInfo(userId: string): Promise<WalletInfo> {
+  const { data: balanceData, error: balanceError } = await supabase.rpc('get_wallet_balance');
+
+  if (balanceError) {
+    console.error('Error fetching wallet balance:', balanceError);
+    return { balance: 0, transactions: [], error: balanceError.message };
+  }
+
+  const { data: history, error: txError } = await supabase
+    .from('wallet_history')
+    .select('id, type, amount, description, createdAt, orderId')
+    .eq('userId', userId)
+    .order('createdAt', { ascending: false });
+
+  if (txError) {
+    console.error('Error fetching wallet transactions:', txError);
+    return {
+      balance: Number(balanceData ?? 0),
+      transactions: [],
+      error: txError.message,
+    };
+  }
+
+  const transactions: WalletTransaction[] = (history || []).map((row) => {
+    const amount = Number(row.amount ?? 0);
+    return {
+      id: row.id,
+      amount,
+      type: mapHistoryType(row.type ?? '', amount),
+      description: row.description ?? undefined,
+      created_at: row.createdAt,
+      order_id: row.orderId ?? undefined,
+    };
   });
 
+  return { balance: Number(balanceData ?? 0), transactions };
+}
+
+export async function addFunds(_userId: string, amount: number) {
+  const { error } = await supabase.rpc('add_funds', { p_amount: amount });
   if (error) throw error;
 }
 
-/**
- * Transfer funds between users.
- * Creates two ledger entries: one deducting from sender, one adding to receiver.
- */
-export async function transferFunds(senderId: string, receiverId: string, amount: number) {
-  if (amount <= 0) return;
-
-  const { error } = await supabase.from('orders').insert([
-    {
-      buyer_id: senderId,
-      total_amount: -amount,
-      status: 'wallet_tx',
-      items: [{ type: 'transfer', receiver_id: receiverId }]
-    },
-    {
-      buyer_id: receiverId,
-      total_amount: amount,
-      status: 'wallet_tx',
-      items: [{ type: 'transfer', sender_id: senderId }]
-    }
-  ]);
-
+export async function transferFunds(receiverId: string, amount: number) {
+  const { error } = await supabase.rpc('transfer_funds', {
+    p_receiver_id: receiverId.trim(),
+    p_amount: amount,
+  });
   if (error) throw error;
 }
+
+export async function fetchWalletSumByTypes(
+  userId: string,
+  types: WalletHistoryType[]
+): Promise<number> {
+  const { data, error } = await supabase
+    .from('wallet_history')
+    .select('amount')
+    .eq('userId', userId)
+    .in('type', types);
+
+  if (error) {
+    console.error('Wallet sum error:', error);
+    return 0;
+  }
+  return (data ?? []).reduce((sum, row) => sum + Number(row.amount ?? 0), 0);
+}
+
+export async function fetchFarmerRoyaltyIncome(farmerId: string): Promise<number> {
+  const { data, error } = await supabase
+    .from('wallet_history')
+    .select('amount')
+    .eq('userId', farmerId)
+    .eq('type', 'royalty_income');
+
+  if (error) {
+    console.error('Farmer royalty fetch error:', error);
+    return 0;
+  }
+  return (data ?? []).reduce((sum, row) => sum + Number(row.amount ?? 0), 0);
+}
+
+export async function fetchFarmerDirectSalesIncome(farmerId: string): Promise<number> {
+  return fetchWalletSumByTypes(farmerId, ['sale_income']);
+}
+
+export { WALLET_TYPE_LABELS };

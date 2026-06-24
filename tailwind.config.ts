@@ -19,6 +19,24 @@ export default {
 		},
 			extend: {
 				colors: {
+					highlight: {
+						DEFAULT: 'hsl(var(--highlight))',
+						foreground: 'hsl(var(--highlight-foreground))'
+					},
+					forest: {
+						deep: 'hsl(var(--forest-deep))',
+					},
+					charcoal: {
+						DEFAULT: 'hsl(var(--charcoal))',
+						elevated: 'hsl(var(--charcoal-elevated))',
+					},
+					chart: {
+						1: 'hsl(var(--chart-1))',
+						2: 'hsl(var(--chart-2))',
+						3: 'hsl(var(--chart-3))',
+						4: 'hsl(var(--chart-4))',
+						5: 'hsl(var(--chart-5))',
+					},
 					border: 'hsl(var(--border))',
 					input: 'hsl(var(--input))',
 					ring: 'hsl(var(--ring))',
@@ -62,6 +80,10 @@ export default {
 						border: 'hsl(var(--sidebar-border))',
 						ring: 'hsl(var(--sidebar-ring))'
 					}
+				},
+				fontFamily: {
+					sans: ['Inter', 'system-ui', 'sans-serif'],
+					display: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
 				},
 				borderRadius: {
 					lg: 'var(--radius)',
