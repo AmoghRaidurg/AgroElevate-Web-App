@@ -5,7 +5,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useAuth } from '@/hooks/useAuth';
-import { getWalletInfo, addFunds, transferFunds, WalletTransaction } from '@/lib/wallet';
+import { getWalletInfo, transferFunds, WalletTransaction, WALLET_TYPE_LABELS } from '@/lib/wallet';
+import {
+  createWalletTopUpOrder,
+  openRazorpayCheckout,
+  pollWalletAfterPayment,
+  fetchPaymentReceipts,
+  type PaymentReceipt,
+} from '@/lib/razorpayWallet';
+import { PaymentReceiptList } from '@/components/wallet/PaymentReceiptList';
 import { toast } from 'sonner';
 import { Wallet as WalletIcon, ArrowUpRight, ArrowDownLeft, Plus, Send } from 'lucide-react';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -14,6 +22,7 @@ import { MetricCard } from '@/components/design/MetricCard';
 import { DashboardSkeleton } from '@/components/design/skeletons';
 import { ThemedChart, CHART_COLORS } from '@/components/design/ThemedChart';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { Badge } from '@/components/ui/badge';
 
 export default function Wallet() {
   const { session, profile } = useAuth();
@@ -26,6 +35,8 @@ export default function Wallet() {
   const [transferReceiverId, setTransferReceiverId] = useState('');
   const [transferAmount, setTransferAmount] = useState('');
   const [transferSubmitting, setTransferSubmitting] = useState(false);
+  const [topUpSubmitting, setTopUpSubmitting] = useState(false);
+  const [receipts, setReceipts] = useState<PaymentReceipt[]>([]);
 
   const fetchWallet = async () => {
     if (!session?.user.id) return;
@@ -36,6 +47,12 @@ export default function Wallet() {
     }
     setBalance(info.balance);
     setTransactions(info.transactions);
+    try {
+      const r = await fetchPaymentReceipts(session.user.id);
+      setReceipts(r);
+    } catch {
+      setReceipts([]);
+    }
     setLoading(false);
   };
 
@@ -79,17 +96,31 @@ export default function Wallet() {
     const amount = Number(amountToAdd);
     if (!amount || amount <= 0) return toast.error('Please enter a valid amount');
     if (!session?.user.id) return;
+    setTopUpSubmitting(true);
     try {
-      await addFunds(session.user.id, amount);
-      toast.success(`Successfully added ₹${amount} to your wallet!`);
+      const order = await createWalletTopUpOrder(amount);
+      await openRazorpayCheckout(
+        order,
+        session.user.email,
+        profile?.name,
+        () => toast.info('Payment received — confirming with server…'),
+      );
+      const settled = await pollWalletAfterPayment(session.user.id, order.intent_id);
+      if (!settled) {
+        toast.warning('Payment is still processing. Balance will update shortly.');
+      } else {
+        toast.success(`Wallet credited · Receipt ${order.receipt_number}`);
+      }
       setIsDialogOpen(false);
       setAmountToAdd('');
       fetchWallet();
     } catch (err: unknown) {
       const message = err && typeof err === 'object' && 'message' in err
         ? String((err as { message: string }).message)
-        : 'Failed to add funds';
-      toast.error(message);
+        : 'Payment failed';
+      if (!/cancelled/i.test(message)) toast.error(message);
+    } finally {
+      setTopUpSubmitting(false);
     }
   };
 
@@ -150,14 +181,16 @@ export default function Wallet() {
             </Dialog>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant="hero" className="gap-2"><Plus className="h-4 w-4" /> Add Funds</Button>
+                <Button variant="hero" className="gap-2"><Plus className="h-4 w-4" /> Add Money</Button>
               </DialogTrigger>
               <DialogContent className="bg-card border-border">
-                <DialogHeader><DialogTitle>Add Funds (Mock Payment)</DialogTitle></DialogHeader>
+                <DialogHeader><DialogTitle>Add Money via Razorpay (Test Mode)</DialogTitle></DialogHeader>
                 <form onSubmit={handleAddFunds} className="space-y-4 pt-2">
-                  <Input placeholder="**** **** **** 4242" disabled value="**** **** **** 4242" className="bg-muted/30" />
-                  <div><Label>Amount (₹)</Label><Input type="number" value={amountToAdd} onChange={(e) => setAmountToAdd(e.target.value)} required min="1" className="bg-muted/30" /></div>
-                  <Button type="submit" className="w-full" variant="hero">Pay Securely</Button>
+                  <p className="text-xs text-muted-foreground">Secure payment via Razorpay. Wallet credits after server verification only.</p>
+                  <div><Label>Amount (₹)</Label><Input type="number" value={amountToAdd} onChange={(e) => setAmountToAdd(e.target.value)} required min="1" max="100000" className="bg-muted/30" /></div>
+                  <Button type="submit" className="w-full" variant="hero" disabled={topUpSubmitting}>
+                    {topUpSubmitting ? 'Opening Razorpay…' : 'Pay with Razorpay'}
+                  </Button>
                 </form>
               </DialogContent>
             </Dialog>
@@ -196,6 +229,11 @@ export default function Wallet() {
         </div>
       )}
 
+      <div className="glass-card rounded-xl p-6 mb-8">
+        <h3 className="font-semibold mb-4">Payment Receipts</h3>
+        <PaymentReceiptList receipts={receipts} />
+      </div>
+
       <div className="glass-card rounded-xl p-6">
         <h3 className="font-semibold mb-6">Transaction Timeline</h3>
         {transactions.length === 0 ? (
@@ -208,18 +246,27 @@ export default function Wallet() {
                 <div className="space-y-2 border-l-2 border-primary/30 pl-4 ml-2">
                   {txs.map((tx) => {
                     const isOut = ['transfer_out', 'purchase', 'royalty_paid', 'withdrawal'].includes(tx.type) || tx.amount < 0;
+                    const isDemo = tx.type === 'demo_credit';
+                    const label = WALLET_TYPE_LABELS[tx.type] ?? tx.type.replace(/_/g, ' ');
                     return (
                       <div key={tx.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/20 border border-border/40">
                         <div className="flex items-center gap-3">
-                          <div className={`p-2 rounded-full ${isOut ? 'bg-red-500/10 text-red-400' : 'bg-primary/10 text-primary'}`}>
+                          <div className={`p-2 rounded-full ${isOut ? 'bg-red-500/10 text-red-400' : isDemo ? 'bg-amber-500/10 text-amber-400' : 'bg-primary/10 text-primary'}`}>
                             {isOut ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownLeft className="h-4 w-4" />}
                           </div>
                           <div>
-                            <p className="font-medium text-sm capitalize">{tx.type.replace(/_/g, ' ')}</p>
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium text-sm">{label}</p>
+                              {isDemo && (
+                                <Badge variant="outline" className="border-amber-500/50 text-amber-500 text-[10px] px-1.5 py-0">
+                                  Demo
+                                </Badge>
+                              )}
+                            </div>
                             <p className="text-xs text-muted-foreground">{new Date(tx.created_at).toLocaleTimeString()}</p>
                           </div>
                         </div>
-                        <p className={`font-bold tabular-nums ${isOut ? 'text-red-400' : 'text-primary'}`}>
+                        <p className={`font-bold tabular-nums ${isOut ? 'text-red-400' : isDemo ? 'text-amber-400' : 'text-primary'}`}>
                           {isOut ? '-' : '+'}₹{Math.abs(tx.amount).toLocaleString()}
                         </p>
                       </div>

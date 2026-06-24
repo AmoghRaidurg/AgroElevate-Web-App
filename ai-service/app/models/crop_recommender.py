@@ -45,6 +45,14 @@ def recommend_crops(
         risk = float(row["risk_score"])
         yld = expected_yield_quintals(row["crop_name"], loc.state, acres)
 
+        explanation = (
+            f"Ranked #{rank} for {season.upper()} in {loc.state}"
+            + (f" ({loc.district})" if loc.district else "")
+            + f" — {int(suitability * 100)}% regional suitability, "
+            f"demand {float(row['demand_score']):.0f}/100, "
+            f"risk {int(risk * 100)}%."
+        )
+
         results.append({
             "user_id": user_id,
             "role": role,
@@ -64,6 +72,7 @@ def recommend_crops(
             "expected_yield_quintals": yld,
             "expected_yield_quintals_per_acre": expected_yield_quintals(row["crop_name"], loc.state, 1.0),
             "expected_demand": round(float(row["demand_score"]), 2),
+            "explanation": explanation,
             "model_version": MODEL_VERSION,
         })
     return results

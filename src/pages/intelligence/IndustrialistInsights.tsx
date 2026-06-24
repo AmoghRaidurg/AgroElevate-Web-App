@@ -10,6 +10,8 @@ import { IntelligencePanel } from '@/components/intelligence/IntelligencePanel';
 import { TrendBadge, ConfidenceBar } from '@/components/intelligence/IntelligenceMetrics';
 import { ChartCard } from '@/components/design/ChartCard';
 import { ThemedChart, CHART_COLORS } from '@/components/design/ThemedChart';
+import { AiStatusBanner } from '@/components/intelligence/AiStatusBanner';
+import { InsufficientDataPanel } from '@/components/intelligence/InsufficientDataPanel';
 import { Factory, ShieldAlert, Users } from 'lucide-react';
 
 export default function IndustrialistInsights() {
@@ -60,9 +62,14 @@ export default function IndustrialistInsights() {
           { label: 'Annual Spend', value: `₹${(costs.current_annual_spend / 100000).toFixed(1)}L` },
         ] : []}
       />
-      <IntelligenceShell loading={loading} error={error}>
-        {data && ind && costs && (
+      <IntelligenceShell loading={loading} error={error} onRetry={load} fallback={data?._fallback}>
+        {data && (
           <div className="space-y-8">
+            <AiStatusBanner />
+            {!ind || data._fallback ? (
+              <InsufficientDataPanel description="Industrialist forecasts improve with procurement history and live marketplace data." />
+            ) : (
+            <>
             <IntelligencePanel title="Procurement Planning" icon={Factory} description="Monthly volume & cost estimates">
               {planning.map((p) => (
                 <div key={p.crop_name} className="flex justify-between items-center border-b border-white/10 pb-2 mb-2 text-sm last:border-0">
@@ -123,6 +130,8 @@ export default function IndustrialistInsights() {
             </ChartCard>
 
             <InsightFeed insights={data.insights ?? []} />
+            </>
+            )}
           </div>
         )}
       </IntelligenceShell>

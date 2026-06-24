@@ -1,4 +1,20 @@
 const AI_BASE = import.meta.env.VITE_AI_API_URL || 'http://localhost:8000';
+const AI_TIMEOUT_MS = 15_000;
+
+export type AiServiceStatus = 'checking' | 'online' | 'offline' | 'unknown';
+
+export function getAiBaseUrl() {
+  return AI_BASE;
+}
+
+export class AiServiceError extends Error {
+  readonly offline: boolean;
+  constructor(message: string, offline = false) {
+    super(message);
+    this.name = 'AiServiceError';
+    this.offline = offline;
+  }
+}
 
 export interface CropRecommendation {
   crop_name: string;
@@ -11,6 +27,7 @@ export interface CropRecommendation {
   expected_yield_quintals?: number;
   expected_yield_quintals_per_acre?: number;
   expected_demand?: number;
+  explanation?: string;
   state?: string;
   district?: string | null;
   region?: string;
@@ -28,6 +45,8 @@ export interface MarketPrediction {
   price_max: number;
   demand_confidence: number;
   market_confidence?: number;
+  price_confidence?: number;
+  insufficient_data?: boolean;
   trader_activity_kg?: number;
   industrialist_activity_kg?: number;
 }
@@ -74,6 +93,43 @@ export interface GeoContext {
   region: string;
 }
 
+export interface DistrictAnalytics {
+  state: string;
+  district: string | null;
+  region: string;
+  active_listings: number;
+  avg_marketplace_price: number;
+  top_crops: Array<{ crop_name: string; avg_price?: number; listings?: number; available_kg?: number; demand_score?: number }>;
+  data_confidence: number;
+}
+
+export interface SeasonalAnalytics {
+  season: string;
+  month: number;
+  recommended_crops: Array<{ crop_name: string; season_fit: number }>;
+  planting_window: string;
+  confidence: number;
+}
+
+export interface HistoricalTrend {
+  crop_name: string;
+  latest_month: string;
+  volume_kg: number;
+  volume_change_kg: number;
+  avg_price: number;
+  price_change: number;
+  trend: string;
+  confidence: number;
+}
+
+export interface WeatherSummary {
+  temperature_c: number | null;
+  precipitation_mm: number;
+  rain_probability_pct: number;
+  farming_note: string;
+  source: string;
+}
+
 export interface FarmerDashboard {
   recommendations: CropRecommendation[];
   market_predictions: MarketPrediction[];
@@ -88,7 +144,15 @@ export interface FarmerDashboard {
   geo?: GeoContext;
   use_synthetic?: boolean;
   location?: string;
+  income_insufficient_data?: boolean;
+  demand_insufficient_data?: boolean;
+  marketplace_insufficient_data?: boolean;
+  district_analytics?: DistrictAnalytics;
+  seasonal_analytics?: SeasonalAnalytics;
+  historical_trends?: HistoricalTrend[];
+  weather?: WeatherSummary | null;
   model_version?: string;
+  _fallback?: boolean;
 }
 
 export interface TraderDashboard extends FarmerDashboard {
@@ -179,16 +243,57 @@ export interface CopilotResponse {
 
 async function aiFetch<T>(path: string, params: Record<string, string>, method: 'GET' | 'POST' = 'GET', body?: unknown): Promise<T> {
   const qs = new URLSearchParams(params).toString();
-  const res = await fetch(`${AI_BASE}${path}?${qs}`, {
-    method,
-    headers: { Accept: 'application/json', ...(body ? { 'Content-Type': 'application/json' } : {}) },
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `AI API error ${res.status}`);
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), AI_TIMEOUT_MS);
+
+  try {
+    const res = await fetch(`${AI_BASE}${path}?${qs}`, {
+      method,
+      signal: controller.signal,
+      headers: { Accept: 'application/json', ...(body ? { 'Content-Type': 'application/json' } : {}) },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new AiServiceError(text || `AI API error ${res.status}`);
+    }
+    return (await res.json()) as T;
+  } catch (err) {
+    if (err instanceof AiServiceError) throw err;
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new AiServiceError('AI service request timed out', true);
+    }
+    throw new AiServiceError('AI service unavailable. Check VITE_AI_API_URL or start ai-service locally.', true);
+  } finally {
+    window.clearTimeout(timeout);
   }
-  return res.json() as Promise<T>;
+}
+
+function emptyDashboard(): FarmerDashboard {
+  return {
+    recommendations: [],
+    market_predictions: [],
+    demand_intelligence: [],
+    income_forecasts: [],
+    income_scenarios: { optimistic: [], realistic: [], conservative: [] },
+    insights: [],
+    income_insufficient_data: true,
+    demand_insufficient_data: true,
+    marketplace_insufficient_data: true,
+    model_version: 'offline',
+    _fallback: true,
+  };
+}
+
+async function withFallback<T extends FarmerDashboard>(fn: () => Promise<T>): Promise<T> {
+  try {
+    return await fn();
+  } catch (e) {
+    if (e instanceof AiServiceError && e.offline) {
+      return emptyDashboard() as T;
+    }
+    throw e;
+  }
 }
 
 export async function refreshIntelligence(userId: string, role: string, location?: string) {
@@ -202,15 +307,15 @@ export async function refreshIntelligence(userId: string, role: string, location
 export async function fetchFarmerDashboard(userId: string, location?: string) {
   const params: Record<string, string> = { user_id: userId };
   if (location) params.location = location;
-  return aiFetch<FarmerDashboard>('/api/intelligence/farmer/dashboard', params);
+  return withFallback(() => aiFetch<FarmerDashboard>('/api/intelligence/farmer/dashboard', params));
 }
 
 export async function fetchTraderDashboard(userId: string) {
-  return aiFetch<TraderDashboard>('/api/intelligence/trader/dashboard', { user_id: userId });
+  return withFallback(() => aiFetch<TraderDashboard>('/api/intelligence/trader/dashboard', { user_id: userId }));
 }
 
 export async function fetchIndustrialistDashboard(userId: string) {
-  return aiFetch<IndustrialistDashboard>('/api/intelligence/industrialist/dashboard', { user_id: userId });
+  return withFallback(() => aiFetch<IndustrialistDashboard>('/api/intelligence/industrialist/dashboard', { user_id: userId }));
 }
 
 export async function sendCopilotMessage(
@@ -222,14 +327,29 @@ export async function sendCopilotMessage(
 ) {
   const params: Record<string, string> = { user_id: userId, role };
   if (location) params.location = location;
-  return aiFetch<CopilotResponse>('/api/intelligence/copilot', params, 'POST', { message, context });
+  try {
+    return await aiFetch<CopilotResponse>('/api/intelligence/copilot', params, 'POST', { message, context });
+  } catch (e) {
+    if (e instanceof AiServiceError && e.offline) {
+      return {
+        reply: 'Intelligence service is temporarily unavailable. Marketplace and wallet features remain fully operational.',
+        intent: 'offline',
+        suggestions: ['Retry in a moment', 'Browse marketplace', 'Check wallet balance'],
+      } satisfies CopilotResponse;
+    }
+    throw e;
+  }
 }
 
 export async function checkAiHealth(): Promise<boolean> {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 5000);
   try {
-    const res = await fetch(`${AI_BASE}/health`);
+    const res = await fetch(`${AI_BASE}/health`, { signal: controller.signal });
     return res.ok;
   } catch {
     return false;
+  } finally {
+    window.clearTimeout(timeout);
   }
 }

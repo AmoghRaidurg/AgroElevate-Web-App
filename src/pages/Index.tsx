@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
-import { Brain, Shield, TrendingUp, Store, Sprout, Factory, ArrowRight } from "lucide-react";
+import { Brain, Shield, TrendingUp, Store, Sprout, Factory, ArrowRight, ShoppingBag } from "lucide-react";
 import { GlassCard } from "@/components/design/GlassCard";
 import { LandingHero } from "@/components/landing/LandingHero";
 
@@ -12,9 +12,10 @@ const features = [
 ];
 
 const roles = [
-  { icon: Sprout, title: "Farmers", desc: "List produce, track sales, get AI crop recommendations." },
+  { icon: Sprout, title: "Farmers", desc: "List produce, track sales, manage marketplace listings, get AI crop recommendations." },
   { icon: Store, title: "Traders", desc: "Procure inventory, resell with royalty tracking, demand alerts." },
-  { icon: Factory, title: "Industrialists", desc: "Bulk procurement, supplier analytics, cost forecasting." },
+  { icon: Factory, title: "Industrialists", desc: "Bulk procurement, manufacturing batches, supplier analytics." },
+  { icon: ShoppingBag, title: "Customers", desc: "Browse the marketplace, purchase fresh produce, and manage orders with your wallet." },
 ];
 
 export default function Index() {
@@ -60,7 +61,7 @@ export default function Index() {
 
       <section className="container mx-auto px-4 py-20">
         <h2 className="font-display text-3xl font-bold text-center mb-12">Who it&apos;s for</h2>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {roles.map((r) => (
             <GlassCard key={r.title} className="text-center hover:-translate-y-1 transition-transform duration-300">
               <div className="mx-auto w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">

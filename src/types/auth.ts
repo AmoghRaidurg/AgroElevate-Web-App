@@ -25,10 +25,10 @@ export interface RegisterPayload {
   name: string;
   email: string;
   password: string;
-  role: 'farmer' | 'middleman' | 'industrialist';
+  role: 'farmer' | 'middleman' | 'industrialist' | 'customer';
   address: string;
   phone: string;
-  bankAccount: string;
+  bankAccount?: string;
 }
 
 export interface ProfileUpdatePayload {

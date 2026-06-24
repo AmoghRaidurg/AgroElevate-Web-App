@@ -10,6 +10,10 @@
     "commerce:verify": "node scripts/commerce-verify.mjs",
     "commerce:smoke": "node scripts/commerce-smoke.mjs",
     "commerce:apply-migration": "node scripts/commerce-apply-migration.mjs",
+    "commerce:apply-razorpay": "node scripts/commerce-apply-migration.mjs supabase/migrations/production/20250625100016_phase_g_razorpay_wallet.sql",
+    "commerce:apply-demo": "node scripts/commerce-apply-migration.mjs supabase/migrations/production/20250625100017_demo_wallet_credit.sql",
+    "commerce:apply-demo-v2": "node scripts/commerce-apply-migration.mjs supabase/migrations/production/20250625100018_demo_wallet_credit_custom_amount.sql",
+    "ai:verify": "node scripts/verify-ai-health.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

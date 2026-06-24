@@ -24,6 +24,8 @@ def predict_markets(data: dict, region: str = "India") -> list[dict]:
             "price_max": round(d["current_price"] + price_spread, 2),
             "demand_confidence": d["market_confidence"],
             "market_confidence": d["market_confidence"],
+            "price_confidence": d.get("price_confidence", d["market_confidence"]),
+            "insufficient_data": d.get("insufficient_data", False),
             "trader_activity_kg": d["trader_activity_kg"],
             "industrialist_activity_kg": d["industrialist_activity_kg"],
             "prediction_month": month.isoformat(),

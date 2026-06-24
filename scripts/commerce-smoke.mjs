@@ -39,8 +39,14 @@ async function main() {
   else fail('get_wallet_balance RPC exists', balErr?.message);
 
   const { error: addErr } = await supabase.rpc('add_funds', { p_amount: 100 });
-  if (rpcExists(addErr)) pass('add_funds RPC exists', addErr?.message ?? 'ok');
+  if (rpcExists(addErr)) pass('add_funds RPC exists (retired/disabled)', addErr?.message ?? 'ok');
   else fail('add_funds RPC exists', addErr?.message);
+
+  const { error: cwdErr } = await supabase.rpc('confirm_wallet_deposit', {
+    p_razorpay_order_id: 'x', p_razorpay_payment_id: 'y', p_amount_paise: 1,
+  });
+  if (rpcExists(cwdErr)) pass('confirm_wallet_deposit RPC exists', cwdErr?.message ?? 'ok');
+  else fail('confirm_wallet_deposit RPC exists', cwdErr?.message);
 
   const { error: tfErr } = await supabase.rpc('transfer_funds', {
     p_receiver_id: '00000000-0000-0000-0000-000000000001',

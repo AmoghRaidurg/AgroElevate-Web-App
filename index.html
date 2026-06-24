@@ -1,10 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AgroElevate | Fair Marketplace for Farmers</title>
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('agroelevate-theme') || 'system';
+          var dark = stored === 'dark' || (stored === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.classList.remove('light', 'dark');
+          document.documentElement.classList.add(dark ? 'dark' : 'light');
+        } catch (e) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+    <style>
+      html.dark body { background-color: hsl(228 35% 7%); color: hsl(210 25% 96%); }
+      html.light body { background-color: hsl(0 0% 99%); color: hsl(224 32% 12%); }
+    </style>
 
     <meta name="description" content="AgroElevate connects farmers, middlemen, and industrialists with fair pricing, secure payments, and transparent royalties." />
     <meta name="author" content="AgroElevate" />
@@ -19,7 +35,7 @@
     <meta name="twitter:image" content="/agro-elevate-og.png" />
   </head>
 
-  <body>
+  <body class="bg-mesh antialiased">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

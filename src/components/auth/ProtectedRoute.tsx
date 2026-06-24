@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { DashboardSkeleton } from '@/components/design/skeletons';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -12,8 +13,10 @@ export default function ProtectedRoute({ children, requireApproved = true }: Pro
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-muted-foreground">Loading...</p>
+      <div className="min-h-screen bg-mesh">
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
+          <DashboardSkeleton />
+        </div>
       </div>
     );
   }

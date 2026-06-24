@@ -1,0 +1,21 @@
+# Render Blueprint — AgroElevate AI Service
+# Deploy: connect repo → New Blueprint → select this file
+# Or: Dashboard → New Web Service → Docker → ai-service/Dockerfile
+
+services:
+  - type: web
+    name: agroelevate-ai
+    runtime: docker
+    dockerfilePath: ./ai-service/Dockerfile
+    dockerContext: ./ai-service
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: https://agroelevate.app,http://localhost:8080,http://localhost:5173
+      - key: PORT
+        value: "8000"

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { SEO } from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -10,7 +11,7 @@ import { toast } from 'sonner';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { HeroMetric } from '@/components/design/HeroMetric';
 import { DashboardSkeleton } from '@/components/design/skeletons';
-import { Search, Users, Package, ShieldAlert } from 'lucide-react';
+import { Search, Users, Package, ShieldAlert, CreditCard } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export default function Admin() {
@@ -66,7 +67,31 @@ export default function Admin() {
   return (
     <>
       <SEO title="Admin | AgroElevate" />
-      <PageHeader title="Admin Console" subtitle="Platform management & user oversight" />
+      <PageHeader
+        title="Admin Console"
+        subtitle="Platform management & user oversight"
+        actions={
+          <Button variant="hero" className="gap-2" asChild>
+            <Link to="/admin/payments">
+              <CreditCard className="h-4 w-4" />
+              Payments &amp; demo credits
+            </Link>
+          </Button>
+        }
+      />
+
+      <div className="glass-card rounded-xl p-6 mb-8 border border-amber-500/30 bg-amber-500/5">
+        <h3 className="font-semibold flex items-center gap-2 mb-2">
+          <CreditCard className="h-5 w-5 text-amber-500" />
+          Demo wallet funding
+        </h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          Credit demonstration wallets instantly (₹1000 / ₹5000 / ₹10000 or custom). Separate from Razorpay — opens on the Payment Audit page.
+        </p>
+        <Button variant="secondary" asChild>
+          <Link to="/admin/payments">Open Payment Audit → Demo Wallet Credit</Link>
+        </Button>
+      </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <HeroMetric label="Total Users" value={stats.total} icon={<Users className="h-5 w-5" />} />
@@ -109,6 +134,9 @@ export default function Admin() {
                       {!p.suspended && p.approved !== false && <Badge variant="outline" className="border-primary/30 text-primary">Active</Badge>}
                     </TableCell>
                     <TableCell className="text-right space-x-2">
+                      <Button size="sm" variant="ghost" asChild>
+                        <Link to={`/admin/payments?user=${p.id}`} title="Demo credit this user">Credit</Link>
+                      </Button>
                       <Button size="sm" variant="outline" onClick={() => toggleSuspended(p)}>{p.suspended ? 'Unsuspend' : 'Suspend'}</Button>
                       {p.approved === false && <Button size="sm" variant="hero" onClick={() => toggleApproved(p)}>Approve</Button>}
                     </TableCell>

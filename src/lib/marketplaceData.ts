@@ -316,6 +316,89 @@ export async function relistTraderInventoryItem(
   if (error) throw error;
 }
 
+function parseListingMeta(description?: string | null): Record<string, unknown> {
+  if (!description?.trim()) return {};
+  try {
+    return JSON.parse(description) as Record<string, unknown>;
+  } catch {
+    return {};
+  }
+}
+
+export async function fetchFarmerListings(farmerId: string): Promise<ProductRow[]> {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('seller_id', farmerId)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []) as ProductRow[];
+}
+
+export async function updateFarmerListing(
+  productId: string,
+  farmerId: string,
+  updates: { price_per_unit?: number; quantity?: number; name?: string },
+): Promise<void> {
+  const { error } = await supabase
+    .from('products')
+    .update(updates)
+    .eq('id', productId)
+    .eq('seller_id', farmerId);
+
+  if (error) throw error;
+}
+
+export async function pauseFarmerListing(productId: string, farmerId: string): Promise<void> {
+  const { data: row, error: fetchErr } = await supabase
+    .from('products')
+    .select('quantity, description')
+    .eq('id', productId)
+    .eq('seller_id', farmerId)
+    .single();
+
+  if (fetchErr || !row) throw new Error('Listing not found');
+
+  const meta = parseListingMeta(row.description);
+  meta.paused_quantity = row.quantity;
+  meta.paused = true;
+
+  const { error } = await supabase
+    .from('products')
+    .update({ quantity: 0, description: JSON.stringify(meta) })
+    .eq('id', productId)
+    .eq('seller_id', farmerId);
+
+  if (error) throw error;
+}
+
+export async function resumeFarmerListing(productId: string, farmerId: string): Promise<void> {
+  const { data: row, error: fetchErr } = await supabase
+    .from('products')
+    .select('quantity, description')
+    .eq('id', productId)
+    .eq('seller_id', farmerId)
+    .single();
+
+  if (fetchErr || !row) throw new Error('Listing not found');
+
+  const meta = parseListingMeta(row.description);
+  const restoreQty = Number(meta.paused_quantity ?? 0);
+  if (restoreQty <= 0) throw new Error('No paused quantity to restore — edit listing quantity');
+
+  delete meta.paused;
+  delete meta.paused_quantity;
+
+  const { error } = await supabase
+    .from('products')
+    .update({ quantity: restoreQty, description: JSON.stringify(meta) })
+    .eq('id', productId)
+    .eq('seller_id', farmerId);
+
+  if (error) throw error;
+}
+
 export async function fetchBuyerOrders(buyerId: string): Promise<OrderWithItems[]> {
   const { data: orders, error } = await supabase
     .from('orders')

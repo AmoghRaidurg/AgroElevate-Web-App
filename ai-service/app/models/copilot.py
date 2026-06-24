@@ -24,6 +24,8 @@ def _detect_intent(message: str) -> str:
         return "acres"
     if "season" in m or "kharif" in m or "rabi" in m or "zaid" in m:
         return "season_info"
+    if "weather" in m or "rain" in m or "temperature" in m:
+        return "weather"
     return "general"
 
 
@@ -55,12 +57,85 @@ def run_copilot(
         season = "zaid"
 
     intent = _detect_intent(message)
-    recommendations = recommend_crops(data, user_id, role, ctx.get("location", parsed_loc.raw), month)
+    recommendations = recommend_crops(data, user_id, role, ctx.get("location", parsed_loc.raw), month) if role == "farmer" else []
     demand = generate_demand_intelligence(data)
 
     reply_parts: list[str] = []
     suggestions: list[str] = []
     data_cards: list[dict] = []
+
+    weather = ctx.get("weather")
+    if weather and weather.get("temperature_c") is not None:
+        if intent == "weather" or "weather" in message.lower() or "rain" in message.lower():
+            reply_parts.append(
+                f"🌤️ **{parsed_loc.district or parsed_loc.state}**: {weather['temperature_c']}°C, "
+                f"precipitation {weather.get('precipitation_mm', 0)} mm, rain chance {weather.get('rain_probability_pct', 0)}%. "
+                f"{weather.get('farming_note', '')}"
+            )
+            suggestions.append("What should I grow this season?")
+
+    active_products = ctx.get("active_products") or []
+    if active_products and any(k in message.lower() for k in ("market", "available", "listing", "buy", "price")):
+        lines = [f"  • {p['name']} — ₹{p['price']}/kg ({p['qty']:.0f} kg available)" for p in active_products[:5]]
+        reply_parts.append("🛒 **Live marketplace:**\n" + "\n".join(lines))
+
+    district = ctx.get("district_analytics")
+    if district and district.get("top_crops") and (intent == "location" or "district" in message.lower()):
+        crops = ", ".join(c["crop_name"] for c in district["top_crops"][:3])
+        conf = int((district.get("data_confidence") or 0.3) * 100)
+        reply_parts.append(
+            f"📊 **{district.get('district') or district.get('state')}** — {district.get('active_listings', 0)} active listings. "
+            f"Top crops: {crops}. (confidence {conf}%)"
+        )
+
+    seasonal = ctx.get("seasonal")
+    if seasonal and intent == "season_info":
+        crops = ", ".join(c["crop_name"] for c in seasonal.get("recommended_crops", [])[:4])
+        reply_parts.append(f"📅 **{seasonal.get('season', season).upper()}** season (month {seasonal.get('month', month)}): strong crops include {crops}.")
+
+    if ctx.get("marketplace_insufficient") and role == "farmer" and intent in ("general", "grow_recommendation"):
+        reply_parts.append(
+            "ℹ️ Marketplace activity is still limited — recommendations blend regional baselines with live listings. "
+            "Confidence improves as more trades occur on AgroElevate."
+        )
+
+    if role in ("middleman", "trader"):
+        purchase_items = data.get("order_items")
+        if purchase_items is not None and not getattr(purchase_items, "empty", True):
+            try:
+                orders_df = data.get("orders")
+                if orders_df is not None and not orders_df.empty:
+                    buyer_orders = orders_df[orders_df["buyer_id"].astype(str) == str(user_id)]
+                    if not buyer_orders.empty:
+                        qty = float(purchase_items[purchase_items["order_id"].isin(buyer_orders["order_id"])]["quantity"].sum())
+                        reply_parts.append(f"📦 Your procurement volume on AgroElevate: **{qty:.0f} kg** across recent orders.")
+            except Exception:
+                pass
+        if "royalty" in message.lower() or "margin" in message.lower():
+            reply_parts.append("💡 On resale to industrialists, **12.5% royalty** is remitted to the original farmer automatically at checkout.")
+        suggestions.extend(["Which crops have highest demand?", "Best buy opportunities?"])
+
+    if role == "industrialist":
+        if "royalty" in message.lower() or "farmer" in message.lower():
+            reply_parts.append("🏭 Processed product sales trigger **12.5% deferred royalty** to the original farmer. Procurement from farmers creates manufacturing batches.")
+        if "batch" in message.lower() or "manufactur" in message.lower():
+            reply_parts.append("Complete manufacturing batches from your dashboard, then list processed goods on the marketplace.")
+        suggestions.extend(["Supplier analytics", "Cost forecast"])
+
+    if role == "customer":
+        reply_parts.append("🛒 As a customer you can browse the marketplace and purchase produce with your wallet — no royalty obligations apply.")
+        suggestions.extend(["How do I add wallet funds?", "Browse marketplace tips"])
+        return {
+            "reply": "\n\n".join(reply_parts) if reply_parts else "Browse /marketplace to shop fresh produce. Top up your wallet via Razorpay before checkout.",
+            "intent": intent,
+            "context": ctx,
+            "location": {"state": parsed_loc.state, "district": parsed_loc.district, "region": parsed_loc.region},
+            "season": season,
+            "recommendations": [],
+            "demand_snapshot": demand[:5],
+            "suggestions": suggestions[:4],
+            "model_version": MODEL_VERSION,
+        }
 
     if intent == "location" or parsed_loc.district:
         reply_parts.append(
@@ -75,9 +150,11 @@ def run_copilot(
             f"🌾 For **{season.upper()}** season in {parsed_loc.state}, I recommend:"
         )
         for r in top:
+            expl = r.get("explanation", "")
             reply_parts.append(
                 f"  • **{r['crop_name']}** — suitability {r['suitability_score']*100:.0f}%, "
                 f"profit score {r['profitability_score']*100:.0f}%, risk {r['risk_score']*100:.0f}%"
+                + (f"\n    _{expl}_" if expl else "")
             )
             data_cards.append(r)
         suggestions.extend(["Which crop has lowest risk?", "Which crop gives highest profit?"])

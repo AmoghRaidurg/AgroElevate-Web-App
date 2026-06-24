@@ -27,7 +27,7 @@ export default function AppLayout() {
               <div className="absolute bottom-0 right-0 w-[500px] h-[300px] bg-accent/8 blur-[100px] rounded-full pointer-events-none" />
             </>
           )}
-          <div className={cn('container mx-auto px-4 md:px-6 py-6 md:py-8 max-w-7xl relative z-10', isIntelligence && 'pb-12')}>
+          <div className={cn('container mx-auto px-4 md:px-6 py-6 md:py-8 max-w-7xl relative z-10 page-enter', isIntelligence && 'pb-12')}>
             <Outlet />
           </div>
         </main>

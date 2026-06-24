@@ -15,8 +15,10 @@ import { loadTraderInventory, relistTraderInventoryItem, type TraderInventoryIte
 import { PageHeader } from '@/components/layout/PageHeader';
 import { ProductCard, getProductImage } from '@/components/marketplace/ProductCard';
 import { MarketplaceFilters } from '@/components/marketplace/MarketplaceFilters';
+import { FarmerMyListings } from '@/components/marketplace/FarmerMyListings';
 import { CartSheet } from '@/components/marketplace/CartSheet';
 import { DashboardSkeleton } from '@/components/design/skeletons';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface Product {
   id: string;
@@ -45,6 +47,7 @@ export default function Marketplace() {
   const [relistQty, setRelistQty] = useState('');
   const [relistPrice, setRelistPrice] = useState('');
   const [relistSubmitting, setRelistSubmitting] = useState(false);
+  const [farmerView, setFarmerView] = useState<'browse' | 'my-listings'>('browse');
 
   const isFarmer = profile?.role === 'farmer';
   const isTrader = profile?.role === 'middleman';
@@ -238,19 +241,51 @@ export default function Marketplace() {
             <MarketplaceFilters query={query} onQueryChange={setQuery} cropFilter={cropFilter} onCropFilterChange={setCropFilter}
               sortBy={sortBy} onSortChange={setSortBy} cropTypes={cropTypes} resultCount={filteredProducts.length} />
           </div>
-          <div className="lg:col-span-3 grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
-            {filteredProducts.map((p) => {
-              let isRelisted = false;
-              try { if (p.description) isRelisted = !!JSON.parse(p.description).original_farmer_id; } catch { /* */ }
-              const cartItem = cart.find((c) => c.id === p.id);
-              return (
-                <ProductCard key={p.id}
-                  product={{ ...p, imageUrl: getProductImage(p.name), isRelisted }}
-                  cartQty={cartItem?.qty} canPurchase={canPurchase} showRoyaltyNote={isIndustrialist}
-                  onAdd={() => addToCart(p.id)} onChangeQty={(d) => changeQty(p.id, d)} maxQty={p.quantity}
-                />
-              );
-            })}
+          <div className="lg:col-span-3">
+            {isFarmer ? (
+              <Tabs value={farmerView} onValueChange={(v) => setFarmerView(v as 'browse' | 'my-listings')} className="space-y-4">
+                <TabsList>
+                  <TabsTrigger value="browse">Browse marketplace</TabsTrigger>
+                  <TabsTrigger value="my-listings">My listings</TabsTrigger>
+                </TabsList>
+                <TabsContent value="browse" className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4 mt-0">
+                  {filteredProducts.length === 0 ? (
+                    <p className="col-span-full text-sm text-muted-foreground py-12 text-center">No other sellers&apos; listings match your filters.</p>
+                  ) : filteredProducts.map((p) => {
+                    let isRelisted = false;
+                    try { if (p.description) isRelisted = !!JSON.parse(p.description).original_farmer_id; } catch { /* */ }
+                    const cartItem = cart.find((c) => c.id === p.id);
+                    return (
+                      <ProductCard key={p.id}
+                        product={{ ...p, imageUrl: getProductImage(p.name), isRelisted }}
+                        cartQty={cartItem?.qty} canPurchase={canPurchase} showRoyaltyNote={isIndustrialist}
+                        onAdd={() => addToCart(p.id)} onChangeQty={(d) => changeQty(p.id, d)} maxQty={p.quantity}
+                      />
+                    );
+                  })}
+                </TabsContent>
+                <TabsContent value="my-listings" className="mt-0">
+                  {session?.user.id && (
+                    <FarmerMyListings farmerId={session.user.id} onChanged={loadData} />
+                  )}
+                </TabsContent>
+              </Tabs>
+            ) : (
+              <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                {filteredProducts.map((p) => {
+                  let isRelisted = false;
+                  try { if (p.description) isRelisted = !!JSON.parse(p.description).original_farmer_id; } catch { /* */ }
+                  const cartItem = cart.find((c) => c.id === p.id);
+                  return (
+                    <ProductCard key={p.id}
+                      product={{ ...p, imageUrl: getProductImage(p.name), isRelisted }}
+                      cartQty={cartItem?.qty} canPurchase={canPurchase} showRoyaltyNote={isIndustrialist}
+                      onAdd={() => addToCart(p.id)} onChangeQty={(d) => changeQty(p.id, d)} maxQty={p.quantity}
+                    />
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       )}

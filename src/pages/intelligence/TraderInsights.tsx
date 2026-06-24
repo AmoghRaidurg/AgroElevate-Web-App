@@ -10,6 +10,7 @@ import { IntelligencePanel } from '@/components/intelligence/IntelligencePanel';
 import { TrendBadge, ConfidenceBar } from '@/components/intelligence/IntelligenceMetrics';
 import { ChartCard } from '@/components/design/ChartCard';
 import { ThemedChart, CHART_COLORS } from '@/components/design/ThemedChart';
+import { AiStatusBanner } from '@/components/intelligence/AiStatusBanner';
 import { AlertTriangle, ShoppingCart, TrendingUp, Package } from 'lucide-react';
 
 export default function TraderInsights() {
@@ -52,9 +53,14 @@ export default function TraderInsights() {
           { label: 'Buy Opportunities', value: t.best_buy_opportunities?.length ?? 0 },
         ] : []}
       />
-      <IntelligenceShell loading={loading} error={error}>
-        {data && t && (
+      <IntelligenceShell loading={loading} error={error} onRetry={load} fallback={data?._fallback}>
+        {data && (
           <div className="space-y-8">
+            <AiStatusBanner />
+            {!t || data._fallback ? (
+              <InsufficientDataPanel description="Trader intelligence requires AI service connectivity and marketplace activity." />
+            ) : (
+            <>
             <div className="grid lg:grid-cols-2 gap-6">
               <IntelligencePanel title="Best Buy Opportunities" icon={ShoppingCart} description="AI-ranked procurement windows">
                 <div className="space-y-3">
@@ -123,6 +129,8 @@ export default function TraderInsights() {
             </IntelligencePanel>
 
             <InsightFeed insights={data.insights ?? []} />
+            </>
+            )}
           </div>
         )}
       </IntelligenceShell>

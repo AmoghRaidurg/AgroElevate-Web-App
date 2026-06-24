@@ -10,7 +10,10 @@ import { loadProjectEnv } from './load-env.mjs';
 loadProjectEnv(import.meta.url);
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const migration = resolve(root, 'supabase/migrations/production/20250625100015_prod_commerce_e2e_fix_v2.sql');
+const migration = resolve(
+  root,
+  process.argv[2] || 'supabase/migrations/production/20250625100016_phase_g_razorpay_wallet.sql',
+);
 const dbUrl = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL;
 
 if (dbUrl) {

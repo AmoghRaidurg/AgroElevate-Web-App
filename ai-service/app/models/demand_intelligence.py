@@ -9,10 +9,16 @@ from app.config import MODEL_VERSION
 
 
 def _role_activity(items: pd.DataFrame, orders: pd.DataFrame, crop: str, role: str) -> float:
-    if items.empty or orders.empty or "crop_name" not in items.columns:
+    if items.empty or "crop_name" not in items.columns:
         return 0.0
     crop_lower = crop.lower()
-    merged = items.merge(orders[["order_id", "buyer_role"]], on="order_id", how="left")
+    merged = items
+    if "buyer_role" not in merged.columns:
+        if orders.empty or "buyer_role" not in orders.columns:
+            return 0.0
+        merged = items.merge(orders[["order_id", "buyer_role"]], on="order_id", how="left")
+    if "buyer_role" not in merged.columns:
+        return 0.0
     rows = merged[merged["crop_name"].str.lower() == crop_lower]
     rows = rows[rows["buyer_role"] == role]
     return float(rows["quantity"].sum()) if len(rows) else 0.0
@@ -57,19 +63,29 @@ def generate_demand_intelligence(data: dict) -> list[dict]:
         projected_price = float(max(1, price_reg.predict([[trader_qty + ind_qty]])[0]))
 
         activity_total = trader_qty + ind_qty + farmer_qty
+        insufficient = activity_total < 10 and row["marketplace_orders"] < 2
         confidence = float(np.clip(
             0.45 + min(activity_total / 200, 0.25) + row["marketplace_orders"] * 0.03,
             0.42, 0.94
         ))
+        if insufficient:
+            confidence = min(confidence, 0.25)
+
+        price_confidence = float(np.clip(
+            confidence * (0.9 if row["marketplace_orders"] >= 2 else 0.5),
+            0.15, 0.92
+        ))
 
         results.append({
             "crop_name": crop,
-            "demand_score": round(projected_demand, 2),
+            "demand_score": round(projected_demand, 2) if not insufficient else round(demand, 2),
             "demand_trend": "rising" if demand_delta > 3 else "falling" if demand_delta < -3 else "stable",
-            "price_trend": _price_trend(price, vol, demand_delta),
+            "price_trend": _price_trend(price, vol, demand_delta) if not insufficient else "stable",
             "current_price": round(price, 2),
-            "projected_price": round(projected_price, 2),
+            "projected_price": round(projected_price, 2) if not insufficient else round(price, 2),
             "market_confidence": round(confidence, 4),
+            "price_confidence": round(price_confidence, 4),
+            "insufficient_data": insufficient,
             "trader_activity_kg": round(trader_qty, 1),
             "industrialist_activity_kg": round(ind_qty, 1),
             "marketplace_volume_kg": round(farmer_qty, 1),

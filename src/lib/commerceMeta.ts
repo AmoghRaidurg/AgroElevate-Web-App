@@ -94,6 +94,7 @@ export function buildRelistMeta(
 
 export type WalletHistoryType =
   | 'deposit'
+  | 'demo_credit'
   | 'withdrawal'
   | 'purchase'
   | 'sale_income'
@@ -105,6 +106,7 @@ export type WalletHistoryType =
 
 export const WALLET_TYPE_LABELS: Record<WalletHistoryType, string> = {
   deposit: 'Deposit',
+  demo_credit: 'Demo Credit',
   withdrawal: 'Withdrawal',
   purchase: 'Purchase',
   sale_income: 'Sale Income',

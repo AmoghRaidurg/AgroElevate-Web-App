@@ -9,6 +9,8 @@ export interface WalletTransaction {
   description?: string;
   created_at: string;
   order_id?: string;
+  reference_type?: string | null;
+  reference_id?: string | null;
 }
 
 export interface WalletInfo {
@@ -35,7 +37,7 @@ export async function getWalletInfo(userId: string): Promise<WalletInfo> {
 
   const { data: history, error: txError } = await supabase
     .from('wallet_history')
-    .select('id, type, amount, description, createdAt, orderId')
+    .select('id, type, amount, description, createdAt, orderId, reference_type, reference_id')
     .eq('userId', userId)
     .order('createdAt', { ascending: false });
 
@@ -57,15 +59,17 @@ export async function getWalletInfo(userId: string): Promise<WalletInfo> {
       description: row.description ?? undefined,
       created_at: row.createdAt,
       order_id: row.orderId ?? undefined,
+      reference_type: row.reference_type,
+      reference_id: row.reference_id,
     };
   });
 
   return { balance: Number(balanceData ?? 0), transactions };
 }
 
-export async function addFunds(_userId: string, amount: number) {
-  const { error } = await supabase.rpc('add_funds', { p_amount: amount });
-  if (error) throw error;
+/** @deprecated Use Razorpay top-up via razorpayWallet.ts */
+export async function addFunds(_userId: string, _amount: number) {
+  throw new Error('Direct wallet credits are disabled. Use Razorpay wallet top-up.');
 }
 
 export async function transferFunds(receiverId: string, amount: number) {

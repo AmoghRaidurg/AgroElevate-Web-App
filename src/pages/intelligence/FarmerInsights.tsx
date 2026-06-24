@@ -11,8 +11,10 @@ import { IntelligencePanel } from '@/components/intelligence/IntelligencePanel';
 import { CopilotPanel } from '@/components/intelligence/CopilotPanel';
 import { TrendBadge, ConfidenceBar, RiskIndicator, MetricPill } from '@/components/intelligence/IntelligenceMetrics';
 import { ChartCard } from '@/components/design/ChartCard';
-import { ThemedChart, CHART_COLORS } from '@/components/design/ThemedChart';
-import { MapPin, Sprout } from 'lucide-react';
+import { ThemedChart, CHART_COLORS, chartTooltipStyle } from '@/components/design/ThemedChart';
+import { InsufficientDataPanel } from '@/components/intelligence/InsufficientDataPanel';
+import { AiStatusBanner } from '@/components/intelligence/AiStatusBanner';
+import { MapPin, Sprout, Cloud } from 'lucide-react';
 
 export default function FarmerInsights() {
   const { session, profile } = useAuth();
@@ -81,9 +83,16 @@ export default function FarmerInsights() {
         )}
       </IntelligenceHero>
 
-      <IntelligenceShell loading={loading} error={error}>
+      <IntelligenceShell loading={loading} error={error} onRetry={load} fallback={data?._fallback}>
         {data && session && (
           <div className="space-y-8">
+            <AiStatusBanner />
+            {data.weather && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground rounded-lg border border-border/50 bg-muted/20 px-4 py-2">
+                <Cloud className="h-4 w-4 text-accent" />
+                {data.weather.temperature_c}°C · rain {data.weather.rain_probability_pct}% — {data.weather.farming_note}
+              </div>
+            )}
             <div className="grid lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 space-y-6">
                 <IntelligencePanel title="Top 5 Crop Recommendations" icon={Sprout}>
@@ -104,6 +113,9 @@ export default function FarmerInsights() {
                           <ConfidenceBar value={r.profitability_score ?? 0.5} label="Profitability" />
                           <RiskIndicator score={r.risk_score} />
                         </div>
+                        {r.explanation && (
+                          <p className="text-xs text-muted-foreground mt-3 leading-relaxed border-t border-border/30 pt-2">{r.explanation}</p>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -128,6 +140,10 @@ export default function FarmerInsights() {
             </div>
 
             <ChartCard title="Income Forecast — 3 Scenarios" description="Optimistic, realistic & conservative projections" variant="intelligence">
+              {data.income_insufficient_data ? (
+                <InsufficientDataPanel />
+              ) : (
+              <>
               <Tabs defaultValue="chart">
                 <TabsList className="mb-4">
                   <TabsTrigger value="chart">Chart</TabsTrigger>
@@ -139,7 +155,7 @@ export default function FarmerInsights() {
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 14% 18%)" />
                       <XAxis dataKey="horizon" tick={{ fill: 'hsl(215 15% 58%)', fontSize: 11 }} />
                       <YAxis tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} tick={{ fill: 'hsl(215 15% 58%)', fontSize: 11 }} />
-                      <Tooltip formatter={(v: number) => `₹${v.toLocaleString()}`} contentStyle={{ background: 'hsl(220 16% 11%)', border: '1px solid hsl(220 14% 18%)', borderRadius: 8 }} />
+                      <Tooltip formatter={(v: number) => `₹${v.toLocaleString()}`} contentStyle={chartTooltipStyle} />
                       <Legend />
                       <Line type="monotone" dataKey="optimistic" stroke={CHART_COLORS.primary} strokeWidth={2} name="Optimistic" />
                       <Line type="monotone" dataKey="realistic" stroke={CHART_COLORS.accent} strokeWidth={3} name="Realistic" />
@@ -174,18 +190,24 @@ export default function FarmerInsights() {
                   Baseline ₹{realistic[0].baseline_revenue.toLocaleString()}
                 </p>
               )}
+              </>
+              )}
             </ChartCard>
 
             <ChartCard title="Demand Score Overview" variant="intelligence">
+              {data.demand_insufficient_data ? (
+                <InsufficientDataPanel compact title="Limited marketplace activity" description="Demand scores improve as more trades occur on the platform." />
+              ) : (
               <ThemedChart height={260}>
                 <BarChart data={demandData.slice(0, 10)}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 14% 18%)" />
                   <XAxis dataKey="crop_name" tick={{ fill: 'hsl(215 15% 58%)', fontSize: 10 }} />
                   <YAxis tick={{ fill: 'hsl(215 15% 58%)', fontSize: 11 }} />
-                  <Tooltip contentStyle={{ background: 'hsl(220 16% 11%)', border: '1px solid hsl(220 14% 18%)', borderRadius: 8 }} />
+                  <Tooltip contentStyle={chartTooltipStyle} />
                   <Bar dataKey="demand_score" fill={CHART_COLORS.primary} radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ThemedChart>
+              )}
             </ChartCard>
 
             <InsightFeed insights={data.insights ?? []} />

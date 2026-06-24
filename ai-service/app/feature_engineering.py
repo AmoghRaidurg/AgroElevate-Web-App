@@ -39,10 +39,13 @@ def build_crop_demand_features(data: dict) -> pd.DataFrame:
         listing_price = float(prod_rows["price_per_unit"].mean()) if len(prod_rows) else base_price
 
         trader_qty = ind_qty = 0.0
-        if not item_rows.empty and not orders.empty and "order_id" in item_rows.columns:
-            merged = item_rows.merge(orders[["order_id", "buyer_role"]], on="order_id", how="left")
-            trader_qty = float(merged[merged["buyer_role"] == "middleman"]["quantity"].sum())
-            ind_qty = float(merged[merged["buyer_role"] == "industrialist"]["quantity"].sum())
+        if not item_rows.empty and "order_id" in item_rows.columns:
+            merged = item_rows
+            if "buyer_role" not in merged.columns and not orders.empty and "buyer_role" in orders.columns:
+                merged = item_rows.merge(orders[["order_id", "buyer_role"]], on="order_id", how="left")
+            if "buyer_role" in merged.columns:
+                trader_qty = float(merged[merged["buyer_role"] == "middleman"]["quantity"].sum())
+                ind_qty = float(merged[merged["buyer_role"] == "industrialist"]["quantity"].sum())
 
         demand_boost = min(35, marketplace_qty / 8 + marketplace_orders * 2 + trader_qty / 15 + ind_qty / 20)
         demand_score = min(100, base_demand + demand_boost)
@@ -66,12 +69,12 @@ def build_crop_demand_features(data: dict) -> pd.DataFrame:
 
 def build_user_revenue_baseline(items_df: pd.DataFrame, role: str) -> float:
     if items_df.empty:
-        return 120_000.0
+        return 0.0
     if role == "farmer":
-        return float(items_df["total_price"].sum()) if "total_price" in items_df.columns else 0
+        return float(items_df["total_price"].sum()) if "total_price" in items_df.columns else 0.0
     if role in ("middleman", "industrialist"):
-        return float(items_df["total_price"].sum()) * 0.15
-    return float(items_df["total_price"].sum())
+        return float(items_df["total_price"].sum()) * 0.15 if "total_price" in items_df.columns else 0.0
+    return float(items_df["total_price"].sum()) if "total_price" in items_df.columns else 0.0
 
 
 def season_suitability(crop: str, season: str, synthetic: pd.DataFrame) -> float:

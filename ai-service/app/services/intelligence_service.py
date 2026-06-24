@@ -12,6 +12,8 @@ from app.models.insight_generator import generate_insights
 from app.models.trader_intel import trader_intelligence
 from app.models.industrialist_intel import industrialist_intelligence
 from app.models.copilot import run_copilot
+from app.analytics import district_analytics, seasonal_analytics, historical_trends, marketplace_has_sufficient_data
+from app.weather import fetch_weather_summary
 from app.persistence import (
     persist_recommendations,
     persist_income_forecasts,
@@ -49,6 +51,9 @@ def refresh_intelligence(user_id: str, role: str, location: str | None = None, m
     market_preds = predict_markets(data, region=parsed.region)
     demand_intel = generate_demand_intelligence(data)
     income = forecast_income(data, user_id, role, user_items)
+    income_insufficient = bool(income and income[0].get("insufficient_data"))
+    demand_insufficient = all(d.get("insufficient_data") for d in demand_intel) if demand_intel else True
+    mkt_sufficient = marketplace_has_sufficient_data(data)
     insights = generate_insights(user_id, role, recommendations, market_preds, income)
 
     persist_recommendations(recommendations)
@@ -69,6 +74,13 @@ def refresh_intelligence(user_id: str, role: str, location: str | None = None, m
         "demand_intelligence": demand_intel,
         "income_forecasts": income,
         "income_scenarios": _group_income_scenarios(income),
+        "income_insufficient_data": income_insufficient,
+        "demand_insufficient_data": demand_insufficient or not mkt_sufficient,
+        "marketplace_insufficient_data": not mkt_sufficient,
+        "district_analytics": district_analytics(data, loc),
+        "seasonal_analytics": seasonal_analytics(month),
+        "historical_trends": historical_trends(data),
+        "weather": fetch_weather_summary(loc),
         "insights": insights,
     }
 
@@ -116,4 +128,27 @@ def copilot_chat(user_id: str, message: str, role: str = "farmer", location: str
     data = load_marketplace_data()
     profile = load_user_profile(user_id)
     loc = location or profile.get("address")
-    return run_copilot(message, data, user_id, role, loc, context)
+    parsed_loc = parse_location(loc or "India")
+    weather = fetch_weather_summary(loc or "India")
+    district = district_analytics(data, loc or "India")
+    seasonal = seasonal_analytics()
+    products = data.get("products")
+    active_products = []
+    if products is not None and not getattr(products, "empty", True):
+        for _, p in products.head(8).iterrows():
+            active_products.append({
+                "name": p.get("name", p.get("crop_type", "Product")),
+                "crop_type": p.get("crop_type", ""),
+                "price": float(p.get("price_per_unit", 0)),
+                "qty": float(p.get("quantity", 0)),
+            })
+    enriched_context = {
+        **(context or {}),
+        "weather": weather,
+        "district_analytics": district,
+        "seasonal": seasonal,
+        "active_products": active_products,
+        "marketplace_insufficient": not marketplace_has_sufficient_data(data),
+        "geo": {"state": parsed_loc.state, "district": parsed_loc.district},
+    }
+    return run_copilot(message, data, user_id, role, loc, enriched_context)

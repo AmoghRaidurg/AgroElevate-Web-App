@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import {
-  LayoutDashboard, Store, Package, Brain, Wallet, Shield, Menu, Sparkles,
+  LayoutDashboard, Store, Package, Brain, Wallet, Shield, Menu, Sparkles, CreditCard,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
@@ -20,12 +20,20 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   const location = useLocation();
   const { profile } = useAuth();
   const isAdmin = profile?.role === 'admin';
-  const links = isAdmin ? [...navItems, { to: '/admin', label: 'Admin', icon: Shield, flagship: false }] : navItems;
+  const links = isAdmin
+    ? [
+        ...navItems,
+        { to: '/admin', label: 'Admin', icon: Shield, flagship: false },
+        { to: '/admin/payments', label: 'Payments', icon: CreditCard, flagship: false },
+      ]
+    : navItems;
 
   return (
     <nav className="flex flex-col gap-1 p-3">
       {links.map(({ to, label, icon: Icon, flagship }) => {
-        const active = location.pathname === to || location.pathname.startsWith(`${to}/`);
+        const active = to === '/admin'
+          ? location.pathname === '/admin'
+          : location.pathname === to || location.pathname.startsWith(`${to}/`);
         return (
           <Link
             key={to}

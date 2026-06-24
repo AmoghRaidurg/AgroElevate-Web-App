@@ -22,7 +22,10 @@ def persist_recommendations(rows: list[dict]) -> None:
         return
     user_id = rows[0]["user_id"]
     _delete_user_rows("ai_crop_recommendations", user_id)
-    sb.table("ai_crop_recommendations").insert(rows).execute()
+    try:
+        sb.table("ai_crop_recommendations").insert(rows).execute()
+    except Exception as exc:
+        print(f"Persist recommendations warning: {exc}")
 
 
 def persist_income_forecasts(rows: list[dict]) -> None:
@@ -33,7 +36,10 @@ def persist_income_forecasts(rows: list[dict]) -> None:
         return
     user_id = rows[0]["user_id"]
     _delete_user_rows("ai_income_forecasts", user_id)
-    sb.table("ai_income_forecasts").insert(rows).execute()
+    try:
+        sb.table("ai_income_forecasts").insert(rows).execute()
+    except Exception as exc:
+        print(f"Persist income forecasts warning: {exc}")
 
 
 def persist_market_predictions(rows: list[dict]) -> None:
@@ -47,7 +53,10 @@ def persist_market_predictions(rows: list[dict]) -> None:
         sb.table("ai_market_predictions").delete().eq("prediction_month", month).execute()
     except Exception as exc:
         print(f"Delete market predictions warning: {exc}")
-    sb.table("ai_market_predictions").insert(rows).execute()
+    try:
+        sb.table("ai_market_predictions").insert(rows).execute()
+    except Exception as exc:
+        print(f"Persist market predictions warning: {exc}")
 
 
 def persist_insights(rows: list[dict]) -> None:
@@ -58,4 +67,7 @@ def persist_insights(rows: list[dict]) -> None:
         return
     user_id = rows[0]["user_id"]
     _delete_user_rows("ai_user_insights", user_id)
-    sb.table("ai_user_insights").insert(rows).execute()
+    try:
+        sb.table("ai_user_insights").insert(rows).execute()
+    except Exception as exc:
+        print(f"Persist insights warning: {exc}")

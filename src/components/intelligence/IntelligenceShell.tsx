@@ -1,33 +1,42 @@
 import { AlertCircle, Sparkles } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import type { ReactNode } from 'react';
+import { Badge } from '@/components/ui/badge';
 import { DashboardSkeleton } from '@/components/design/skeletons';
 import { GlassCard } from '@/components/design/GlassCard';
+import { Button } from '@/components/ui/button';
+import { getAiBaseUrl } from '@/lib/aiApi';
 
 interface Props {
   loading: boolean;
   error: string | null;
   children: ReactNode;
+  onRetry?: () => void;
+  fallback?: boolean;
 }
 
-export function IntelligenceShell({ loading, error, children }: Props) {
+export function IntelligenceShell({ loading, error, children, onRetry, fallback }: Props) {
   return (
     <div className="space-y-6">
-      {error && (
-        <GlassCard variant="elevated" className="border-destructive/40">
+      {(error || fallback) && (
+        <GlassCard variant="elevated" className="border-amber-500/30">
           <div className="flex items-start gap-3">
-            <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
-            <div>
-              <p className="font-medium text-destructive">AI service unavailable</p>
-              <p className="text-sm text-muted-foreground mt-1">{error}</p>
-              <p className="text-xs text-muted-foreground mt-2">
-                Start: cd ai-service && uvicorn app.main:app --reload --port 8000
+            <AlertCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="font-medium">{error ? 'Could not refresh intelligence' : 'Limited intelligence data'}</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                {error ?? 'AI service returned offline fallback. Marketplace, wallet, and orders remain fully available.'}
               </p>
+              <p className="text-xs text-muted-foreground mt-2 font-mono">{getAiBaseUrl()}</p>
+              {onRetry && (
+                <Button variant="outline" size="sm" className="mt-3" onClick={onRetry}>
+                  Retry
+                </Button>
+              )}
             </div>
           </div>
         </GlassCard>
       )}
-      {loading && !error ? <DashboardSkeleton /> : children}
+      {loading && !children ? <DashboardSkeleton /> : children}
     </div>
   );
 }

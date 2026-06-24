@@ -16,6 +16,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { loadProjectEnv } from './load-env.mjs';
+import { createAdminClient, simulateWalletDeposit } from './commerce-payment-simulate.mjs';
 
 loadProjectEnv(import.meta.url, { debug: true });
 
@@ -29,6 +30,7 @@ const FIXED_PREFIX = 'commerce.verify';
 const farmerEmail = process.env.COMMERCE_FARMER_EMAIL || `${FIXED_PREFIX}.farmer@example.com`;
 const traderEmail = process.env.COMMERCE_TRADER_EMAIL || `${FIXED_PREFIX}.trader@example.com`;
 const industrialistEmail = process.env.COMMERCE_IND_EMAIL || `${FIXED_PREFIX}.ind@example.com`;
+const customerEmail = process.env.COMMERCE_CUSTOMER_EMAIL || `${FIXED_PREFIX}.customer@example.com`;
 
 if (!url || !anonKey) {
   console.error('\nMissing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY');
@@ -181,9 +183,26 @@ async function main() {
   if (productErr) fail('Farmer lists product', productErr.message);
   else pass('Farmer lists product', product.id);
 
-  const { error: addErr } = await trader.client.rpc('add_funds', { p_amount: 10000 });
-  if (addErr) fail('add_funds', addErr.message);
-  else pass('add_funds', '₹10000 deposited');
+  if (!serviceRoleKey) {
+    fail('razorpay wallet deposit (simulate)', 'SUPABASE_SERVICE_ROLE_KEY required');
+  } else {
+    try {
+      const admin = createAdminClient(url, serviceRoleKey);
+      const settled = await simulateWalletDeposit(admin, trader.userId, 10000);
+      pass('razorpay wallet deposit (simulate)', `₹10000 · receipt ${settled?.receipt_number ?? 'ok'}`);
+    } catch (e) {
+      fail('razorpay wallet deposit (simulate)', e.message);
+    }
+  }
+
+  const { error: addBlockedErr } = await trader.client.rpc('add_funds', { p_amount: 100 });
+  if (addBlockedErr && /disabled|Razorpay/i.test(addBlockedErr.message)) {
+    pass('add_funds blocked for clients', addBlockedErr.message);
+  } else if (addBlockedErr) {
+    pass('add_funds blocked for clients', addBlockedErr.message);
+  } else {
+    fail('add_funds blocked for clients', 'add_funds still credits wallet');
+  }
 
   const { data: traderBalAfterDeposit, error: balErr } = await trader.client.rpc('get_wallet_balance');
   if (balErr) fail('get_wallet_balance after deposit', balErr.message);
@@ -243,33 +262,51 @@ async function main() {
     if (relistErr) fail('Trader relists product', relistErr.message);
     else pass('Trader relists product', relist.id);
 
-    const { error: indAddErr } = await industrialist.client.rpc('add_funds', { p_amount: 5000 });
-    if (indAddErr) fail('Industrialist add_funds', indAddErr.message);
-    else pass('Industrialist add_funds', '₹5000');
+    if (!serviceRoleKey) {
+      fail('Industrialist razorpay deposit (simulate)', 'SUPABASE_SERVICE_ROLE_KEY required');
+    } else {
+      try {
+        const admin = createAdminClient(url, serviceRoleKey);
+        await simulateWalletDeposit(admin, industrialist.userId, 5000);
+        pass('Industrialist razorpay deposit (simulate)', '₹5000');
+      } catch (e) {
+        fail('Industrialist razorpay deposit (simulate)', e.message);
+      }
+    }
 
     if (relist?.id) {
+      let checkoutOrderId = null;
       const { data: co2, error: co2Err } = await industrialist.client.rpc('checkout_order', {
         cart: [{ id: relist.id, qty: 5 }],
       });
       if (co2Err) fail('checkout_order with royalty', co2Err.message);
-      else pass('checkout_order with royalty', `order=${co2?.order_id}`);
-    }
+      else {
+        checkoutOrderId = co2?.order_id ?? null;
+        pass('checkout_order with royalty', `order=${checkoutOrderId}`);
+      }
 
-    const { data: royalty, error: royErr } = await farmer.client
-      .from('wallet_history')
-      .select('amount, description, type')
-      .eq('userId', farmer.userId)
-      .eq('type', 'royalty_income');
+      const royaltyQuery = farmer.client
+        .from('wallet_history')
+        .select('amount, description, type')
+        .eq('userId', farmer.userId)
+        .eq('type', 'royalty_income');
 
-    if (royErr) fail('royalty transfer wallet_history', royErr.message);
-    else if (!royalty?.length) fail('royalty transfer wallet_history', 'no royalty entries');
-    else {
-      const total = royalty.reduce((s, r) => s + Number(r.amount), 0);
-      const expected = 5 * 70 * 0.125;
-      if (Math.abs(total - expected) > 0.02) {
-        fail('royalty amount', `got ₹${total}, expected ~₹${expected}`);
-      } else {
-        pass('royalty transfer wallet_history', `₹${total} (12.5%)`);
+      if (checkoutOrderId) {
+        royaltyQuery.eq('orderId', checkoutOrderId);
+      }
+
+      const { data: royalty, error: royErr } = await royaltyQuery;
+
+      if (royErr) fail('royalty transfer wallet_history', royErr.message);
+      else if (!royalty?.length) fail('royalty transfer wallet_history', 'no royalty entries for order');
+      else {
+        const total = royalty.reduce((s, r) => s + Number(r.amount), 0);
+        const expected = 5 * 70 * 0.125;
+        if (Math.abs(total - expected) > 0.02) {
+          fail('royalty amount', `got ₹${total}, expected ~₹${expected}`);
+        } else {
+          pass('royalty transfer wallet_history', `₹${total} (12.5%)`);
+        }
       }
     }
   }
@@ -283,6 +320,37 @@ async function main() {
 
   const { data: farmerBalAfterTransfer } = await farmer.client.rpc('get_wallet_balance');
   pass('farmer balance after transfer_funds', `₹${farmerBalAfterTransfer}`);
+
+  // Customer direct purchase (farmer → customer, no royalty)
+  let customer;
+  try {
+    customer = await acquireRole(customerEmail, 'customer', 'Verify Customer');
+    pass('Customer account ready', customer.userId);
+    const ok = await ensureRecords(customer.client, customer.userId);
+    ok ? pass('Customer users row exists') : fail('Customer users row exists', 'missing after ensure');
+    if (serviceRoleKey) {
+      const admin = createAdminClient(url, serviceRoleKey);
+      await simulateWalletDeposit(admin, customer.userId, 3000);
+      pass('Customer razorpay deposit (simulate)', '₹3000');
+    }
+    const { data: custProduct } = await farmer.client.from('products').insert({
+      name: `Verify Customer Wheat ${ts}`,
+      crop_type: 'Grain',
+      price_per_unit: 40,
+      quantity: 20,
+      unit: 'kg',
+      seller_id: farmer.userId,
+    }).select('id').single();
+    if (custProduct?.id) {
+      const { data: coCust, error: coCustErr } = await customer.client.rpc('checkout_order', {
+        cart: [{ id: custProduct.id, qty: 2 }],
+      });
+      if (coCustErr) fail('checkout_order (farmer→customer)', coCustErr.message);
+      else pass('checkout_order (farmer→customer)', `order=${coCust?.order_id}`);
+    }
+  } catch (e) {
+    fail('Customer flow', e.message);
+  }
 
   printSummary();
 }

@@ -11,12 +11,16 @@ import GuestRoute from '@/components/auth/GuestRoute';
 import { signUpWithEmail, ensureUserRecords } from '@/lib/auth';
 import { toast } from 'sonner';
 import { GlassCard } from '@/components/design/GlassCard';
-import { Sprout, Store, Factory } from 'lucide-react';
+import { Sprout, Store, Factory, ShoppingBag } from 'lucide-react';
 
 const schema = z.object({
   name: z.string().min(2), email: z.string().email(), password: z.string().min(6),
-  role: z.enum(['farmer', 'middleman', 'industrialist']),
-  address: z.string().min(3), phone: z.string().min(6), bankAccount: z.string().min(4),
+  role: z.enum(['farmer', 'middleman', 'industrialist', 'customer']),
+  address: z.string().min(3), phone: z.string().min(6),
+  bankAccount: z.string().optional(),
+}).refine((d) => d.role === 'customer' || (d.bankAccount && d.bankAccount.length >= 4), {
+  message: 'Bank account required for business roles',
+  path: ['bankAccount'],
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -24,11 +28,12 @@ const roleOptions = [
   { value: 'farmer', label: 'Farmer', icon: Sprout },
   { value: 'middleman', label: 'Trader', icon: Store },
   { value: 'industrialist', label: 'Industrialist', icon: Factory },
+  { value: 'customer', label: 'Customer', icon: ShoppingBag },
 ] as const;
 
 export default function Register() {
   const navigate = useNavigate();
-  const { register, handleSubmit, control, formState: { errors, isSubmitting } } = useForm<FormValues>({
+  const { register, handleSubmit, control, watch, formState: { errors, isSubmitting } } = useForm<FormValues>({
     resolver: zodResolver(schema), defaultValues: { role: 'farmer' },
   });
 
@@ -74,7 +79,7 @@ export default function Register() {
             <div className="sm:col-span-2">
               <Label>Role</Label>
               <Controller name="role" control={control} render={({ field }) => (
-                <RadioGroup value={field.value} onValueChange={field.onChange} className="grid grid-cols-3 gap-2 mt-2">
+                <RadioGroup value={field.value} onValueChange={field.onChange} className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2">
                   {roleOptions.map(({ value, label, icon: Icon }) => (
                     <label key={value} className={`flex flex-col items-center gap-2 p-3 rounded-lg border cursor-pointer transition-colors ${field.value === value ? 'border-primary bg-primary/10' : 'border-border/50 hover:border-border'}`}>
                       <RadioGroupItem value={value} id={value} className="sr-only" />
@@ -87,7 +92,7 @@ export default function Register() {
             </div>
             <div className="sm:col-span-2"><Label>Address</Label><Input {...register('address')} className="bg-muted/30 mt-1" /></div>
             <div><Label>Phone</Label><Input {...register('phone')} className="bg-muted/30 mt-1" /></div>
-            <div><Label>Bank account</Label><Input {...register('bankAccount')} className="bg-muted/30 mt-1" /></div>
+            <div><Label>Bank account {watch('role') === 'customer' ? '(optional)' : ''}</Label><Input {...register('bankAccount')} className="bg-muted/30 mt-1" placeholder={watch('role') === 'customer' ? 'Not required for customers' : undefined} /></div>
             <div className="sm:col-span-2 mt-2">
               <Button type="submit" disabled={isSubmitting} variant="hero" className="w-full">Create account</Button>
               <p className="text-sm text-muted-foreground text-center mt-3">Have an account? <Link to="/login" className="underline text-primary">Log in</Link></p>

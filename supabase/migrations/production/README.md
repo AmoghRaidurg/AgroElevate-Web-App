@@ -27,6 +27,9 @@ These migrations target the **actual production schema** (camelCase `orders`, `o
 10. `20250625100013_phase2_trader_royalty.sql` — role-matrix royalty engine (rules 1–3)
 11. `20250625100014_phase3_manufacturing_royalty.sql` — manufacturing + deferred downstream royalty (rules 4–5)
 12. `20250625100015_prod_commerce_e2e_fix_v2.sql` — read-only wallet balance, cropId FK bridge, RLS recursion fix (**use v2**, not v1)
+13. `20250625100016_phase_g_razorpay_wallet.sql` — Razorpay wallet top-up, receipts, webhook audit
+14. `20250625100017_demo_wallet_credit.sql` — admin-only demo wallet credits (BE demonstrations)
+15. `20250625100018_demo_wallet_credit_custom_amount.sql` — custom demo credit amounts (₹1–₹100000)
 
 **Do NOT apply:** `009`, `010`, `011`, `CUSTOMER_ROLE_PATCH.sql` (superseded by 012–014)
 
