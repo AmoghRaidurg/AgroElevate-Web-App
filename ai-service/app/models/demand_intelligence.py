@@ -62,8 +62,7 @@ def generate_demand_intelligence(data: dict) -> list[dict]:
         projected_price = float(max(1, price_reg.predict([[trader_qty + ind_qty]])[0]))
 
         activity_total = trader_qty + ind_qty + farmer_qty
-        # Sufficient when this crop has any completed marketplace volume or ≥1 order line.
-        insufficient = activity_total < 1 and row["marketplace_orders"] < 1
+        insufficient = activity_total < 10 and row["marketplace_orders"] < 2
         confidence = float(np.clip(
             0.45 + min(activity_total / 200, 0.25) + row["marketplace_orders"] * 0.03,
             0.42, 0.94

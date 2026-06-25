@@ -1,18 +1,24 @@
-"""Industrialist procurement intelligence — Phase C."""
+"""Industrialist procurement intelligence — manufacturing data optional."""
 from __future__ import annotations
 
 import pandas as pd
 from app.feature_engineering import build_crop_demand_features
 from app.models.demand_intelligence import generate_demand_intelligence
+from app.role_commerce import RoleCommerceContext
 from app.config import MODEL_VERSION
 
 
-def industrialist_intelligence(data: dict, user_id: str, user_items, orders_df) -> dict:
+def industrialist_intelligence(data: dict, ctx: RoleCommerceContext) -> dict:
+    procurement_items = ctx.industrialist_procurement_items
+    procurement_orders = ctx.industrialist_procurement_orders
+
     crop_df = build_crop_demand_features(data)
     demand_intel = generate_demand_intelligence(data)
 
     procurement_planning = []
-    for d in demand_intel[:10]:
+    for d in demand_intel:
+        if float(d.get("marketplace_volume_kg") or 0) <= 0 and d.get("insufficient_data"):
+            continue
         monthly_kg = d["demand_score"] * 55 + d["industrialist_activity_kg"] * 0.5
         unit_cost = d["projected_price"] * 1.02
         procurement_planning.append({
@@ -25,9 +31,9 @@ def industrialist_intelligence(data: dict, user_id: str, user_items, orders_df) 
             "priority": "high" if d["demand_score"] > 70 else "medium" if d["demand_score"] > 50 else "low",
         })
 
-    supplier_stats = {}
-    if not user_items.empty and "farmer_id" in user_items.columns:
-        grouped = user_items.groupby("farmer_id").agg(
+    supplier_stats: dict[str, dict] = {}
+    if not procurement_items.empty and "farmer_id" in procurement_items.columns:
+        grouped = procurement_items.groupby("farmer_id").agg(
             total_volume=("quantity", "sum"),
             total_value=("total_price", "sum"),
             order_count=("id", "count"),
@@ -48,27 +54,6 @@ def industrialist_intelligence(data: dict, user_id: str, user_items, orders_df) 
                 "on_time_score": round(on_time_proxy, 4),
                 "quality_score": round(quality_proxy, 4),
             }
-
-    all_items = data["order_items"]
-    if not all_items.empty and "farmer_id" in all_items.columns:
-        global_suppliers = all_items.groupby("farmer_id").agg(
-            volume=("quantity", "sum"),
-            value=("total_price", "sum"),
-            orders=("id", "count"),
-        ).reset_index().nlargest(12, "volume")
-        for _, s in global_suppliers.iterrows():
-            fid = str(s["farmer_id"])
-            if fid not in supplier_stats:
-                supplier_stats[fid] = {
-                    "farmer_id": fid,
-                    "total_volume_kg": round(float(s["volume"]), 2),
-                    "total_value": round(float(s["value"]), 2),
-                    "order_count": int(s["orders"]),
-                    "crops_supplied": [],
-                    "reliability_score": 0.58,
-                    "on_time_score": 0.55,
-                    "quality_score": 0.60,
-                }
 
     supplier_ranking = sorted(
         supplier_stats.values(),
@@ -98,19 +83,22 @@ def industrialist_intelligence(data: dict, user_id: str, user_items, orders_df) 
                 "alert_type": "supply_risk",
             })
 
-    spend = float(orders_df["total_amount"].sum()) if not orders_df.empty and "total_amount" in orders_df.columns else 0
-    annual = spend * 12 if spend else 280_000
+    spend = float(procurement_orders["total_amount"].sum()) if (
+        not procurement_orders.empty and "total_amount" in procurement_orders.columns
+    ) else ctx.industrialist_wallet_spend
+    spend = max(spend, 0.0)
+    annual = spend if spend else 0.0
     cost_forecasting = {
         "current_annual_spend": round(annual, 2),
-        "forecast_1y": round(annual * 1.09, 2),
-        "forecast_3y": round(annual * 1.28, 2),
-        "forecast_5y": round(annual * 1.45, 2),
+        "forecast_1y": round(annual * 1.09, 2) if annual else 0.0,
+        "forecast_3y": round(annual * 1.28, 2) if annual else 0.0,
+        "forecast_5y": round(annual * 1.45, 2) if annual else 0.0,
         "scenarios": {
-            "optimistic": round(annual * 1.05, 2),
-            "realistic": round(annual * 1.09, 2),
-            "conservative": round(annual * 1.15, 2),
+            "optimistic": round(annual * 1.05, 2) if annual else 0.0,
+            "realistic": round(annual * 1.09, 2) if annual else 0.0,
+            "conservative": round(annual * 1.15, 2) if annual else 0.0,
         },
-        "confidence": 0.74,
+        "confidence": 0.74 if annual else 0.15,
     }
 
     demand_planning = []
@@ -132,5 +120,6 @@ def industrialist_intelligence(data: dict, user_id: str, user_items, orders_df) 
         "cost_forecasting": cost_forecasting,
         "future_cost_forecasting": cost_forecasting,
         "demand_planning": demand_planning,
+        "procurement_order_count": int(len(procurement_orders)) if not procurement_orders.empty else 0,
         "model_version": MODEL_VERSION,
     }

@@ -34,11 +34,11 @@ def _has_transaction_history(user_items) -> bool:
         return False
 
 
-def forecast_income(data: dict, user_id: str, role: str, user_items, wallet_baseline: float = 0.0) -> list[dict]:
+def forecast_income(data: dict, user_id: str, role: str, user_items, commerce_baseline: float = 0.0) -> list[dict]:
     has_history = _has_transaction_history(user_items)
     order_baseline = build_user_revenue_baseline(user_items, role) if has_history else 0.0
-    baseline = max(order_baseline, float(wallet_baseline or 0))
-    has_history = has_history or baseline > 0
+    baseline = max(order_baseline, float(commerce_baseline or 0))
+    has_history = baseline > 0
 
     if not has_history or baseline <= 0:
         current_year = datetime.now().year

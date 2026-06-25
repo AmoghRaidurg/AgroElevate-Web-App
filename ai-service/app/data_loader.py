@@ -17,7 +17,7 @@ def _empty_orders() -> pd.DataFrame:
 def _empty_items() -> pd.DataFrame:
     return pd.DataFrame(columns=[
         "id", "order_id", "crop_name", "quantity", "price_per_unit", "total_price",
-        "farmer_id", "original_farmer_id", "created_at",
+        "farmer_id", "original_farmer_id", "seller_id", "created_at",
     ])
 
 
@@ -53,13 +53,14 @@ def load_marketplace_data() -> dict:
                 orders_df = orders_df.rename(columns={"id": "order_id"})
 
             items = sb.table("order_items").select(
-                "id, orderId, cropName, quantity, pricePerUnit, totalPrice, farmerId, originalFarmerId"
+                "id, orderId, cropName, quantity, pricePerUnit, totalPrice, farmerId, originalFarmerId, sellerId"
             ).order("id", desc=True).limit(2000).execute()
             if items.data:
                 items_df = pd.DataFrame(items.data).rename(columns={
                     "orderId": "order_id", "cropName": "crop_name",
                     "pricePerUnit": "price_per_unit", "totalPrice": "total_price",
                     "farmerId": "farmer_id", "originalFarmerId": "original_farmer_id",
+                    "sellerId": "seller_id",
                 })
                 if not orders_df.empty:
                     items_df = items_df.merge(

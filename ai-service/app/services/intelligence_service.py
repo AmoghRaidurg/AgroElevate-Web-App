@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import pandas as pd
-from app.data_loader import load_marketplace_data, load_user_profile, filter_user_items
+from app.data_loader import load_marketplace_data, load_user_profile
 from app.india_geo import parse_location
 from app.models.crop_recommender import recommend_crops
 from app.models.market_predictor import predict_markets
@@ -14,7 +14,13 @@ from app.models.industrialist_intel import industrialist_intelligence
 from app.models.copilot import run_copilot
 from app.analytics import district_analytics, seasonal_analytics, historical_trends, marketplace_has_sufficient_data
 from app.weather import fetch_weather_summary
-from app.wallet_baseline import load_wallet_commerce_revenue
+from app.role_commerce import (
+    build_role_context,
+    scope_data_for_role,
+    role_income_items,
+    role_income_baseline,
+    role_analytics_ready,
+)
 from app.persistence import (
     persist_recommendations,
     persist_income_forecasts,
@@ -28,6 +34,15 @@ def _role_normalize(role: str) -> str:
     return mapping.get(role, role)
 
 
+def _demand_ready(scoped_data: dict, demand_intel: list[dict], ctx) -> bool:
+    if not role_analytics_ready(ctx):
+        return False
+    return any(
+        float(d.get("marketplace_volume_kg") or 0) > 0 or not d.get("insufficient_data")
+        for d in demand_intel
+    )
+
+
 def refresh_intelligence(user_id: str, role: str, location: str | None = None, month: int | None = None) -> dict:
     role = _role_normalize(role)
     profile = load_user_profile(user_id)
@@ -35,32 +50,19 @@ def refresh_intelligence(user_id: str, role: str, location: str | None = None, m
     parsed = parse_location(loc)
 
     data = load_marketplace_data()
-    user_items = filter_user_items(data["order_items"], user_id, role)
+    ctx = build_role_context(user_id, role, data)
+    scoped = scope_data_for_role(data, ctx)
+    income_items = role_income_items(ctx)
+    commerce_baseline = role_income_baseline(ctx)
 
-    if role == "farmer":
-        user_items = data["order_items"]
-        if not user_items.empty and "farmer_id" in user_items.columns:
-            farmer_mask = user_items["farmer_id"].astype(str) == str(user_id)
-            if "original_farmer_id" in user_items.columns:
-                farmer_mask = farmer_mask | (user_items["original_farmer_id"].astype(str) == str(user_id))
-            user_items = user_items[farmer_mask]
+    recommendations = recommend_crops(scoped, user_id, role, loc, month) if role == "farmer" else []
+    market_preds = predict_markets(scoped, region=parsed.region)
+    demand_intel = generate_demand_intelligence(scoped)
+    income = forecast_income(scoped, user_id, role, income_items, commerce_baseline=commerce_baseline)
 
-    wallet_baseline = load_wallet_commerce_revenue(user_id)
-
-    buyer_orders = data["orders"]
-    if not buyer_orders.empty and "buyer_id" in buyer_orders.columns:
-        buyer_orders = buyer_orders[buyer_orders["buyer_id"].astype(str) == str(user_id)]
-    else:
-        buyer_orders = pd.DataFrame()
-
-    recommendations = recommend_crops(data, user_id, role, loc, month) if role == "farmer" else []
-    market_preds = predict_markets(data, region=parsed.region)
-    demand_intel = generate_demand_intelligence(data)
-    income = forecast_income(data, user_id, role, user_items, wallet_baseline=wallet_baseline)
-    income_insufficient = bool(income and income[0].get("insufficient_data"))
-    has_actionable_demand = any(not d.get("insufficient_data") for d in demand_intel) if demand_intel else False
-    demand_insufficient = not has_actionable_demand
-    mkt_sufficient = marketplace_has_sufficient_data(data)
+    analytics_ready = role_analytics_ready(ctx)
+    income_insufficient = not analytics_ready
+    demand_insufficient = not _demand_ready(scoped, demand_intel, ctx)
     insights = generate_insights(user_id, role, recommendations, market_preds, income)
 
     persist_recommendations(recommendations)
@@ -82,32 +84,22 @@ def refresh_intelligence(user_id: str, role: str, location: str | None = None, m
         "income_forecasts": income,
         "income_scenarios": _group_income_scenarios(income),
         "income_insufficient_data": income_insufficient,
-        "demand_insufficient_data": demand_insufficient and not mkt_sufficient,
-        "marketplace_insufficient_data": not mkt_sufficient,
-        "district_analytics": district_analytics(data, loc),
+        "demand_insufficient_data": demand_insufficient,
+        "marketplace_insufficient_data": not analytics_ready,
+        "district_analytics": district_analytics(scoped, loc, products=scoped.get("products")),
         "seasonal_analytics": seasonal_analytics(month),
-        "historical_trends": historical_trends(data),
+        "historical_trends": historical_trends(scoped),
         "weather": fetch_weather_summary(loc),
         "insights": insights,
     }
 
     if role == "middleman":
-        purchase_items = _purchase_items(data, user_id)
-        payload["trader"] = trader_intelligence(data, user_id, purchase_items)
+        payload["trader"] = trader_intelligence(scoped, ctx)
 
     if role == "industrialist":
-        purchase_items = _purchase_items(data, user_id)
-        payload["industrialist"] = industrialist_intelligence(data, user_id, purchase_items, buyer_orders)
+        payload["industrialist"] = industrialist_intelligence(scoped, ctx)
 
     return payload
-
-
-def _purchase_items(data: dict, user_id: str) -> pd.DataFrame:
-    purchase_items = data["order_items"]
-    if purchase_items.empty or data["orders"].empty:
-        return purchase_items
-    buyer_ids = data["orders"][data["orders"]["buyer_id"].astype(str) == str(user_id)]["order_id"]
-    return purchase_items[purchase_items["order_id"].isin(buyer_ids)]
 
 
 def _group_income_scenarios(income: list[dict]) -> dict:
@@ -133,13 +125,15 @@ def industrialist_dashboard(user_id: str) -> dict:
 
 def copilot_chat(user_id: str, message: str, role: str = "farmer", location: str | None = None, context: dict | None = None) -> dict:
     data = load_marketplace_data()
+    ctx = build_role_context(user_id, _role_normalize(role), data)
+    scoped = scope_data_for_role(data, ctx)
     profile = load_user_profile(user_id)
     loc = location or profile.get("address")
     parsed_loc = parse_location(loc or "India")
     weather = fetch_weather_summary(loc or "India")
-    district = district_analytics(data, loc or "India")
+    district = district_analytics(scoped, loc or "India", products=scoped.get("products"))
     seasonal = seasonal_analytics()
-    products = data.get("products")
+    products = scoped.get("products")
     active_products = []
     if products is not None and not getattr(products, "empty", True):
         for _, p in products.head(8).iterrows():
@@ -155,7 +149,7 @@ def copilot_chat(user_id: str, message: str, role: str = "farmer", location: str
         "district_analytics": district,
         "seasonal": seasonal,
         "active_products": active_products,
-        "marketplace_insufficient": not marketplace_has_sufficient_data(data),
+        "marketplace_insufficient": not role_analytics_ready(ctx),
         "geo": {"state": parsed_loc.state, "district": parsed_loc.district},
     }
-    return run_copilot(message, data, user_id, role, loc, enriched_context)
+    return run_copilot(message, scoped, user_id, role, loc, enriched_context)

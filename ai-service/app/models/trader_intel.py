@@ -1,9 +1,10 @@
-"""Trader-specific intelligence — Phase C."""
+"""Trader-specific intelligence — scoped to trader purchases, resales, and inventory."""
 from __future__ import annotations
 
 import numpy as np
 from app.feature_engineering import build_crop_demand_features
 from app.models.demand_intelligence import generate_demand_intelligence
+from app.role_commerce import RoleCommerceContext
 from app.config import MODEL_VERSION
 
 
@@ -21,7 +22,11 @@ def _inventory_health_score(current_kg: float, crop_df, purchase_items) -> dict:
     return {"score": round(float(score), 1), "label": label, "diversity": diversity, "turnover_kg": round(turnover, 1)}
 
 
-def trader_intelligence(data: dict, user_id: str, user_items) -> dict:
+def trader_intelligence(data: dict, ctx: RoleCommerceContext) -> dict:
+    purchases = ctx.trader_purchases
+    sales = ctx.trader_sales
+    inventory = ctx.trader_inventory
+
     crop_df = build_crop_demand_features(data)
     demand_intel = generate_demand_intelligence(data)
     high_demand = crop_df.nlargest(5, "demand_score")
@@ -53,9 +58,11 @@ def trader_intelligence(data: dict, user_id: str, user_items) -> dict:
         })
     profit_ranking.sort(key=lambda x: x["profit_score"], reverse=True)
 
-    inventory_kg = float(user_items["quantity"].sum()) if not user_items.empty and "quantity" in user_items.columns else 0
-    inventory_value = float(user_items["total_price"].sum()) if not user_items.empty and "total_price" in user_items.columns else 0
-    health = _inventory_health_score(inventory_kg, crop_df, user_items)
+    inventory_kg = float(inventory["quantity"].sum()) if not inventory.empty and "quantity" in inventory.columns else 0.0
+    inventory_value = float(inventory["price_per_unit"].multiply(inventory["quantity"]).sum()) if (
+        not inventory.empty and "price_per_unit" in inventory.columns and "quantity" in inventory.columns
+    ) else 0.0
+    health = _inventory_health_score(inventory_kg, crop_df, purchases)
 
     inventory_advice = []
     demand_alerts = []
@@ -101,15 +108,23 @@ def trader_intelligence(data: dict, user_id: str, user_items) -> dict:
             "confidence": d["market_confidence"],
         })
 
+    purchase_spend = float(purchases["total_price"].sum()) if not purchases.empty and "total_price" in purchases.columns else ctx.trader_wallet_spend
+    sale_revenue = float(sales["total_price"].sum()) if not sales.empty and "total_price" in sales.columns else ctx.trader_wallet_revenue
+
     return {
         "high_demand_crops": high_demand[["crop_name", "demand_score", "avg_price"]].to_dict("records"),
         "best_buy_opportunities": best_buy[:6],
         "profit_opportunities": profit_ranking[:5],
         "inventory_health": health,
         "demand_alerts": demand_alerts[:6],
+        "purchase_history_kg": round(float(purchases["quantity"].sum()) if not purchases.empty else 0, 1),
+        "sales_history_kg": round(float(sales["quantity"].sum()) if not sales.empty else 0, 1),
+        "total_purchase_spend": round(purchase_spend, 2),
+        "total_sale_revenue": round(sale_revenue, 2),
+        "estimated_margin": round(max(sale_revenue - purchase_spend, 0), 2),
         "inventory_optimization": {
             "current_kg": inventory_kg,
-            "current_value": inventory_value,
+            "current_value": round(inventory_value, 2),
             "health_score": health["score"],
             "health_label": health["label"],
             "recommendations": inventory_advice[:5],

@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 from app.feature_engineering import current_season
 from app.india_geo import parse_location, SEASON_CROP_BOOST
+from app.config import MIN_MARKETPLACE_ROWS
 
 
 def _marketplace_volume(data: dict) -> float:
@@ -16,16 +17,14 @@ def _marketplace_volume(data: dict) -> float:
 
 
 def marketplace_has_sufficient_data(data: dict) -> bool:
+    """Platform-wide benchmark for copilot context — not used for role dashboard gates."""
     items = data.get("order_items", pd.DataFrame())
-    if items.empty:
-        products = data.get("products", pd.DataFrame())
-        return not products.empty and len(products) >= 1
-    if len(items) >= 1:
+    if len(items) >= MIN_MARKETPLACE_ROWS:
         return True
-    return _marketplace_volume(data) >= 1
+    return _marketplace_volume(data) >= 50
 
 
-def district_analytics(data: dict, location: str) -> dict:
+def district_analytics(data: dict, location: str, products: pd.DataFrame | None = None) -> dict:
     parsed = parse_location(location)
     crop_df = data.get("synthetic", pd.DataFrame())
     state_col = "state" if "state" in crop_df.columns else None
@@ -35,7 +34,7 @@ def district_analytics(data: dict, location: str) -> dict:
     avg_price = 0.0
     listing_count = 0
 
-    products = data.get("products", pd.DataFrame())
+    products = products if products is not None else data.get("products", pd.DataFrame())
     if not products.empty:
         listing_count = len(products)
         if "crop_type" in products.columns and "price_per_unit" in products.columns:

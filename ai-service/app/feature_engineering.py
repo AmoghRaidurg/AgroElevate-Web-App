@@ -92,7 +92,7 @@ def build_user_revenue_baseline(items_df: pd.DataFrame, role: str) -> float:
     if role == "farmer":
         return float(items_df["total_price"].sum()) if "total_price" in items_df.columns else 0.0
     if role in ("middleman", "industrialist"):
-        return float(items_df["total_price"].sum()) * 0.15 if "total_price" in items_df.columns else 0.0
+        return float(items_df["total_price"].sum()) if "total_price" in items_df.columns else 0.0
     return float(items_df["total_price"].sum()) if "total_price" in items_df.columns else 0.0
 
 
