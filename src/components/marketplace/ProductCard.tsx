@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Minus } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { QuantitySelector } from '@/components/marketplace/QuantitySelector';
 
 export interface ProductCardData {
   id: string;
@@ -21,7 +20,7 @@ interface ProductCardProps {
   canPurchase: boolean;
   showRoyaltyNote?: boolean;
   onAdd: () => void;
-  onChangeQty: (delta: number) => void;
+  onSetQty: (qty: number) => void;
   maxQty: number;
 }
 
@@ -31,9 +30,14 @@ export function ProductCard({
   canPurchase,
   showRoyaltyNote,
   onAdd,
-  onChangeQty,
+  onSetQty,
   maxQty,
 }: ProductCardProps) {
+  const lineTotal = cartQty ? cartQty * product.price_per_unit : 0;
+  const royaltyEstimate = showRoyaltyNote && product.isRelisted && cartQty
+    ? lineTotal * 0.125
+    : 0;
+
   return (
     <div className="glass-card rounded-xl overflow-hidden p-0 group hover:border-primary/30 transition-all duration-200 hover:shadow-[var(--shadow-glow-emerald)]">
       <Link to={`/marketplace/${product.id}`} className="block relative">
@@ -48,33 +52,42 @@ export function ProductCard({
         </div>
       </Link>
       <div className="p-4 space-y-3">
-        <div className="flex justify-between items-end">
+        <div className="flex justify-between items-start gap-3">
           <div>
-            <p className="text-sm text-muted-foreground">{product.quantity} kg available</p>
+            <p className="text-sm text-muted-foreground tabular-nums">{product.quantity} kg in stock</p>
             <p className="text-2xl font-bold text-primary tabular-nums">
               ₹{product.price_per_unit}<span className="text-sm text-muted-foreground font-normal">/kg</span>
             </p>
           </div>
-          {canPurchase && (
-            <div className="w-28">
-              {!cartQty ? (
-                <Button onClick={onAdd} variant="hero" size="sm" className="w-full">Add</Button>
-              ) : (
-                <div className="flex items-center justify-between border border-border/50 rounded-lg bg-muted/20">
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onChangeQty(-1)}>
-                    <Minus className="h-3 w-3" />
-                  </Button>
-                  <span className="font-medium text-sm tabular-nums">{cartQty}</span>
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onChangeQty(1)} disabled={cartQty >= maxQty}>
-                    <Plus className="h-3 w-3" />
-                  </Button>
-                </div>
-              )}
-            </div>
-          )}
         </div>
+
+        {canPurchase && (
+          <div className="space-y-2">
+            {!cartQty ? (
+              <Button onClick={onAdd} variant="hero" size="sm" className="w-full" disabled={maxQty <= 0}>
+                Add to cart
+              </Button>
+            ) : (
+              <>
+                <QuantitySelector
+                  value={cartQty}
+                  max={maxQty}
+                  onChange={onSetQty}
+                  compact
+                />
+                <div className="flex justify-between text-sm pt-1 border-t border-border/40">
+                  <span className="text-muted-foreground">Line total</span>
+                  <span className="font-semibold text-primary tabular-nums">₹{lineTotal.toLocaleString('en-IN')}</span>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
         {showRoyaltyNote && product.isRelisted && (
-          <p className="text-xs text-accent bg-accent/10 p-2 rounded-lg">12.5% royalty goes to the original farmer</p>
+          <p className="text-xs text-accent bg-accent/10 p-2 rounded-lg">
+            12.5% royalty (≈ ₹{royaltyEstimate > 0 ? royaltyEstimate.toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '—'}) goes to the original farmer
+          </p>
         )}
       </div>
     </div>

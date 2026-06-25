@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant U as User Browser
+    participant M as Marketplace UI
+    participant S as Supabase
+    participant R as checkout_order RPC
+    U->>M: Browse /marketplace
+    M->>S: SELECT products (RLS filtered)
+    S-->>M: listings with seller profile
+    U->>M: Add to cart (local state)
+    U->>M: Confirm checkout
+    M->>S: RPC get_wallet_balance
+    S-->>M: balance
+    alt balance sufficient
+        M->>S: RPC checkout_order(items)
+        S->>R: SECURITY DEFINER settle
+        R-->>S: order_id, royalty breakdown
+        S-->>M: success
+        M-->>U: redirect /orders
+    else insufficient
+        M-->>U: prompt wallet top-up
+    end

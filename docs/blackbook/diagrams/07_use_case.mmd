@@ -1,0 +1,30 @@
+flowchart LR
+    subgraph Actors
+        F[Farmer]
+        T[Trader]
+        I[Industrialist]
+        C[Customer]
+        A[Admin]
+        RZ[Razorpay]
+        AI[AI Service]
+    end
+    subgraph AgroElevate
+        UC1((Register / Login))
+        UC2((List Produce))
+        UC3((Browse Marketplace))
+        UC4((Checkout Order))
+        UC5((Wallet Top-up))
+        UC6((Relist with Royalty))
+        UC7((Manufacturing Batch))
+        UC8((View Intelligence))
+        UC9((Copilot Chat))
+        UC10((Moderate Users))
+        UC11((Demo Wallet Credit))
+    end
+    F --> UC1 & UC2 & UC3 & UC4 & UC5 & UC8 & UC9
+    T --> UC1 & UC3 & UC4 & UC5 & UC6 & UC8 & UC9
+    I --> UC1 & UC3 & UC4 & UC5 & UC7 & UC8 & UC9
+    C --> UC1 & UC3 & UC4 & UC5
+    A --> UC1 & UC10 & UC11
+    RZ --> UC5
+    AI --> UC8 & UC9

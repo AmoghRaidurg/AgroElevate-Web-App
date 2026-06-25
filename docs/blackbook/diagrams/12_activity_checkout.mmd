@@ -1,0 +1,21 @@
+flowchart TD
+    A([Start Checkout]) --> B{Authenticated?}
+    B -->|No| C[Redirect Login]
+    B -->|Yes| D[Load cart items]
+    D --> E[Compute total with tax]
+    E --> F{Royalty metadata?}
+    F -->|Yes| G[Preview royalty line]
+    F -->|No| H[Standard total]
+    G --> I{Wallet >= total?}
+    H --> I
+    I -->|No| J[Show top-up CTA]
+    J --> K[Razorpay flow]
+    K --> I
+    I -->|Yes| L[RPC checkout_order]
+    L --> M{Success?}
+    M -->|No| N[Show error toast]
+    M -->|Yes| O[Clear cart]
+    O --> P([Navigate Orders])
+    C --> Q([End])
+    N --> Q
+    P --> Q

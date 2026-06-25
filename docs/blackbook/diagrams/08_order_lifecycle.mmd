@@ -1,0 +1,14 @@
+stateDiagram-v2
+    [*] --> CartOpen: Add items
+    CartOpen --> Validating: Checkout click
+    Validating --> InsufficientFunds: balance < total
+    Validating --> Settling: balance >= total
+    InsufficientFunds --> CartOpen: Top-up wallet
+    Settling --> OrderCreated: checkout_order RPC
+    OrderCreated --> InventoryUpdated: products.quantity -= qty
+    OrderCreated --> WalletDebited: buyer wallet_history debit
+    OrderCreated --> SellerCredited: seller wallet_history sale
+    OrderCreated --> RoyaltyApplied: metadata present
+    RoyaltyApplied --> FarmerRoyalty: royalty_income credit
+    OrderCreated --> Complete: order status paid
+    Complete --> [*]

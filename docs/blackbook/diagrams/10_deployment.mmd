@@ -1,0 +1,19 @@
+flowchart TB
+    subgraph Dev
+        VITE[Vite Dev Server :5173]
+        UV[Uvicorn AI :8000]
+    end
+    subgraph Production
+        CDN[Static Host / CDN]
+        SB[(Supabase Cloud)]
+        RENDER[Render / Docker AI]
+        RZP[Razorpay Webhooks]
+    end
+    DEV_USER[Developer] --> VITE & UV
+    VITE --> SB
+    UV --> SB
+    BROWSER[End User Browser] --> CDN
+    CDN --> SB
+    CDN --> RENDER
+    RZP --> SB
+    SB --> EF[Edge Functions Deno]

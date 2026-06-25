@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant U as User Web/Android
+    participant EF as razorpay-create-order
+    participant RZ as Razorpay
+    participant WH as razorpay-webhook
+    participant DB as PostgreSQL RPC
+    U->>EF: JWT + amount_inr
+    EF->>RZ: Create order
+    EF->>DB: Insert payment_intents
+    EF-->>U: order_id, key_id, intent_id
+    U->>RZ: Razorpay Checkout SDK
+    RZ->>WH: payment.captured webhook
+    WH->>DB: confirm_wallet_deposit
+    DB->>DB: wallet_history deposit + receipt
+    U->>DB: Poll payment_intents status=paid

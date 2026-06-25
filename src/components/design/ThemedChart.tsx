@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { cn } from '@/lib/utils';
 import { ResponsiveContainer } from 'recharts';
 import type { CSSProperties, ReactNode } from 'react';
@@ -9,7 +10,7 @@ interface ThemedChartProps {
 }
 
 /** Dark-themed chart wrapper — preserves Recharts children unchanged. */
-export function ThemedChart({ children, height = '100%', className }: ThemedChartProps) {
+function ThemedChartInner({ children, height = '100%', className }: ThemedChartProps) {
   return (
     <div
       className={cn(
@@ -29,6 +30,8 @@ export function ThemedChart({ children, height = '100%', className }: ThemedChar
     </div>
   );
 }
+
+export const ThemedChart = memo(ThemedChartInner);
 
 export const CHART_ANIMATION = { isAnimationActive: true, animationDuration: 800, animationEasing: 'ease-out' as const };
 

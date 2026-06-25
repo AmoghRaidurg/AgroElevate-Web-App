@@ -1,0 +1,14 @@
+flowchart TD
+    SPLASH[Splash] --> AUTH{Session?}
+    AUTH -->|No| LOGIN[Login / Register]
+    AUTH -->|Yes| HOME[Role Dashboard]
+    LOGIN --> HOME
+    HOME --> MP[Marketplace]
+    HOME --> WAL[Wallet]
+    HOME --> ORD[Orders]
+    HOME --> INT[Intelligence]
+    MP --> DET[Product Detail]
+    DET --> CART[Cart Checkout]
+    CART --> WAL
+    WAL --> RZP[Razorpay SDK]
+    INT --> COP[Copilot Chat]

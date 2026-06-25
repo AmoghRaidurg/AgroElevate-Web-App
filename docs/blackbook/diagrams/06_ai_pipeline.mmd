@@ -1,0 +1,14 @@
+flowchart LR
+    SB[(Supabase<br/>orders, products)] --> DL[data_loader.py]
+    SYN[synthetic_ag_market.csv] --> DL
+    DL --> FE[feature_engineering]
+    FE --> CR[crop_recommender]
+    FE --> DI[demand_intelligence]
+    FE --> IF[income_forecaster]
+    CR --> IS[intelligence_service]
+    DI --> IS
+    IF --> IS
+    IS --> API[FastAPI endpoints]
+    API --> WEB[React Intelligence Hub]
+    IS --> CP[copilot.py]
+    CP --> API

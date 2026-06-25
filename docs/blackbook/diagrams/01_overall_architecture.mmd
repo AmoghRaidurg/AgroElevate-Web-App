@@ -1,0 +1,29 @@
+flowchart TB
+    subgraph Clients
+        WEB[React Web SPA<br/>Vite + TypeScript]
+        AND[Android App<br/>Kotlin - Planned]
+    end
+    subgraph Supabase_Cloud
+        AUTH[Supabase Auth]
+        PG[(PostgreSQL 15)]
+        RLS[Row Level Security]
+        RPC[RPC Functions]
+        EF[Edge Functions<br/>razorpay-create-order<br/>razorpay-webhook]
+    end
+    subgraph AI_Service
+        FAST[FastAPI 1.0.0-rc<br/>Uvicorn]
+        ML[scikit-learn Models]
+    end
+  WEB --> AUTH
+  WEB --> PG
+  WEB --> RPC
+  WEB --> EF
+  WEB --> FAST
+  AND --> AUTH
+  AND --> PG
+  AND --> RPC
+  AND --> EF
+  FAST --> PG
+  EF --> RPC
+  RPC --> PG
+  RLS --> PG

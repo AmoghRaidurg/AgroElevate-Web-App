@@ -12,7 +12,7 @@ import { CopilotPanel } from '@/components/intelligence/CopilotPanel';
 import { TrendBadge, ConfidenceBar, RiskIndicator, MetricPill } from '@/components/intelligence/IntelligenceMetrics';
 import { ChartCard } from '@/components/design/ChartCard';
 import { ThemedChart, CHART_COLORS, chartTooltipStyle } from '@/components/design/ThemedChart';
-import { InsufficientDataPanel } from '@/components/intelligence/InsufficientDataPanel';
+import { FarmerIncomeProjectionChart } from '@/components/charts/FarmerIncomeProjectionChart';
 import { AiStatusBanner } from '@/components/intelligence/AiStatusBanner';
 import { MapPin, Sprout, Cloud } from 'lucide-react';
 
@@ -138,6 +138,8 @@ export default function FarmerInsights() {
               </div>
               <CopilotPanel userId={session.user.id} role="farmer" location={profile?.address} />
             </div>
+
+            <FarmerIncomeProjectionChart />
 
             <ChartCard title="Income Forecast — 3 Scenarios" description="Optimistic, realistic & conservative projections" variant="intelligence">
               {data.income_insufficient_data ? (

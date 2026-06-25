@@ -48,6 +48,7 @@ export default function Marketplace() {
   const [relistPrice, setRelistPrice] = useState('');
   const [relistSubmitting, setRelistSubmitting] = useState(false);
   const [farmerView, setFarmerView] = useState<'browse' | 'my-listings'>('browse');
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   const isFarmer = profile?.role === 'farmer';
   const isTrader = profile?.role === 'middleman';
@@ -108,15 +109,27 @@ export default function Marketplace() {
     setCartOpen(true);
   };
 
-  const changeQty = (id: string, delta: number) => {
+
+  const setCartQty = (id: string, qty: number) => {
     const p = products.find((prod) => prod.id === id);
     const maxQty = p?.quantity ?? 1;
-    setCart((prev) => prev.map((i) => {
-      if (i.id !== id) return i;
-      const next = Math.max(1, i.qty + delta);
-      if (next > maxQty) { toast.error(`Only ${maxQty} kg available`); return { ...i, qty: maxQty }; }
-      return { ...i, qty: next };
-    }));
+    const clamped = Math.min(maxQty, Math.max(1, qty));
+    if (qty > maxQty) toast.error(`Only ${maxQty} kg available`);
+    setCart((prev) => {
+      const found = prev.find((i) => i.id === id);
+      if (!found) return [...prev, { id, qty: clamped }];
+      return prev.map((i) => (i.id === id ? { ...i, qty: clamped } : i));
+    });
+  };
+
+  const isRelistedProduct = (description?: string) => {
+    if (!description) return false;
+    try {
+      const meta = JSON.parse(description);
+      return meta.product_kind === 'trader_relist' || !!meta.original_farmer_id || !!meta.source_order_item_id;
+    } catch {
+      return false;
+    }
   };
 
   const totalAmount = useMemo(() => cart.reduce((sum, i) => {
@@ -126,8 +139,24 @@ export default function Marketplace() {
 
   const cartItems = useMemo(() => cart.map((item) => {
     const p = products.find((prod) => prod.id === item.id);
-    return { id: item.id, name: p?.name ?? '', qty: item.qty, lineTotal: (p?.price_per_unit ?? 0) * item.qty };
+    const relisted = isRelistedProduct(p?.description);
+    return {
+      id: item.id,
+      name: p?.name ?? '',
+      qty: item.qty,
+      lineTotal: (p?.price_per_unit ?? 0) * item.qty,
+      unitPrice: p?.price_per_unit ?? 0,
+      maxStock: p?.quantity,
+      isRelisted: relisted,
+    };
   }), [cart, products]);
+
+  const estimatedRoyalty = useMemo(() => {
+    if (!isIndustrialist) return 0;
+    return cartItems.reduce((sum, item) => (
+      item.isRelisted ? sum + item.lineTotal * 0.125 : sum
+    ), 0);
+  }, [cartItems, isIndustrialist]);
 
   const checkout = async () => {
     if (!session) return toast.error('Login required');
@@ -136,24 +165,23 @@ export default function Marketplace() {
       if (!p || item.qty > p.quantity) return toast.error(`Insufficient stock for ${p?.name ?? 'item'}`);
     }
     if (walletBalance < totalAmount) return toast.error('Insufficient wallet balance. Please add funds.');
+    setCheckoutLoading(true);
     try {
       const result = await checkoutOrder(cart);
       const hasTraderRoyalty = isIndustrialist && cart.some((item) => {
         const product = products.find((p) => p.id === item.id);
-        if (!product?.description) return false;
-        try {
-          const meta = JSON.parse(product.description);
-          return meta.product_kind === 'trader_relist' || !!meta.source_order_item_id;
-        } catch { return false; }
+        return isRelistedProduct(product?.description);
       });
       if (hasTraderRoyalty) toast.success('12.5% royalty credited to original farmer');
-      toast.success(`Order placed! Total: ₹${Number(result.total_amount).toLocaleString()}`);
+      toast.success(`Order placed! Total: ₹${Number(result.total_amount).toLocaleString('en-IN')}`);
       setCart([]);
       setCartOpen(false);
       await loadData();
     } catch (err: unknown) {
       const message = err && typeof err === 'object' && 'message' in err ? String((err as { message: string }).message) : 'Checkout failed';
       toast.error(message);
+    } finally {
+      setCheckoutLoading(false);
     }
   };
 
@@ -198,7 +226,8 @@ export default function Marketplace() {
         actions={
           canPurchase && (
             <CartSheet cart={cartItems} totalAmount={totalAmount} walletBalance={walletBalance}
-              itemCount={cart.reduce((a, i) => a + i.qty, 0)} onCheckout={checkout} open={cartOpen} onOpenChange={setCartOpen} />
+              itemCount={cart.reduce((a, i) => a + i.qty, 0)} estimatedRoyalty={estimatedRoyalty}
+              checkoutLoading={checkoutLoading} onCheckout={checkout} open={cartOpen} onOpenChange={setCartOpen} />
           )
         }
       />
@@ -259,7 +288,7 @@ export default function Marketplace() {
                       <ProductCard key={p.id}
                         product={{ ...p, imageUrl: getProductImage(p.name), isRelisted }}
                         cartQty={cartItem?.qty} canPurchase={canPurchase} showRoyaltyNote={isIndustrialist}
-                        onAdd={() => addToCart(p.id)} onChangeQty={(d) => changeQty(p.id, d)} maxQty={p.quantity}
+                        onAdd={() => addToCart(p.id)} onSetQty={(qty) => setCartQty(p.id, qty)} maxQty={p.quantity}
                       />
                     );
                   })}
@@ -280,7 +309,7 @@ export default function Marketplace() {
                     <ProductCard key={p.id}
                       product={{ ...p, imageUrl: getProductImage(p.name), isRelisted }}
                       cartQty={cartItem?.qty} canPurchase={canPurchase} showRoyaltyNote={isIndustrialist}
-                      onAdd={() => addToCart(p.id)} onChangeQty={(d) => changeQty(p.id, d)} maxQty={p.quantity}
+                      onAdd={() => addToCart(p.id)} onSetQty={(qty) => setCartQty(p.id, qty)} maxQty={p.quantity}
                     />
                   );
                 })}

@@ -1,0 +1,14 @@
+flowchart TD
+    A[Farmer lists raw product] --> B{Buyer role?}
+    B -->|Trader| C[Direct sale - no royalty]
+    B -->|Industrialist| D[Direct sale + deferred obligation]
+    B -->|Customer| E[Direct sale - no royalty]
+    C --> F[Trader relists with metadata JSON]
+    F --> G{Downstream buyer?}
+    G -->|Industrialist| H[12.5% immediate royalty to farmer]
+    G -->|Customer| I[12.5% royalty if relisted]
+    D --> J[Manufacturing batch created]
+    J --> K[Complete batch → processed product]
+    K --> L[List on marketplace]
+    L --> M[Any buyer purchases processed]
+    M --> N[Settle deferred obligation 12.5%]

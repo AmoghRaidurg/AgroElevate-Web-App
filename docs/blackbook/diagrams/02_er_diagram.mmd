@@ -1,0 +1,13 @@
+erDiagram
+    profiles ||--o| users : "id = uid"
+    profiles ||--o{ products : seller_id
+    orders ||--|{ order_items : orderId
+    order_items }o--o| crops : cropId
+    orders }o--|| profiles : buyerId
+    wallet_history }o--|| users : userId
+    payment_intents }o--|| users : user_id
+    payment_receipts ||--|| payment_intents : intent_id
+    manufacturing_batches ||--o| royalty_obligations : batch_id
+    processed_products ||--|| manufacturing_batches : batch_id
+    royalty_obligations }o--|| users : original_farmer_id
+    ai_crop_recommendations }o--|| profiles : user_id

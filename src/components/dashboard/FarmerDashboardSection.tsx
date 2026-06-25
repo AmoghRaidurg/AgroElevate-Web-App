@@ -5,7 +5,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { HeroMetric } from '@/components/design/HeroMetric';
 import { MetricCard } from '@/components/design/MetricCard';
 import { ChartCard } from '@/components/design/ChartCard';
-import { ThemedChart, CHART_COLORS } from '@/components/design/ThemedChart';
+import { ThemedChart, CHART_COLORS, CHART_ANIMATION, chartTooltipStyle } from '@/components/design/ThemedChart';
 import { EmptyState } from '@/components/design/skeletons';
 import type { FarmerSalesStats } from '@/lib/marketplaceData';
 import type { RoyaltyObligation } from '@/lib/manufacturingData';
@@ -84,7 +84,7 @@ export function FarmerDashboardSection({ stats, obligations = [], userId = '', u
                 <Pie data={cropData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
                   {cropData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                 </Pie>
-                <Tooltip formatter={(v: number) => `₹${v.toLocaleString()}`} />
+                <Tooltip formatter={(v: number) => `₹${v.toLocaleString()}`} contentStyle={chartTooltipStyle} />
               </PieChart>
             ) : (
               <div className="flex items-center justify-center h-full text-muted-foreground text-sm">No sales data yet</div>
@@ -100,7 +100,7 @@ export function FarmerDashboardSection({ stats, obligations = [], userId = '', u
                 <XAxis dataKey="date" tick={{ fill: 'hsl(215 15% 58%)', fontSize: 11 }} />
                 <YAxis tick={{ fill: 'hsl(215 15% 58%)', fontSize: 11 }} />
                 <Tooltip contentStyle={{ background: 'hsl(220 16% 11%)', border: '1px solid hsl(220 14% 18%)', borderRadius: 8 }} />
-                <Line type="monotone" dataKey="revenue" stroke={CHART_COLORS.primary} strokeWidth={2} dot={{ r: 4 }} />
+                <Line type="monotone" dataKey="revenue" stroke={CHART_COLORS.primary} strokeWidth={2} dot={{ r: 4 }} {...CHART_ANIMATION} />
               </LineChart>
             ) : (
               <div className="flex items-center justify-center h-full text-muted-foreground text-sm">No trend data yet</div>

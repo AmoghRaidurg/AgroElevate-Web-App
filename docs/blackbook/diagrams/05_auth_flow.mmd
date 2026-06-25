@@ -1,0 +1,11 @@
+flowchart TD
+    R[Register / Login] --> SA[Supabase Auth]
+    SA --> EM{Email confirmed?}
+    EM -->|No| VE[/verify-email/]
+    EM -->|Yes| EP[ensure_profile_from_auth RPC]
+    EP --> PR[profiles row]
+    EP --> US[users row + walletBalance]
+    PR --> G{Route guard}
+    G -->|suspended| SU[/suspended/]
+    G -->|not approved| PA[/pending-approval/]
+    G -->|ok| APP[Protected routes]
