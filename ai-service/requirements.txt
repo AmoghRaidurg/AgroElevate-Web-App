@@ -4,6 +4,7 @@ pandas==2.2.3
 numpy==2.2.1
 scikit-learn==1.6.0
 supabase==2.11.0
+postgrest==0.19.3
 python-dotenv==1.0.1
 pydantic==2.10.4
 httpx==0.28.1
