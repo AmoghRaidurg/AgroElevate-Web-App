@@ -239,11 +239,19 @@ export interface IndustrialistDashboard extends FarmerDashboard {
 export interface CopilotResponse {
   reply: string;
   intent: string;
+  intent_confidence?: number;
   context?: Record<string, unknown>;
   location?: GeoContext;
   season?: string;
   recommendations?: CropRecommendation[];
   suggestions?: string[];
+  commerce_snapshot?: {
+    total_sales_count?: number;
+    total_revenue?: number;
+    total_purchase_spend?: number;
+    procurement_item_count?: number;
+    has_data?: boolean;
+  };
 }
 
 async function aiFetch<T>(path: string, params: Record<string, string>, method: 'GET' | 'POST' = 'GET', body?: unknown): Promise<T> {
@@ -295,7 +303,9 @@ async function withFallback<T extends FarmerDashboard>(fn: () => Promise<T>): Pr
     return await fn();
   } catch (e) {
     if (e instanceof AiServiceError && e.offline) {
-      return emptyDashboard() as T;
+      const empty = emptyDashboard() as T;
+      empty._fallback = true;
+      return empty;
     }
     throw e;
   }

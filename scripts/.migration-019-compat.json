@@ -1,0 +1,146 @@
+{
+  "compatible": true,
+  "checks": [
+    {
+      "name": "Table profiles",
+      "ok": true,
+      "detail": "17 rows"
+    },
+    {
+      "name": "Table orders",
+      "ok": true,
+      "detail": "54 rows"
+    },
+    {
+      "name": "Table order_items",
+      "ok": true,
+      "detail": "54 rows"
+    },
+    {
+      "name": "Table products",
+      "ok": true,
+      "detail": "48 rows"
+    },
+    {
+      "name": "Table manufacturing_batches",
+      "ok": true,
+      "detail": "6 rows"
+    },
+    {
+      "name": "Table royalty_obligations",
+      "ok": true,
+      "detail": "6 rows"
+    },
+    {
+      "name": "Table processed_products",
+      "ok": true,
+      "detail": "6 rows"
+    },
+    {
+      "name": "Table wallet_history",
+      "ok": true,
+      "detail": "383 rows"
+    },
+    {
+      "name": "Table transactions",
+      "ok": true,
+      "detail": "54 rows"
+    },
+    {
+      "name": "manufacturing_batches columns",
+      "ok": true,
+      "detail": "all required columns present"
+    },
+    {
+      "name": "royalty_obligations columns",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "name": "order_items columns (v2)",
+      "ok": true,
+      "detail": "ownershipChain + royaltyObligationId present"
+    },
+    {
+      "name": "orders columns (v2 shippingAddress)",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "name": "Public RPC get_wallet_balance",
+      "ok": true,
+      "detail": "callable"
+    },
+    {
+      "name": "Public RPC checkout_order",
+      "ok": true,
+      "detail": "Not authenticated"
+    },
+    {
+      "name": "Public RPC complete_manufacturing_batch",
+      "ok": true,
+      "detail": "Batch not found"
+    },
+    {
+      "name": "Public RPC list_processed_product",
+      "ok": true,
+      "detail": "Processed product not found"
+    },
+    {
+      "name": "Public RPC get_my_manufacturing_batches",
+      "ok": true,
+      "detail": "callable"
+    },
+    {
+      "name": "Public RPC get_my_royalty_obligations",
+      "ok": true,
+      "detail": "callable"
+    },
+    {
+      "name": "Public RPC get_my_processed_products",
+      "ok": true,
+      "detail": "callable"
+    },
+    {
+      "name": "Internal helpers (inferred via checkout_order)",
+      "ok": true,
+      "detail": "checkout_order executes in commerce:verify — _commerce_settle_sale, _parse_product_commerce_meta, etc. present in DB"
+    },
+    {
+      "name": "sync_industrialist_procurement_batches (pre-migration)",
+      "ok": true,
+      "detail": "not yet applied (expected)"
+    },
+    {
+      "name": "_create_deferred_royalty_from_procurement (8-arg)",
+      "ok": true,
+      "detail": "exists"
+    },
+    {
+      "name": "profiles.role includes farmer",
+      "ok": true,
+      "detail": "farmer, middleman, industrialist, admin, customer"
+    },
+    {
+      "name": "profiles.role includes middleman",
+      "ok": true,
+      "detail": "farmer, middleman, industrialist, admin, customer"
+    },
+    {
+      "name": "profiles.role includes industrialist",
+      "ok": true,
+      "detail": "farmer, middleman, industrialist, admin, customer"
+    },
+    {
+      "name": "Migration 019 checkout_order preserves v2",
+      "ok": true,
+      "detail": "v2 behaviors present in migration file"
+    }
+  ],
+  "blockers": [],
+  "warnings": [],
+  "baseline": {
+    "manufacturing_batches": 6,
+    "processed_products": 6
+  }
+}

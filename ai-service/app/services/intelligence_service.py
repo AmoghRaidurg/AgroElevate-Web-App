@@ -20,6 +20,7 @@ from app.role_commerce import (
     role_income_baseline,
     role_analytics_ready,
 )
+from app.commerce_snapshot import build_commerce_snapshot
 from app.persistence import (
     persist_recommendations,
     persist_income_forecasts,
@@ -40,11 +41,14 @@ def refresh_intelligence(user_id: str, role: str, location: str | None = None, m
     parsed = parse_location(loc)
 
     data = load_marketplace_data()
-    ctx = build_role_context(user_id, role)
+    ctx = build_role_context(user_id, role, data)
     scoped = scope_data_for_role(data, ctx)
     income_items = role_income_items(ctx)
     commerce_baseline = role_income_baseline(ctx)
     analytics_ready = role_analytics_ready(ctx)
+
+    snap = build_commerce_snapshot(ctx)
+    commerce_totals = snap.to_dict()
 
     recommendations = recommend_crops(scoped, user_id, role, loc, month) if role == "farmer" else []
     demand_intel = generate_demand_intelligence(scoped) if analytics_ready else []
@@ -70,6 +74,7 @@ def refresh_intelligence(user_id: str, role: str, location: str | None = None, m
         "model_version": "v3-commerce",
         "commerce_ready": analytics_ready,
         "commerce_baseline": round(commerce_baseline, 2),
+        "commerce_totals": commerce_totals,
         "recommendations": recommendations,
         "market_predictions": market_preds,
         "demand_intelligence": demand_intel,
@@ -86,7 +91,7 @@ def refresh_intelligence(user_id: str, role: str, location: str | None = None, m
     }
 
     if role == "middleman":
-        payload["trader"] = trader_intelligence(scoped, ctx) if analytics_ready else None
+        payload["trader"] = trader_intelligence(scoped, ctx)
 
     if role == "industrialist":
         payload["industrialist"] = industrialist_intelligence(scoped, ctx)
@@ -117,7 +122,8 @@ def industrialist_dashboard(user_id: str) -> dict:
 
 def copilot_chat(user_id: str, message: str, role: str = "farmer", location: str | None = None, context: dict | None = None) -> dict:
     data = load_marketplace_data()
-    ctx = build_role_context(user_id, _role_normalize(role))
+    role_norm = _role_normalize(role)
+    ctx = build_role_context(user_id, role_norm, data)
     scoped = scope_data_for_role(data, ctx)
     profile = load_user_profile(user_id)
     loc = location or profile.get("address")
@@ -143,5 +149,6 @@ def copilot_chat(user_id: str, message: str, role: str = "farmer", location: str
         "active_products": active_products,
         "marketplace_insufficient": not role_analytics_ready(ctx),
         "geo": {"state": parsed_loc.state, "district": parsed_loc.district},
+        "commerce_totals": build_commerce_snapshot(ctx).to_dict(),
     }
-    return run_copilot(message, scoped, user_id, role, loc, enriched_context)
+    return run_copilot(message, scoped, user_id, role, loc, enriched_context, commerce_ctx=ctx)

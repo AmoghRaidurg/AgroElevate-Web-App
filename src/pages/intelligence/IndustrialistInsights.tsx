@@ -13,10 +13,11 @@ import { ChartCard } from '@/components/design/ChartCard';
 import { ThemedChart, CHART_COLORS } from '@/components/design/ThemedChart';
 import { AiStatusBanner } from '@/components/intelligence/AiStatusBanner';
 import { InsufficientDataPanel } from '@/components/intelligence/InsufficientDataPanel';
+import { CopilotPanel } from '@/components/intelligence/CopilotPanel';
 import { Factory, ShieldAlert, Users } from 'lucide-react';
 
 export default function IndustrialistInsights() {
-  const { session } = useAuth();
+  const { session, profile } = useAuth();
   const [data, setData] = useState<IndustrialistDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -136,6 +137,10 @@ export default function IndustrialistInsights() {
             </ChartCard>
 
             <InsightFeed insights={data.insights ?? []} />
+
+            {session?.user.id && (
+              <CopilotPanel userId={session.user.id} role="industrialist" location={profile?.address} />
+            )}
             </>
             )}
           </div>

@@ -26,7 +26,14 @@ export function CopilotPanel({ userId, role, location }: Props) {
     setInput('');
     setLoading(true);
     try {
-      const res = await sendCopilotMessage(userId, text, role, location, context);
+      const res = await sendCopilotMessage(userId, text, role, location, {
+        ...context,
+        conversation_history: messages
+          .filter((m) => m.role === 'user')
+          .map((m) => m.text)
+          .concat(text)
+          .slice(-10),
+      });
       setContext(res.context ?? {});
       setLastData(res);
       setMessages((m) => [...m, { role: 'assistant', text: res.reply.replace(/\*\*/g, '') }]);
@@ -96,7 +103,7 @@ export function CopilotPanel({ userId, role, location }: Props) {
           </Button>
         </form>
         <p className="text-xs text-muted-foreground flex items-center gap-1">
-          <MessageCircle className="h-3 w-3" /> Rule-based advisor — uses AgroElevate ML engines
+          <MessageCircle className="h-3 w-3" /> Semantic assistant — answers from your full commerce history
         </p>
       </div>
     </div>

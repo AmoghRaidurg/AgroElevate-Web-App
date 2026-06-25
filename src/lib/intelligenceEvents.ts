@@ -1,19 +1,25 @@
-/** Event bus: notify intelligence dashboards to reload after commerce activity. */
+/** Event bus: notify dashboards to reload after commerce activity. */
 type Listener = () => void;
 
 const listeners = new Set<Listener>();
 
-export function notifyIntelligenceDirty(): void {
+export function notifyCommerceDirty(): void {
   listeners.forEach((fn) => {
     try {
       fn();
     } catch (e) {
-      console.error('Intelligence refresh listener error:', e);
+      console.error('Commerce refresh listener error:', e);
     }
   });
 }
 
-export function onIntelligenceDirty(listener: Listener): () => void {
+/** @deprecated Use notifyCommerceDirty — intelligence dashboards share the same bus. */
+export const notifyIntelligenceDirty = notifyCommerceDirty;
+
+export function onCommerceDirty(listener: Listener): () => void {
   listeners.add(listener);
   return () => listeners.delete(listener);
 }
+
+/** @deprecated Use onCommerceDirty */
+export const onIntelligenceDirty = onCommerceDirty;

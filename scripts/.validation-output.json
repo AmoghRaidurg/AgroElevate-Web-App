@@ -1,0 +1,641 @@
+{
+  "timestamp": "2026-06-25T19:19:07.364Z",
+  "database": {
+    "products": {
+      "table": "products",
+      "readers": {
+        "ai": true,
+        "dashboard": true,
+        "manufacturing": false,
+        "marketplace": true
+      },
+      "row_count": 68,
+      "latest": [
+        {
+          "id": "ee53097d-1799-4c15-9b65-5f33f764f5dd",
+          "name": "Verify Customer Wheat 1782415128657",
+          "seller_id": "7f29d290-be56-457b-a840-637a92c7e384",
+          "quantity": 18,
+          "price_per_unit": 40,
+          "created_at": "2026-06-25T19:18:55.233286+00:00"
+        },
+        {
+          "id": "9760c796-1c61-427c-a507-97bbbc9d9583",
+          "name": "Verify Relist 1782415128657",
+          "seller_id": "ef5fb99b-b0d1-4cbc-9288-d0afc8d11b9d",
+          "quantity": 0,
+          "price_per_unit": 70,
+          "created_at": "2026-06-25T19:18:53.279949+00:00"
+        },
+        {
+          "id": "7297baa2-7625-428e-b9b0-ec80266cee91",
+          "name": "Verify Wheat 1782415128657",
+          "seller_id": "7f29d290-be56-457b-a840-637a92c7e384",
+          "quantity": 90,
+          "price_per_unit": 50,
+          "created_at": "2026-06-25T19:18:51.529177+00:00"
+        }
+      ],
+      "relationships": [],
+      "error": null
+    },
+    "orders": {
+      "table": "orders",
+      "readers": {
+        "ai": true,
+        "dashboard": true,
+        "manufacturing": false,
+        "marketplace": false
+      },
+      "row_count": 72,
+      "latest": [
+        {
+          "id": "fe5abd69-c81c-44e6-84f2-c0eb08f01119",
+          "buyerId": "c0688a2d-b45b-4fc9-85fb-17752245be57",
+          "buyerRole": "customer",
+          "totalAmount": 80,
+          "status": "completed",
+          "createdAt": "2026-06-25T19:18:55.389354+00:00"
+        },
+        {
+          "id": "2b01538c-bd3e-4f49-8bf0-42573e45bacf",
+          "buyerId": "f182ab61-6a50-4120-9813-98d8716e7f5c",
+          "buyerRole": "industrialist",
+          "totalAmount": 350,
+          "status": "completed",
+          "createdAt": "2026-06-25T19:18:53.743972+00:00"
+        },
+        {
+          "id": "3eeebe1a-6654-497f-973d-9e8d66c0a66d",
+          "buyerId": "ef5fb99b-b0d1-4cbc-9288-d0afc8d11b9d",
+          "buyerRole": "middleman",
+          "totalAmount": 500,
+          "status": "completed",
+          "createdAt": "2026-06-25T19:18:52.488343+00:00"
+        }
+      ],
+      "relationships": [],
+      "error": null
+    },
+    "order_items": {
+      "table": "order_items",
+      "readers": {
+        "ai": true,
+        "dashboard": true,
+        "manufacturing": false,
+        "marketplace": true
+      },
+      "row_count": 72,
+      "latest": [],
+      "relationships": [
+        "orderId → orders.id",
+        "farmerId/sellerId → profiles.id",
+        "originalFarmerId → farmer profile"
+      ],
+      "error": null,
+      "latest_error": "column order_items.createdAt does not exist"
+    },
+    "wallet_history": {
+      "table": "wallet_history",
+      "readers": {
+        "ai": true,
+        "dashboard": true,
+        "manufacturing": false,
+        "marketplace": false
+      },
+      "row_count": 461,
+      "latest": [
+        {
+          "id": "b867ae04-312c-4ac5-8a33-5891a976a9be",
+          "userId": "7f29d290-be56-457b-a840-637a92c7e384",
+          "type": "sale_income",
+          "amount": 80,
+          "createdAt": "2026-06-25T19:18:55.389354+00:00",
+          "orderId": "fe5abd69-c81c-44e6-84f2-c0eb08f01119"
+        },
+        {
+          "id": "3ba89c41-407c-4e45-8e1c-8b968578a2b9",
+          "userId": "c0688a2d-b45b-4fc9-85fb-17752245be57",
+          "type": "purchase",
+          "amount": -80,
+          "createdAt": "2026-06-25T19:18:55.389354+00:00",
+          "orderId": "fe5abd69-c81c-44e6-84f2-c0eb08f01119"
+        },
+        {
+          "id": "6511d2ab-d680-4ca2-9fff-b32e68ede56d",
+          "userId": "c0688a2d-b45b-4fc9-85fb-17752245be57",
+          "type": "deposit",
+          "amount": 3000,
+          "createdAt": "2026-06-25T19:18:55.079131+00:00",
+          "orderId": null
+        }
+      ],
+      "relationships": [],
+      "error": null
+    },
+    "transactions": {
+      "table": "transactions",
+      "readers": {
+        "ai": false,
+        "dashboard": false,
+        "manufacturing": false,
+        "marketplace": false
+      },
+      "row_count": 72,
+      "latest": [
+        {
+          "id": "813ab9e2-cacc-46ab-b5dc-299708155c9b",
+          "userId": "c0688a2d-b45b-4fc9-85fb-17752245be57",
+          "type": "purchase",
+          "amount": -80,
+          "orderId": "fe5abd69-c81c-44e6-84f2-c0eb08f01119",
+          "createdAt": "2026-06-25T19:18:55.389354+00:00"
+        },
+        {
+          "id": "32765c7e-a441-46e7-a52d-4ab88b68ba6d",
+          "userId": "f182ab61-6a50-4120-9813-98d8716e7f5c",
+          "type": "purchase",
+          "amount": -350,
+          "orderId": "2b01538c-bd3e-4f49-8bf0-42573e45bacf",
+          "createdAt": "2026-06-25T19:18:53.743972+00:00"
+        },
+        {
+          "id": "c1ffc9d3-7dbf-4388-acd7-22f16fcc8f5d",
+          "userId": "ef5fb99b-b0d1-4cbc-9288-d0afc8d11b9d",
+          "type": "purchase",
+          "amount": -500,
+          "orderId": "3eeebe1a-6654-497f-973d-9e8d66c0a66d",
+          "createdAt": "2026-06-25T19:18:52.488343+00:00"
+        }
+      ],
+      "relationships": [],
+      "error": null
+    },
+    "royalty_obligations": {
+      "table": "royalty_obligations",
+      "readers": {
+        "ai": false,
+        "dashboard": true,
+        "manufacturing": true,
+        "marketplace": false
+      },
+      "row_count": 21,
+      "latest": [
+        {
+          "id": "f32bc781-7e91-454a-8ae1-dfd6c1596e09",
+          "status": "pending",
+          "beneficiary_farmer_id": "7f29d290-be56-457b-a840-637a92c7e384",
+          "obligor_id": "f182ab61-6a50-4120-9813-98d8716e7f5c",
+          "manufacturing_batch_id": "701b00b6-9923-4a26-916d-499f87945684"
+        },
+        {
+          "id": "69c4aa3c-2d18-4f71-913e-5ba4505ee374",
+          "status": "settled",
+          "beneficiary_farmer_id": "7f29d290-be56-457b-a840-637a92c7e384",
+          "obligor_id": "f182ab61-6a50-4120-9813-98d8716e7f5c",
+          "manufacturing_batch_id": "3f7eaae7-2a90-4110-995f-ad7ac2775d56"
+        },
+        {
+          "id": "bf6a7754-7f08-4a82-aa50-0cbf15e7e944",
+          "status": "pending",
+          "beneficiary_farmer_id": "7f29d290-be56-457b-a840-637a92c7e384",
+          "obligor_id": "f182ab61-6a50-4120-9813-98d8716e7f5c",
+          "manufacturing_batch_id": "59b64e5c-cab8-4a5c-8534-922025706b25"
+        }
+      ],
+      "relationships": [
+        "manufacturing_batch_id → manufacturing_batches",
+        "beneficiary_farmer_id → farmer"
+      ],
+      "error": null
+    },
+    "manufacturing_batches": {
+      "table": "manufacturing_batches",
+      "readers": {
+        "ai": false,
+        "dashboard": true,
+        "manufacturing": true,
+        "marketplace": false
+      },
+      "row_count": 21,
+      "latest": [
+        {
+          "id": "701b00b6-9923-4a26-916d-499f87945684",
+          "industrialist_id": "f182ab61-6a50-4120-9813-98d8716e7f5c",
+          "source_order_item_id": "d08c962b-fbb8-40e2-a49d-102989220874",
+          "status": "draft",
+          "input_crop_name": "Verify Relist 1782415128657"
+        },
+        {
+          "id": "3f7eaae7-2a90-4110-995f-ad7ac2775d56",
+          "industrialist_id": "f182ab61-6a50-4120-9813-98d8716e7f5c",
+          "source_order_item_id": "104f0c1f-fe2b-44f5-ad9c-ac9bae8af33d",
+          "status": "completed",
+          "input_crop_name": "Validation Relist Tomato 1782414888258"
+        },
+        {
+          "id": "59b64e5c-cab8-4a5c-8534-922025706b25",
+          "industrialist_id": "f182ab61-6a50-4120-9813-98d8716e7f5c",
+          "source_order_item_id": "caf90303-b427-4f0b-9495-73d74494fea8",
+          "status": "draft",
+          "input_crop_name": "Verify Relist 1782414889315"
+        }
+      ],
+      "relationships": [
+        "source_order_id → orders",
+        "source_order_item_id → order_items",
+        "industrialist_id → profiles"
+      ],
+      "error": null
+    },
+    "processed_products": {
+      "table": "processed_products",
+      "readers": {
+        "ai": false,
+        "dashboard": true,
+        "manufacturing": true,
+        "marketplace": false
+      },
+      "row_count": 8,
+      "latest": [
+        {
+          "id": "090d3339-2738-4aa3-9d7c-8f2691a9879d",
+          "name": "Validation Processed 1782414888258",
+          "status": "listed",
+          "qty_produced": 8,
+          "product_id": "d9530c16-1644-4f19-911d-c6d765289a69",
+          "manufacturing_batch_id": "3f7eaae7-2a90-4110-995f-ad7ac2775d56"
+        },
+        {
+          "id": "35ac58c3-755d-4d72-bbad-6d5234a23e95",
+          "name": "Validation Processed 1782414688621",
+          "status": "listed",
+          "qty_produced": 8,
+          "product_id": "f372d1cf-e545-4724-a5c6-c671cbe1c1ba",
+          "manufacturing_batch_id": "6e5c34f3-5349-450e-a427-bc585a508797"
+        },
+        {
+          "id": "ffa2b112-1822-4993-acb1-7c4d7e440fbd",
+          "name": "maize (processed)",
+          "status": "created",
+          "qty_produced": 3,
+          "product_id": null,
+          "manufacturing_batch_id": "c4383a0b-c52a-4d0e-a4fd-2fd3bdd542e6"
+        }
+      ],
+      "relationships": [
+        "manufacturing_batch_id → manufacturing_batches",
+        "product_id → products"
+      ],
+      "error": null
+    },
+    "profiles": {
+      "table": "profiles",
+      "readers": {
+        "ai": true,
+        "dashboard": false,
+        "manufacturing": false,
+        "marketplace": true
+      },
+      "row_count": 17,
+      "latest": [
+        {
+          "id": "a4dd3cae-42fc-4169-a289-7f8fd2f5ed3f",
+          "name": "Soham Morankar ",
+          "role": "customer",
+          "created_at": "2026-06-25T16:01:40.405834+00:00"
+        },
+        {
+          "id": "c3da8c4b-9e71-4050-bb5d-73a73cbd8b67",
+          "name": "Prasanna Atul Kekare",
+          "role": "middleman",
+          "created_at": "2026-06-25T12:40:03.320773+00:00"
+        },
+        {
+          "id": "9a4bb514-86db-4c58-ae10-d0f50f243f71",
+          "name": "Siddheya Masurakar",
+          "role": "industrialist",
+          "created_at": "2026-06-24T23:25:34.428714+00:00"
+        }
+      ],
+      "relationships": [],
+      "error": null
+    }
+  },
+  "historical": {
+    "baseline_counts": {
+      "products": 68,
+      "orders": 72,
+      "order_items": 72,
+      "wallet_history": 461,
+      "transactions": 72,
+      "royalty_obligations": 21,
+      "manufacturing_batches": 21,
+      "processed_products": 8,
+      "profiles": 17
+    },
+    "products_after": 71,
+    "orders_after": 75,
+    "order_items_after": 75,
+    "wallet_history_after": 474,
+    "transactions_after": 75,
+    "royalty_obligations_after": 22,
+    "manufacturing_batches_after": 22,
+    "processed_products_after": 9,
+    "profiles_after": 17
+  },
+  "businessFlow": [
+    {
+      "step": "Historical baseline captured",
+      "ok": true,
+      "detail": "{\"products\":68,\"orders\":72,\"order_items\":72,\"wallet_history\":461,\"transactions\":72,\"royalty_obligations\":21,\"manufacturing_batches\":21,\"processed_products\":8,\"profiles\":17}",
+      "at": "2026-06-25T19:19:11.656Z"
+    },
+    {
+      "step": "Test accounts sign-in",
+      "ok": true,
+      "detail": "farmer=7f29d290…",
+      "at": "2026-06-25T19:19:13.254Z"
+    },
+    {
+      "step": "STEP 1: product created",
+      "ok": true,
+      "detail": "512ff9b4-6681-4a4c-ba5a-19f7bf63fd70",
+      "at": "2026-06-25T19:19:13.415Z"
+    },
+    {
+      "step": "STEP 1: marketplace visible",
+      "ok": true,
+      "detail": "Validation Tomato 1782415147389",
+      "at": "2026-06-25T19:19:13.565Z"
+    },
+    {
+      "step": "STEP 2: Trader wallet funded",
+      "ok": true,
+      "detail": "₹15000",
+      "at": "2026-06-25T19:19:13.894Z"
+    },
+    {
+      "step": "STEP 2: checkout_order",
+      "ok": true,
+      "detail": "order=90f29987-d541-426a-9d33-35015ec615b4 ₹700",
+      "at": "2026-06-25T19:19:14.204Z"
+    },
+    {
+      "step": "STEP 2: wallet debit",
+      "ok": true,
+      "detail": "₹218587.5 → ₹217887.5",
+      "at": "2026-06-25T19:19:14.353Z"
+    },
+    {
+      "step": "STEP 2: farmer wallet credit",
+      "ok": true,
+      "detail": "₹13096.25",
+      "at": "2026-06-25T19:19:14.505Z"
+    },
+    {
+      "step": "STEP 2: order_items created",
+      "ok": true,
+      "detail": "1 item(s)",
+      "at": "2026-06-25T19:19:14.656Z"
+    },
+    {
+      "step": "STEP 2: order completed",
+      "ok": true,
+      "detail": "completed",
+      "at": "2026-06-25T19:19:14.806Z"
+    },
+    {
+      "step": "STEP 3: relist product created",
+      "ok": true,
+      "detail": "7a720923-f4c2-4448-b6ce-45c66d12e9c5",
+      "at": "2026-06-25T19:19:15.112Z"
+    },
+    {
+      "step": "STEP 3: originalFarmerId in meta",
+      "ok": true,
+      "detail": "7f29d290",
+      "at": "2026-06-25T19:19:15.112Z"
+    },
+    {
+      "step": "STEP 3: sellerId = trader",
+      "ok": true,
+      "detail": "ef5fb99b",
+      "at": "2026-06-25T19:19:15.112Z"
+    },
+    {
+      "step": "STEP 4: checkout_order",
+      "ok": true,
+      "detail": "order=6af7e0a2-e9c5-484a-af7c-29c3a734e0a9",
+      "at": "2026-06-25T19:19:15.576Z"
+    },
+    {
+      "step": "STEP 4: sellerId = trader",
+      "ok": true,
+      "detail": "ef5fb99b",
+      "at": "2026-06-25T19:19:15.727Z"
+    },
+    {
+      "step": "STEP 4: originalFarmerId = farmer",
+      "ok": true,
+      "detail": "7f29d290",
+      "at": "2026-06-25T19:19:15.727Z"
+    },
+    {
+      "step": "STEP 4: sync procurement batches",
+      "ok": true,
+      "detail": "created=0",
+      "at": "2026-06-25T19:19:15.879Z"
+    },
+    {
+      "step": "STEP 4: manufacturing batch",
+      "ok": true,
+      "detail": "2e5fa3b1… draft",
+      "at": "2026-06-25T19:19:16.035Z"
+    },
+    {
+      "step": "STEP 4: royalty obligation",
+      "ok": true,
+      "detail": "pending",
+      "at": "2026-06-25T19:19:16.187Z"
+    },
+    {
+      "step": "STEP 5: processed_products created",
+      "ok": true,
+      "detail": "79644505",
+      "at": "2026-06-25T19:19:16.495Z"
+    },
+    {
+      "step": "STEP 5: processed product status",
+      "ok": true,
+      "detail": "created",
+      "at": "2026-06-25T19:19:16.647Z"
+    },
+    {
+      "step": "STEP 6: marketplace listing",
+      "ok": true,
+      "detail": "fba408a3",
+      "at": "2026-06-25T19:19:16.954Z"
+    },
+    {
+      "step": "STEP 6: ownership chain in description",
+      "ok": true,
+      "detail": "industrialist seller",
+      "at": "2026-06-25T19:19:17.107Z"
+    },
+    {
+      "step": "STEP 7: customer order",
+      "ok": true,
+      "detail": "221c8667-0504-4b1b-a679-7a211e5bfd6e",
+      "at": "2026-06-25T19:19:17.722Z"
+    },
+    {
+      "step": "STEP 7: royalty on processed sale",
+      "ok": true,
+      "detail": "1 royalty row(s)",
+      "at": "2026-06-25T19:19:17.872Z"
+    },
+    {
+      "step": "STEP 7: inventory decremented",
+      "ok": true,
+      "detail": "8 → 6",
+      "at": "2026-06-25T19:19:18.025Z"
+    },
+    {
+      "step": "Historical products preserved",
+      "ok": true,
+      "detail": "68 → 71",
+      "at": "2026-06-25T19:19:18.178Z"
+    },
+    {
+      "step": "Historical orders preserved",
+      "ok": true,
+      "detail": "72 → 75",
+      "at": "2026-06-25T19:19:18.336Z"
+    },
+    {
+      "step": "Historical order_items preserved",
+      "ok": true,
+      "detail": "72 → 75",
+      "at": "2026-06-25T19:19:18.513Z"
+    },
+    {
+      "step": "Historical wallet_history preserved",
+      "ok": true,
+      "detail": "461 → 474",
+      "at": "2026-06-25T19:19:18.685Z"
+    },
+    {
+      "step": "Historical transactions preserved",
+      "ok": true,
+      "detail": "72 → 75",
+      "at": "2026-06-25T19:19:18.870Z"
+    },
+    {
+      "step": "Historical royalty_obligations preserved",
+      "ok": true,
+      "detail": "21 → 22",
+      "at": "2026-06-25T19:19:19.051Z"
+    },
+    {
+      "step": "Historical manufacturing_batches preserved",
+      "ok": true,
+      "detail": "21 → 22",
+      "at": "2026-06-25T19:19:19.220Z"
+    },
+    {
+      "step": "Historical processed_products preserved",
+      "ok": true,
+      "detail": "8 → 9",
+      "at": "2026-06-25T19:19:19.390Z"
+    },
+    {
+      "step": "Historical profiles preserved",
+      "ok": true,
+      "detail": "17 → 17",
+      "at": "2026-06-25T19:19:19.567Z"
+    },
+    {
+      "step": "AI health reachable",
+      "ok": true,
+      "detail": "4ms",
+      "at": "2026-06-25T19:19:19.571Z"
+    },
+    {
+      "step": "AI farmer dashboard",
+      "ok": true,
+      "detail": "4223ms",
+      "at": "2026-06-25T19:19:23.794Z"
+    }
+  ],
+  "performance": {
+    "checkout_farmer_to_trader_ms": 157,
+    "ai_health_ms": 4,
+    "ai_farmer_dashboard_ms": 4223,
+    "marketplace_products_query_ms": 180
+  },
+  "regression": [
+    {
+      "name": "RPC checkout_order exists",
+      "ok": true,
+      "detail": "invoked or available in flow"
+    },
+    {
+      "name": "RPC get_wallet_balance exists",
+      "ok": true,
+      "detail": "invoked or available in flow"
+    },
+    {
+      "name": "RPC get_my_manufacturing_batches exists",
+      "ok": true,
+      "detail": "invoked or available in flow"
+    },
+    {
+      "name": "RPC sync_industrialist_procurement_batches exists",
+      "ok": true,
+      "detail": "invoked or available in flow"
+    },
+    {
+      "name": "RPC complete_manufacturing_batch exists",
+      "ok": true,
+      "detail": "invoked or available in flow"
+    },
+    {
+      "name": "RPC list_processed_product exists",
+      "ok": true,
+      "detail": "invoked or available in flow"
+    },
+    {
+      "name": "RPC get_my_royalty_obligations exists",
+      "ok": true,
+      "detail": "invoked or available in flow"
+    },
+    {
+      "name": "RPC get_my_processed_products exists",
+      "ok": true,
+      "detail": "invoked or available in flow"
+    },
+    {
+      "name": "Marketplace products readable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Wallet history readable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Orders readable",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "errors": [],
+  "test_user_ids": {
+    "farmer": "7f29d290-be56-457b-a840-637a92c7e384",
+    "trader": "ef5fb99b-b0d1-4cbc-9288-d0afc8d11b9d",
+    "industrialist": "f182ab61-6a50-4120-9813-98d8716e7f5c",
+    "customer": "c0688a2d-b45b-4fc9-85fb-17752245be57"
+  }
+}

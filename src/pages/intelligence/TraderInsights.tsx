@@ -13,10 +13,11 @@ import { ChartCard } from '@/components/design/ChartCard';
 import { ThemedChart, CHART_COLORS } from '@/components/design/ThemedChart';
 import { AiStatusBanner } from '@/components/intelligence/AiStatusBanner';
 import { InsufficientDataPanel } from '@/components/intelligence/InsufficientDataPanel';
+import { CopilotPanel } from '@/components/intelligence/CopilotPanel';
 import { AlertTriangle, ShoppingCart, TrendingUp, Package } from 'lucide-react';
 
 export default function TraderInsights() {
-  const { session } = useAuth();
+  const { session, profile } = useAuth();
   const [data, setData] = useState<TraderDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -132,6 +133,10 @@ export default function TraderInsights() {
             </IntelligencePanel>
 
             <InsightFeed insights={data.insights ?? []} />
+
+            {session?.user.id && (
+              <CopilotPanel userId={session.user.id} role="middleman" location={profile?.address} />
+            )}
             </>
             )}
           </div>

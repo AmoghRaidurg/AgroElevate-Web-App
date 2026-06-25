@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { SEO } from '@/components/SEO';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/lib/supabaseClient';
@@ -15,6 +15,7 @@ import { IndustrialistDashboardSection } from '@/components/dashboard/Industrial
 import { CustomerDashboardSection } from '@/components/dashboard/CustomerDashboardSection';
 import {
   fetchManufacturingBatches,
+  syncIndustrialistProcurementBatches,
   fetchProcessedProducts,
   fetchRoyaltyObligations,
   type ManufacturingBatch,
@@ -22,6 +23,7 @@ import {
   type RoyaltyObligation,
 } from '@/lib/manufacturingData';
 import { SupplyChainValueChart } from '@/components/charts/SupplyChainValueChart';
+import { onCommerceDirty } from '@/lib/intelligenceEvents';
 
 export default function Dashboard() {
   const { session, profile } = useAuth();
@@ -32,84 +34,62 @@ export default function Dashboard() {
   const [processedProducts, setProcessedProducts] = useState<ProcessedProduct[]>([]);
   const [obligations, setObligations] = useState<RoyaltyObligation[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
-  const loadedKeyRef = useRef<string | null>(null);
 
   const role = profile?.role;
   const userId = session?.user?.id;
 
-  const refreshIndustrialData = async () => {
-    const [b, p, o] = await Promise.all([
-      fetchManufacturingBatches(),
-      fetchProcessedProducts(),
-      fetchRoyaltyObligations(),
-    ]);
-    setBatches(b);
-    setProcessedProducts(p);
-    setObligations(o);
-  };
-
-  useEffect(() => {
+  const refreshDashboard = useCallback(async () => {
     if (!userId || !role) return;
 
-    const fetchKey = `${userId}:${role}`;
-    if (loadedKeyRef.current === fetchKey) {
-      setDataLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-
-    const load = async () => {
-      setDataLoading(true);
-      try {
-        if (role === 'farmer') {
-          const [stats, obligs] = await Promise.all([
-            fetchFarmerSalesStats(userId),
-            fetchRoyaltyObligations(),
-          ]);
-          if (cancelled) return;
-          setFarmerStats(stats);
-          setObligations(obligs);
-        } else if (role === 'middleman') {
-          const [buyerOrders, inventory] = await Promise.all([
-            supabase.from('orders').select('id, totalAmount, createdAt').eq('buyerId', userId),
-            loadTraderInventory(userId),
-          ]);
-          if (cancelled) return;
-          if (!buyerOrders.error) setOrders(buyerOrders.data ?? []);
-          setTraderStats(inventory);
-        } else if (role === 'industrialist') {
-          const { data } = await supabase
-            .from('orders')
-            .select('id, totalAmount, createdAt')
-            .eq('buyerId', userId)
-            .order('createdAt', { ascending: false });
-          if (cancelled) return;
-          setOrders(data ?? []);
-          await refreshIndustrialData();
-        } else {
-          const { data } = await supabase
-            .from('orders')
-            .select('id, totalAmount, createdAt')
-            .eq('buyerId', userId)
-            .order('createdAt', { ascending: false });
-          if (cancelled) return;
-          setOrders(data ?? []);
-        }
-        loadedKeyRef.current = fetchKey;
-      } finally {
-        if (!cancelled) setDataLoading(false);
+    setDataLoading(true);
+    try {
+      if (role === 'farmer') {
+        const [stats, obligs] = await Promise.all([
+          fetchFarmerSalesStats(userId),
+          fetchRoyaltyObligations(),
+        ]);
+        setFarmerStats(stats);
+        setObligations(obligs);
+      } else if (role === 'middleman') {
+        const [buyerOrders, inventory] = await Promise.all([
+          supabase.from('orders').select('id, totalAmount, createdAt').eq('buyerId', userId).order('createdAt', { ascending: false }),
+          loadTraderInventory(userId),
+        ]);
+        if (!buyerOrders.error) setOrders(buyerOrders.data ?? []);
+        setTraderStats(inventory);
+      } else if (role === 'industrialist') {
+        await syncIndustrialistProcurementBatches();
+        const [ordersRes, b, p, o] = await Promise.all([
+          supabase.from('orders').select('id, totalAmount, createdAt').eq('buyerId', userId).order('createdAt', { ascending: false }),
+          fetchManufacturingBatches(),
+          fetchProcessedProducts(),
+          fetchRoyaltyObligations(),
+        ]);
+        setOrders(ordersRes.data ?? []);
+        setBatches(b);
+        setProcessedProducts(p);
+        setObligations(o);
+      } else {
+        const { data } = await supabase
+          .from('orders')
+          .select('id, totalAmount, createdAt')
+          .eq('buyerId', userId)
+          .order('createdAt', { ascending: false });
+        setOrders(data ?? []);
       }
-    };
-
-    void load();
-    return () => {
-      cancelled = true;
-    };
+    } finally {
+      setDataLoading(false);
+    }
   }, [userId, role]);
 
-  const totalSpent = orders.reduce((s, o) => s + (Number(o.totalAmount) || 0), 0);
+  useEffect(() => {
+    void refreshDashboard();
+    return onCommerceDirty(() => {
+      void refreshDashboard();
+    });
+  }, [refreshDashboard]);
 
+  const totalSpent = orders.reduce((s, o) => s + (Number(o.totalAmount) || 0), 0);
   const roleMetricsLoading = dataLoading || !role;
 
   return (
@@ -160,7 +140,7 @@ export default function Dashboard() {
                 obligations={obligations}
                 userId={userId ?? ''}
                 userName={profile?.name}
-                onRefresh={refreshIndustrialData}
+                onRefresh={refreshDashboard}
               />
             )}
             {role === 'customer' && (

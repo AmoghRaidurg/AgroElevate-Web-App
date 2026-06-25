@@ -93,9 +93,42 @@ def test_demo_credit_excluded():
     print("Demo credit exclusion PASS")
 
 
+def test_commerce_snapshot_full_history():
+    data = _base_data()
+    items = []
+    for i in range(25):
+        items.append({
+            "id": f"i{i}", "order_id": f"o{i // 5}", "crop_name": "Tomato" if i % 2 == 0 else "Wheat",
+            "quantity": 10, "price_per_unit": 30, "total_price": 300,
+            "farmer_id": "farmer-1", "original_farmer_id": None, "seller_id": "farmer-1",
+            "created_at": f"2025-0{(i % 9) + 1}-01", "buyer_role": "customer",
+        })
+    data["order_items"] = pd.DataFrame(items)
+    from app.commerce_snapshot import build_commerce_snapshot
+    ctx = build_role_context("farmer-1", "farmer", data)
+    snap = build_commerce_snapshot(ctx)
+    assert snap.total_sales_count == 25, "All historical sale lines must be counted"
+    assert snap.total_revenue == 7500.0
+    assert len(snap.top_crops_by_volume) >= 2
+    print("Commerce snapshot PASS: aggregates full historical farmer sales")
+
+
+def test_copilot_semantic_intents():
+    from app.models.copilot import _classify_intent
+    intent, conf = _classify_intent("How much did I earn this season?")
+    assert intent == "earnings", f"Expected earnings, got {intent}"
+    intent2, _ = _classify_intent("What should I manufacture next quarter?")
+    assert intent2 in ("procurement", "forecast", "grow_recommendation")
+    intent3, _ = _classify_intent("Why is my income decreasing?")
+    assert intent3 == "earnings"
+    print("Copilot semantic intent PASS")
+
+
 if __name__ == "__main__":
     test_scenario_1_listing_only()
     test_scenario_2_trader_buys()
     test_scenario_3_industrialist_procurement()
     test_demo_credit_excluded()
+    test_commerce_snapshot_full_history()
+    test_copilot_semantic_intents()
     print("All role commerce tests passed.")

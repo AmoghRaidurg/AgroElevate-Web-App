@@ -14,6 +14,7 @@ from app.commerce_queries import (
     fetch_buyer_procurement,
     fetch_trader_sales_items,
     fetch_user_listings,
+    fetch_wallet_history,
 )
 
 FARMER_REVENUE_TYPES = frozenset({"sale_income", "royalty_income"})
@@ -55,22 +56,7 @@ def _is_commerce_wallet_row(row: dict) -> bool:
 
 
 def load_user_wallet_entries(user_id: str) -> list[dict]:
-    sb = get_supabase()
-    if not sb:
-        return []
-    try:
-        res = (
-            sb.table("wallet_history")
-            .select("amount, type, reference_type, orderId, description, createdAt")
-            .eq("userId", user_id)
-            .order("createdAt", desc=True)
-            .limit(500)
-            .execute()
-        )
-        return [r for r in (res.data or []) if _is_commerce_wallet_row(r)]
-    except Exception as exc:
-        print(f"Wallet history load warning: {exc}")
-        return []
+    return [r for r in fetch_wallet_history(user_id) if _is_commerce_wallet_row(r)]
 
 
 def _wallet_sum(entries: list[dict], types: frozenset[str], positive_only: bool = True) -> float:
@@ -89,15 +75,15 @@ def _wallet_sum(entries: list[dict], types: frozenset[str], positive_only: bool 
 
 
 def build_role_context(user_id: str, role: str, data: dict | None = None) -> RoleCommerceContext:
+    """Build role commerce context. Uses direct Supabase queries; falls back to scoped platform data."""
     role = "middleman" if role == "trader" else role
     ctx = RoleCommerceContext(user_id=user_id, role=role)
     ctx.wallet_entries = load_user_wallet_entries(user_id)
 
     sb = get_supabase()
-    use_live = sb is not None and data is None
 
     if role == "farmer":
-        if use_live:
+        if sb:
             ctx.farmer_listings = fetch_user_listings(user_id)
             all_farmer_lines = fetch_farmer_sales_items(user_id)
         else:
@@ -111,6 +97,7 @@ def build_role_context(user_id: str, role: str, data: dict | None = None) -> Rol
             ].copy()
         else:
             ctx.farmer_sales_items = all_farmer_lines
+        _merge_farmer_fallback(ctx, data)
         ctx.farmer_wallet_revenue = _wallet_sum(ctx.wallet_entries, FARMER_REVENUE_TYPES)
         ctx.farmer_wallet_royalty = _wallet_sum(
             [e for e in ctx.wallet_entries if str(e.get("type")) == "royalty_income"],
@@ -118,38 +105,72 @@ def build_role_context(user_id: str, role: str, data: dict | None = None) -> Rol
         )
 
     elif role == "middleman":
-        if use_live:
+        if sb:
             _, ctx.trader_purchases = fetch_buyer_procurement(user_id)
             ctx.trader_sales = fetch_trader_sales_items(user_id)
             ctx.trader_inventory = fetch_user_listings(user_id)
         else:
-            items = (data or {}).get("order_items", pd.DataFrame())
-            orders = (data or {}).get("orders", pd.DataFrame())
-            products = (data or {}).get("products", pd.DataFrame())
-            if not orders.empty:
-                buyer_orders = orders[orders["buyer_id"].astype(str) == str(user_id)]["order_id"]
-                ctx.trader_purchases = items[items["order_id"].isin(buyer_orders)] if not items.empty else items.iloc[0:0]
-            if not items.empty and "seller_id" in items.columns:
-                ctx.trader_sales = items[items["seller_id"].astype(str) == str(user_id)]
-            ctx.trader_inventory = products[products["seller_id"].astype(str) == str(user_id)] if not products.empty and "seller_id" in products.columns else products.iloc[0:0]
+            _apply_trader_fallback(ctx, user_id, data)
+        _merge_trader_fallback(ctx, user_id, data)
         ctx.trader_wallet_revenue = _wallet_sum(ctx.wallet_entries, TRADER_REVENUE_TYPES)
         ctx.trader_wallet_spend = _wallet_sum(ctx.wallet_entries, COMMERCE_SPEND_TYPES, positive_only=False)
 
     elif role == "industrialist":
-        if use_live:
+        if sb:
             ctx.industrialist_procurement_orders, ctx.industrialist_procurement_items = fetch_buyer_procurement(user_id)
         else:
-            orders = (data or {}).get("orders", pd.DataFrame())
-            items = (data or {}).get("order_items", pd.DataFrame())
-            ctx.industrialist_procurement_orders = orders[orders["buyer_id"].astype(str) == str(user_id)] if not orders.empty else orders.iloc[0:0]
-            if not ctx.industrialist_procurement_orders.empty and not items.empty:
-                oids = ctx.industrialist_procurement_orders["order_id"]
-                ctx.industrialist_procurement_items = items[items["order_id"].isin(oids)]
-            else:
-                ctx.industrialist_procurement_items = items.iloc[0:0]
+            _apply_industrialist_fallback(ctx, user_id, data)
+        _merge_industrialist_fallback(ctx, user_id, data)
         ctx.industrialist_wallet_spend = _wallet_sum(ctx.wallet_entries, COMMERCE_SPEND_TYPES, positive_only=False)
 
     return ctx
+
+
+def _merge_farmer_fallback(ctx: RoleCommerceContext, data: dict | None) -> None:
+    if not data or not ctx.farmer_sales_items.empty:
+        return
+    items = data.get("order_items", pd.DataFrame())
+    if items.empty or "farmer_id" not in items.columns:
+        return
+    ctx.farmer_sales_items = items[items["farmer_id"].astype(str) == str(ctx.user_id)].copy()
+
+
+def _merge_trader_fallback(ctx: RoleCommerceContext, user_id: str, data: dict | None) -> None:
+    if not data:
+        return
+    if ctx.trader_purchases.empty or ctx.trader_sales.empty or ctx.trader_inventory.empty:
+        _apply_trader_fallback(ctx, user_id, data)
+
+
+def _apply_trader_fallback(ctx: RoleCommerceContext, user_id: str, data: dict | None) -> None:
+    items = (data or {}).get("order_items", pd.DataFrame())
+    orders = (data or {}).get("orders", pd.DataFrame())
+    products = (data or {}).get("products", pd.DataFrame())
+    if not orders.empty:
+        buyer_orders = orders[orders["buyer_id"].astype(str) == str(user_id)]["order_id"]
+        if ctx.trader_purchases.empty and not items.empty:
+            ctx.trader_purchases = items[items["order_id"].isin(buyer_orders)]
+    if ctx.trader_sales.empty and not items.empty and "seller_id" in items.columns:
+        ctx.trader_sales = items[items["seller_id"].astype(str) == str(user_id)]
+    if ctx.trader_inventory.empty and not products.empty and "seller_id" in products.columns:
+        ctx.trader_inventory = products[products["seller_id"].astype(str) == str(user_id)]
+
+
+def _merge_industrialist_fallback(ctx: RoleCommerceContext, user_id: str, data: dict | None) -> None:
+    if not data or not ctx.industrialist_procurement_items.empty:
+        return
+    _apply_industrialist_fallback(ctx, user_id, data)
+
+
+def _apply_industrialist_fallback(ctx: RoleCommerceContext, user_id: str, data: dict | None) -> None:
+    orders = (data or {}).get("orders", pd.DataFrame())
+    items = (data or {}).get("order_items", pd.DataFrame())
+    ctx.industrialist_procurement_orders = orders[orders["buyer_id"].astype(str) == str(user_id)] if not orders.empty else orders.iloc[0:0]
+    if not ctx.industrialist_procurement_orders.empty and not items.empty:
+        oids = ctx.industrialist_procurement_orders["order_id"]
+        ctx.industrialist_procurement_items = items[items["order_id"].isin(oids)]
+    else:
+        ctx.industrialist_procurement_items = items.iloc[0:0]
 
 
 def scope_data_for_role(data: dict, ctx: RoleCommerceContext) -> dict:

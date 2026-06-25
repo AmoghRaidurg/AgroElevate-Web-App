@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { notifyCommerceDirty } from './intelligenceEvents';
 
 export interface ManufacturingBatch {
   id: string;
@@ -57,7 +58,19 @@ export async function fetchManufacturingBatches(): Promise<ManufacturingBatch[]>
     console.error('Manufacturing batches error:', error);
     return [];
   }
-  return (data ?? []) as ManufacturingBatch[];
+  const batches = (data ?? []) as ManufacturingBatch[];
+  return batches.filter((b) => b.source_order_item_id && b.source_order_id);
+}
+
+/** Backfill manufacturing batches from all historical industrialist procurement (no demo rows). */
+export async function syncIndustrialistProcurementBatches(): Promise<{ created: number }> {
+  const { data, error } = await supabase.rpc('sync_industrialist_procurement_batches');
+  if (error) {
+    console.error('Sync procurement batches error:', error);
+    return { created: 0 };
+  }
+  const result = data as { created?: number } | null;
+  return { created: Number(result?.created ?? 0) };
 }
 
 export async function fetchRoyaltyObligations(): Promise<RoyaltyObligation[]> {
@@ -91,6 +104,7 @@ export async function completeManufacturingBatch(
     p_unit: unit,
   });
   if (error) throw error;
+  notifyCommerceDirty();
   return data as { batch_id: string; processed_product_id: string; royalty_obligation_id: string };
 }
 
@@ -107,6 +121,7 @@ export async function listProcessedProduct(
     p_crop_type: cropType,
   });
   if (error) throw error;
+  notifyCommerceDirty();
   return data as { product_id: string; processed_product_id: string };
 }
 
