@@ -22,7 +22,7 @@ def _base_data():
         ]),
         "products": pd.DataFrame(columns=["id", "name", "crop_type", "price_per_unit", "quantity", "seller_id"]),
         "synthetic": pd.DataFrame(),
-        "use_synthetic": False,
+        "live_data": True,
     }
 
 

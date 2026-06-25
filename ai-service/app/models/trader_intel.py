@@ -1,25 +1,11 @@
-"""Trader-specific intelligence — scoped to trader purchases, resales, and inventory."""
+"""Trader intelligence — purchases, resales, inventory from live commerce."""
 from __future__ import annotations
 
-import numpy as np
-from app.feature_engineering import build_crop_demand_features
-from app.models.demand_intelligence import generate_demand_intelligence
+import pandas as pd
+from app.feature_engineering import build_crop_demand_features, commerce_crop_names
+from app.commerce_analytics import crop_procurement_summary
 from app.role_commerce import RoleCommerceContext
 from app.config import MODEL_VERSION
-
-
-def _inventory_health_score(current_kg: float, crop_df, purchase_items) -> dict:
-    if purchase_items is None or (hasattr(purchase_items, "empty") and purchase_items.empty):
-        diversity = 0
-        turnover = 0
-    else:
-        diversity = len(purchase_items["crop_name"].unique()) if "crop_name" in purchase_items.columns else 0
-        turnover = float(purchase_items["quantity"].sum()) if "quantity" in purchase_items.columns else 0
-
-    avg_demand = float(crop_df["demand_score"].mean()) if len(crop_df) else 50
-    score = np.clip(40 + diversity * 8 + min(turnover / 50, 25) + min(current_kg / 20, 15) + avg_demand * 0.15, 0, 100)
-    label = "excellent" if score >= 75 else "good" if score >= 55 else "needs_attention" if score >= 35 else "critical"
-    return {"score": round(float(score), 1), "label": label, "diversity": diversity, "turnover_kg": round(turnover, 1)}
 
 
 def trader_intelligence(data: dict, ctx: RoleCommerceContext) -> dict:
@@ -27,96 +13,74 @@ def trader_intelligence(data: dict, ctx: RoleCommerceContext) -> dict:
     sales = ctx.trader_sales
     inventory = ctx.trader_inventory
 
-    crop_df = build_crop_demand_features(data)
-    demand_intel = generate_demand_intelligence(data)
-    high_demand = crop_df.nlargest(5, "demand_score")
+    if purchases.empty and sales.empty and inventory.empty and ctx.trader_wallet_revenue <= 0:
+        return _empty_payload()
 
-    best_buy = []
-    for d in demand_intel:
-        margin = d["demand_score"] * 0.5 + (d["projected_price"] - d["current_price"]) * 2
-        if d["demand_trend"] in ("rising", "stable") and margin > 40:
-            best_buy.append({
-                "crop_name": d["crop_name"],
-                "buy_score": round(float(margin), 1),
-                "current_price": d["current_price"],
-                "projected_price": d["projected_price"],
-                "demand_trend": d["demand_trend"],
-                "reason": f"Rising demand ({d['demand_score']:.0f}) with favourable buy window",
-            })
-    best_buy.sort(key=lambda x: x["buy_score"], reverse=True)
+    trade_items = data.get("order_items", pd.DataFrame())
+    crops = commerce_crop_names(trade_items, inventory)
+    crop_df = build_crop_demand_features(data)
+
+    purchase_summary = crop_procurement_summary(purchases) if not purchases.empty else pd.DataFrame()
+    sales_summary = crop_procurement_summary(sales) if not sales.empty else pd.DataFrame()
 
     profit_ranking = []
-    for _, row in crop_df.iterrows():
-        margin_potential = row["demand_score"] * 0.4 + row["avg_price"] * 0.6 - row["supply_pressure"] * 5
+    for crop in crops:
+        buy_row = purchase_summary[purchase_summary["crop_name"] == crop] if not purchase_summary.empty else pd.DataFrame()
+        sell_row = sales_summary[sales_summary["crop_name"] == crop] if not sales_summary.empty else pd.DataFrame()
+        buy_cost = float(buy_row["avg_unit_cost"].iloc[0]) if len(buy_row) else 0.0
+        sell_price = float(sell_row["avg_unit_cost"].iloc[0]) if len(sell_row) else 0.0
+        margin_pct = ((sell_price - buy_cost) / buy_cost * 100) if buy_cost > 0 and sell_price > 0 else 0.0
+        crop_row = crop_df[crop_df["crop_name"] == crop] if not crop_df.empty else pd.DataFrame()
+        demand = float(crop_row["demand_score"].iloc[0]) if len(crop_row) else 0.0
         profit_ranking.append({
-            "crop_name": row["crop_name"],
-            "profit_score": round(float(margin_potential), 2),
-            "demand_score": round(float(row["demand_score"]), 2),
-            "avg_buy_price": round(float(row["avg_price"] * 0.85), 2),
-            "suggested_sell_price": round(float(row["avg_price"] * 1.18), 2),
-            "estimated_margin_pct": round(float(margin_potential / max(row["avg_price"], 1) * 10), 1),
+            "crop_name": crop,
+            "profit_score": round(margin_pct + demand * 0.2, 2),
+            "demand_score": round(demand, 2),
+            "avg_buy_price": round(buy_cost, 2),
+            "suggested_sell_price": round(sell_price or buy_cost * 1.15, 2),
+            "estimated_margin_pct": round(margin_pct, 1),
         })
     profit_ranking.sort(key=lambda x: x["profit_score"], reverse=True)
 
     inventory_kg = float(inventory["quantity"].sum()) if not inventory.empty and "quantity" in inventory.columns else 0.0
-    inventory_value = float(inventory["price_per_unit"].multiply(inventory["quantity"]).sum()) if (
-        not inventory.empty and "price_per_unit" in inventory.columns and "quantity" in inventory.columns
-    ) else 0.0
-    health = _inventory_health_score(inventory_kg, crop_df, purchases)
-
-    inventory_advice = []
-    demand_alerts = []
-    for d in demand_intel:
-        if d["demand_trend"] == "rising" and d["demand_score"] > 60:
-            demand_alerts.append({
-                "crop_name": d["crop_name"],
-                "alert_type": "demand_spike",
-                "message": f"{d['crop_name']} demand rising — score {d['demand_score']:.0f}",
-                "priority": "high" if d["demand_score"] > 75 else "medium",
-            })
-        if d["demand_score"] > 65 and d["trader_activity_kg"] < 50:
-            inventory_advice.append({
-                "crop_name": d["crop_name"],
-                "action": "stock_up",
-                "reason": f"High demand ({d['demand_score']:.0f}) — low trader competition",
-            })
-        elif d["demand_score"] < 35:
-            inventory_advice.append({
-                "crop_name": d["crop_name"],
-                "action": "reduce_holdings",
-                "reason": f"Falling demand — score {d['demand_score']:.0f}",
-            })
-
-    sourcing = []
-    regions = ["North India", "Central India", "South India", "West India", "East India"]
-    for i, (_, row) in enumerate(high_demand.head(5).iterrows()):
-        sourcing.append({
-            "crop_name": row["crop_name"],
-            "recommended_region": regions[i % len(regions)],
-            "demand_score": round(float(row["demand_score"]), 2),
-            "expected_price": round(float(row["avg_price"]), 2),
-        })
-
-    price_forecasts = []
-    for d in demand_intel:
-        price_forecasts.append({
-            "crop_name": d["crop_name"],
-            "current_price": d["current_price"],
-            "forecast_3m": round(d["current_price"] * (1.03 if d["price_trend"] == "rising" else 0.98 if d["price_trend"] == "falling" else 1.0), 2),
-            "forecast_6m": round(d["projected_price"], 2),
-            "trend": d["price_trend"],
-            "confidence": d["market_confidence"],
-        })
+    inventory_value = 0.0
+    if not inventory.empty and "price_per_unit" in inventory.columns and "quantity" in inventory.columns:
+        inventory_value = float((inventory["price_per_unit"] * inventory["quantity"]).sum())
 
     purchase_spend = float(purchases["total_price"].sum()) if not purchases.empty and "total_price" in purchases.columns else ctx.trader_wallet_spend
     sale_revenue = float(sales["total_price"].sum()) if not sales.empty and "total_price" in sales.columns else ctx.trader_wallet_revenue
 
+    high_demand = crop_df.nlargest(5, "demand_score")[["crop_name", "demand_score", "avg_price"]].to_dict("records") if not crop_df.empty else []
+
     return {
-        "high_demand_crops": high_demand[["crop_name", "demand_score", "avg_price"]].to_dict("records"),
-        "best_buy_opportunities": best_buy[:6],
+        "high_demand_crops": high_demand,
+        "best_buy_opportunities": [
+            {
+                "crop_name": r["crop_name"],
+                "buy_score": r["profit_score"],
+                "current_price": r["avg_buy_price"],
+                "projected_price": r["suggested_sell_price"],
+                "demand_trend": "stable",
+                "reason": f"Traded volume with {r['estimated_margin_pct']:.1f}% margin potential",
+            }
+            for r in profit_ranking[:6] if r["avg_buy_price"] > 0
+        ],
         "profit_opportunities": profit_ranking[:5],
-        "inventory_health": health,
-        "demand_alerts": demand_alerts[:6],
+        "inventory_health": {
+            "score": round(min(100, 30 + inventory_kg / 10 + len(crops) * 5), 1),
+            "label": "good" if inventory_kg > 0 else "needs_attention",
+            "diversity": len(crops),
+            "turnover_kg": round(float(purchases["quantity"].sum()) if not purchases.empty else 0, 1),
+        },
+        "demand_alerts": [
+            {
+                "crop_name": r["crop_name"],
+                "alert_type": "margin",
+                "message": f"{r['crop_name']}: {r['estimated_margin_pct']:.1f}% margin on completed trades",
+                "priority": "high" if r["estimated_margin_pct"] > 15 else "medium",
+            }
+            for r in profit_ranking[:5] if r["estimated_margin_pct"] > 0
+        ],
         "purchase_history_kg": round(float(purchases["quantity"].sum()) if not purchases.empty else 0, 1),
         "sales_history_kg": round(float(sales["quantity"].sum()) if not sales.empty else 0, 1),
         "total_purchase_spend": round(purchase_spend, 2),
@@ -125,12 +89,45 @@ def trader_intelligence(data: dict, ctx: RoleCommerceContext) -> dict:
         "inventory_optimization": {
             "current_kg": inventory_kg,
             "current_value": round(inventory_value, 2),
-            "health_score": health["score"],
-            "health_label": health["label"],
-            "recommendations": inventory_advice[:5],
+            "health_score": round(min(100, 30 + inventory_kg / 10), 1),
+            "health_label": "good" if inventory_kg > 0 else "needs_attention",
+            "recommendations": [
+                {"crop_name": r["crop_name"], "action": "hold" if r["estimated_margin_pct"] > 10 else "review", "reason": f"Inventory + {r['estimated_margin_pct']:.0f}% realized margin"}
+                for r in profit_ranking[:5] if r["avg_buy_price"] > 0
+            ],
         },
-        "regional_sourcing": sourcing,
-        "price_forecasts": sorted(price_forecasts, key=lambda x: x["forecast_6m"], reverse=True)[:8],
-        "future_price_prediction": price_forecasts[:6],
+        "regional_sourcing": [],
+        "price_forecasts": [
+            {
+                "crop_name": r["crop_name"],
+                "current_price": r["avg_buy_price"],
+                "forecast_3m": r["suggested_sell_price"],
+                "forecast_6m": r["suggested_sell_price"],
+                "trend": "stable",
+                "confidence": 0.7,
+            }
+            for r in profit_ranking[:8] if r["avg_buy_price"] > 0
+        ],
+        "future_price_prediction": [],
+        "model_version": MODEL_VERSION,
+    }
+
+
+def _empty_payload() -> dict:
+    return {
+        "high_demand_crops": [],
+        "best_buy_opportunities": [],
+        "profit_opportunities": [],
+        "inventory_health": {"score": 0, "label": "critical", "diversity": 0, "turnover_kg": 0},
+        "demand_alerts": [],
+        "purchase_history_kg": 0,
+        "sales_history_kg": 0,
+        "total_purchase_spend": 0,
+        "total_sale_revenue": 0,
+        "estimated_margin": 0,
+        "inventory_optimization": {"current_kg": 0, "current_value": 0, "health_score": 0, "health_label": "critical", "recommendations": []},
+        "regional_sourcing": [],
+        "price_forecasts": [],
+        "future_price_prediction": [],
         "model_version": MODEL_VERSION,
     }

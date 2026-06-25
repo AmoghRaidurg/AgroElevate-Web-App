@@ -38,9 +38,7 @@ def forecast_income(data: dict, user_id: str, role: str, user_items, commerce_ba
     has_history = _has_transaction_history(user_items)
     order_baseline = build_user_revenue_baseline(user_items, role) if has_history else 0.0
     baseline = max(order_baseline, float(commerce_baseline or 0))
-    has_history = baseline > 0
-
-    if not has_history or baseline <= 0:
+    if baseline <= 0:
         current_year = datetime.now().year
         return [{
             "user_id": user_id,
@@ -61,9 +59,6 @@ def forecast_income(data: dict, user_id: str, role: str, user_items, commerce_ba
         }]
 
     base_growth = GROWTH_BY_ROLE.get(role, 0.10)
-    if data.get("use_synthetic"):
-        base_growth *= 0.88
-
     current_year = datetime.now().year
     results = []
     history_boost = min(0.12, baseline / 2_000_000)

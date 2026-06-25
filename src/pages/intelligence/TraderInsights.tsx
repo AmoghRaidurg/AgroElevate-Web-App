@@ -47,7 +47,7 @@ export default function TraderInsights() {
         title="Trader Intelligence"
         subtitle="Buy opportunities, price forecasts & inventory health"
         loading={loading}
-        useSynthetic={data?.use_synthetic}
+        liveData={data?.live_data}
         onRefresh={load}
         metrics={t ? [
           { label: 'Inventory', value: `${t.inventory_optimization.current_kg.toLocaleString()} kg` },

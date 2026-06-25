@@ -38,6 +38,7 @@ export default function IndustrialistInsights() {
   useIntelligenceRealtime(session?.user.id, load);
 
   const ind = data?.industrialist;
+  const procurementReady = Boolean(data?.commerce_ready) && (ind?.procurement_item_count ?? ind?.procurement_planning?.length ?? 0) > 0;
   const planning = ind?.procurement_planning ?? ind?.procurement_forecast ?? [];
   const risks = ind?.supply_risk_alerts ?? ind?.supply_risks ?? [];
   const costs = ind?.future_cost_forecasting ?? ind?.cost_forecasting;
@@ -55,10 +56,11 @@ export default function IndustrialistInsights() {
         title="Industrialist Intelligence"
         subtitle="Procurement planning, supplier reliability & cost forecasting"
         loading={loading}
-        useSynthetic={data?.use_synthetic}
+        liveData={data?.live_data}
+        modelVersion={data?.model_version ?? 'v3'}
         onRefresh={load}
-        metrics={costs && ind ? [
-          { label: 'Procurement Items', value: planning.length },
+        metrics={procurementReady && costs && ind ? [
+          { label: 'Procurement Items', value: ind.procurement_item_count ?? planning.length },
           { label: 'Suppliers', value: ind.supplier_ranking.length },
           { label: 'Supply Risks', value: risks.length },
           { label: 'Annual Spend', value: `₹${(costs.current_annual_spend / 100000).toFixed(1)}L` },
@@ -68,8 +70,8 @@ export default function IndustrialistInsights() {
         {data && (
           <div className="space-y-8">
             <AiStatusBanner />
-            {!ind || data._fallback ? (
-              <InsufficientDataPanel description="Industrialist forecasts improve with procurement history and live marketplace data." />
+            {!procurementReady || data._fallback ? (
+              <InsufficientDataPanel description="Complete a procurement purchase to activate industrialist analytics. All metrics derive from your completed orders and wallet spend." />
             ) : (
             <>
             <IntelligencePanel title="Procurement Planning" icon={Factory} description="Monthly volume & cost estimates">
@@ -91,7 +93,7 @@ export default function IndustrialistInsights() {
             <div className="grid lg:grid-cols-2 gap-6">
               <IntelligencePanel title="Supplier Reliability" icon={Users}>
                 {ind.supplier_ranking.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">Using marketplace-wide supplier aggregates.</p>
+                  <p className="text-sm text-muted-foreground">No suppliers yet — purchase from traders on the marketplace.</p>
                 ) : (
                   ind.supplier_ranking.map((s, i) => (
                     <div key={s.farmer_id} className="p-3 border border-white/10 rounded-xl mb-2 bg-background/20">
@@ -105,7 +107,9 @@ export default function IndustrialistInsights() {
                 )}
               </IntelligencePanel>
               <IntelligencePanel title="Supply Risk Alerts" icon={ShieldAlert}>
-                {risks.map((r) => (
+                {risks.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No supply shortages detected for your procured crops.</p>
+                ) : risks.map((r) => (
                   <div key={r.crop_name} className="p-3 rounded-xl border border-white/10 bg-background/30 backdrop-blur-sm mb-2">
                     <Badge variant={r.risk_level === 'high' ? 'destructive' : 'secondary'}>{r.risk_level}</Badge>
                     <p className="font-medium mt-1">{r.crop_name}</p>

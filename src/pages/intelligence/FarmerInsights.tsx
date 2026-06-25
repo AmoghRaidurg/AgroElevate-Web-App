@@ -65,7 +65,7 @@ export default function FarmerInsights() {
         title="Farmer Intelligence"
         subtitle="India-focused crop advisory · district & season aware"
         loading={loading}
-        useSynthetic={data?.use_synthetic}
+        liveData={data?.live_data}
         modelVersion={data?.model_version ?? 'v2'}
         onRefresh={load}
         metrics={data ? [

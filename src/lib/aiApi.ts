@@ -142,7 +142,9 @@ export interface FarmerDashboard {
   };
   insights: UserInsight[];
   geo?: GeoContext;
-  use_synthetic?: boolean;
+  live_data?: boolean;
+  commerce_ready?: boolean;
+  commerce_baseline?: number;
   location?: string;
   income_insufficient_data?: boolean;
   demand_insufficient_data?: boolean;
@@ -228,6 +230,9 @@ export interface IndustrialistDashboard extends FarmerDashboard {
       confidence: number;
     };
     demand_planning: Array<{ crop_name: string; demand_score: number; avg_price: number }>;
+    procurement_order_count?: number;
+    procurement_item_count?: number;
+    total_procurement_spend?: number;
   };
 }
 

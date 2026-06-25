@@ -4,7 +4,7 @@ import { onIntelligenceDirty } from '@/lib/intelligenceEvents';
 
 /**
  * Subscribes to Supabase realtime commerce events and triggers intelligence refresh.
- * Complements explicit notifyIntelligenceDirty() calls after checkout/wallet actions.
+ * Covers buyer, seller, farmer, royalty, and wallet ledger paths.
  */
 export function useIntelligenceRealtime(userId: string | undefined, onRefresh: () => void) {
   useEffect(() => {
@@ -27,6 +27,16 @@ export function useIntelligenceRealtime(userId: string | undefined, onRefresh: (
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'order_items', filter: `farmerId=eq.${userId}` },
+        onRefresh,
+      )
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'order_items', filter: `sellerId=eq.${userId}` },
+        onRefresh,
+      )
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'order_items', filter: `originalFarmerId=eq.${userId}` },
         onRefresh,
       )
       .on(

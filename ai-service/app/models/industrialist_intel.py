@@ -1,125 +1,123 @@
-"""Industrialist procurement intelligence — manufacturing data optional."""
+"""Industrialist procurement intelligence — live commerce only."""
 from __future__ import annotations
 
 import pandas as pd
-from app.feature_engineering import build_crop_demand_features
-from app.models.demand_intelligence import generate_demand_intelligence
 from app.role_commerce import RoleCommerceContext
+from app.commerce_analytics import (
+    monthly_spend_series,
+    crop_procurement_summary,
+    supplier_stats_from_procurement,
+    supply_shortage_alerts,
+)
 from app.config import MODEL_VERSION
 
 
 def industrialist_intelligence(data: dict, ctx: RoleCommerceContext) -> dict:
-    procurement_items = ctx.industrialist_procurement_items
-    procurement_orders = ctx.industrialist_procurement_orders
+    items = ctx.industrialist_procurement_items
+    orders = ctx.industrialist_procurement_orders
+    listings = data.get("marketplace_listings", data.get("products", pd.DataFrame()))
 
-    crop_df = build_crop_demand_features(data)
-    demand_intel = generate_demand_intelligence(data)
+    if items.empty and ctx.industrialist_wallet_spend <= 0:
+        return _empty_payload()
 
+    summary = crop_procurement_summary(items)
     procurement_planning = []
-    for d in demand_intel:
-        if float(d.get("marketplace_volume_kg") or 0) <= 0 and d.get("insufficient_data"):
-            continue
-        monthly_kg = d["demand_score"] * 55 + d["industrialist_activity_kg"] * 0.5
-        unit_cost = d["projected_price"] * 1.02
+    for _, row in summary.iterrows():
+        monthly_kg = float(row.get("avg_monthly_kg") or row["total_quantity"])
+        unit_cost = float(row["avg_unit_cost"])
         procurement_planning.append({
-            "crop_name": d["crop_name"],
-            "forecast_monthly_kg": round(float(monthly_kg), 0),
-            "expected_unit_cost": round(float(unit_cost), 2),
-            "total_cost_estimate": round(float(monthly_kg * unit_cost), 2),
-            "demand_confidence": d["market_confidence"],
-            "demand_trend": d["demand_trend"],
-            "priority": "high" if d["demand_score"] > 70 else "medium" if d["demand_score"] > 50 else "low",
+            "crop_name": row["crop_name"],
+            "forecast_monthly_kg": round(monthly_kg, 1),
+            "expected_unit_cost": round(unit_cost, 2),
+            "total_cost_estimate": round(monthly_kg * unit_cost, 2),
+            "demand_trend": "stable",
+            "priority": "high" if row["total_quantity"] > 100 else "medium",
+            "historical_total_kg": round(float(row["total_quantity"]), 1),
+            "historical_total_spend": round(float(row["total_spend"]), 2),
+            "order_count": int(row["order_count"]),
         })
 
-    supplier_stats: dict[str, dict] = {}
-    if not procurement_items.empty and "farmer_id" in procurement_items.columns:
-        grouped = procurement_items.groupby("farmer_id").agg(
-            total_volume=("quantity", "sum"),
-            total_value=("total_price", "sum"),
-            order_count=("id", "count"),
-            crops=("crop_name", lambda x: list(x.unique()[:3])),
-        ).reset_index()
-        for _, s in grouped.iterrows():
-            fid = str(s["farmer_id"])
-            on_time_proxy = min(0.98, 0.55 + s["order_count"] * 0.09)
-            quality_proxy = min(0.95, 0.6 + float(s["total_value"]) / max(float(s["total_volume"]), 1) / 50)
-            reliability = round((on_time_proxy * 0.6 + quality_proxy * 0.4), 4)
-            supplier_stats[fid] = {
-                "farmer_id": fid,
-                "total_volume_kg": round(float(s["total_volume"]), 2),
-                "total_value": round(float(s["total_value"]), 2),
-                "order_count": int(s["order_count"]),
-                "crops_supplied": s["crops"],
-                "reliability_score": reliability,
-                "on_time_score": round(on_time_proxy, 4),
-                "quality_score": round(quality_proxy, 4),
-            }
+    supplier_ranking = supplier_stats_from_procurement(items)
+    procured_crops = summary["crop_name"].tolist() if not summary.empty else []
+    supply_risk_alerts = supply_shortage_alerts(procured_crops, summary, listings)
 
-    supplier_ranking = sorted(
-        supplier_stats.values(),
-        key=lambda x: x["reliability_score"] * x["total_volume_kg"],
-        reverse=True,
-    )[:10]
+    monthly = monthly_spend_series(items)
+    total_spend = float(items["total_price"].sum()) if not items.empty and "total_price" in items.columns else 0.0
+    if total_spend <= 0:
+        total_spend = float(orders["total_amount"].sum()) if not orders.empty and "total_amount" in orders.columns else ctx.industrialist_wallet_spend
+    total_spend = max(total_spend, ctx.industrialist_wallet_spend)
 
-    supply_risk_alerts = []
-    for d in demand_intel:
-        crop_row = crop_df[crop_df["crop_name"] == d["crop_name"]]
-        listing = float(crop_row["listing_qty"].iloc[0]) if len(crop_row) else 0
-        risk = d["market_confidence"] * 0.3
-        if listing < 25:
-            risk += 0.35
-            reason = "Low marketplace supply — procurement risk"
-        elif d["price_trend"] == "rising":
-            risk += 0.25
-            reason = "Rising input costs expected"
-        else:
-            reason = "Moderate supply chain volatility"
-        if risk > 0.35:
-            supply_risk_alerts.append({
-                "crop_name": d["crop_name"],
-                "risk_level": "high" if risk > 0.55 else "medium",
-                "risk_score": round(min(risk, 1), 4),
-                "reason": reason,
-                "alert_type": "supply_risk",
-            })
+    months_active = max(len(monthly), 1)
+    monthly_avg = total_spend / months_active if total_spend else 0.0
+    annual = monthly_avg * 12 if monthly_avg else total_spend
 
-    spend = float(procurement_orders["total_amount"].sum()) if (
-        not procurement_orders.empty and "total_amount" in procurement_orders.columns
-    ) else ctx.industrialist_wallet_spend
-    spend = max(spend, 0.0)
-    annual = spend if spend else 0.0
+    growth = 1.0
+    if len(monthly) >= 2:
+        growth = float(monthly["total_spend"].iloc[-1]) / max(float(monthly["total_spend"].iloc[-2]), 1)
+        growth = min(max(growth, 0.85), 1.25)
+
     cost_forecasting = {
         "current_annual_spend": round(annual, 2),
-        "forecast_1y": round(annual * 1.09, 2) if annual else 0.0,
-        "forecast_3y": round(annual * 1.28, 2) if annual else 0.0,
-        "forecast_5y": round(annual * 1.45, 2) if annual else 0.0,
+        "forecast_1y": round(annual * growth, 2) if annual else 0.0,
+        "forecast_3y": round(annual * (growth ** 3), 2) if annual else 0.0,
+        "forecast_5y": round(annual * (growth ** 5), 2) if annual else 0.0,
         "scenarios": {
-            "optimistic": round(annual * 1.05, 2) if annual else 0.0,
-            "realistic": round(annual * 1.09, 2) if annual else 0.0,
-            "conservative": round(annual * 1.15, 2) if annual else 0.0,
+            "optimistic": round(annual * 0.95, 2) if annual else 0.0,
+            "realistic": round(annual * growth, 2) if annual else 0.0,
+            "conservative": round(annual * 1.12, 2) if annual else 0.0,
         },
-        "confidence": 0.74 if annual else 0.15,
+        "confidence": round(min(0.9, 0.4 + len(items) * 0.05 + len(monthly) * 0.08), 4) if annual else 0.0,
+        "monthly_history": monthly.to_dict("records") if not monthly.empty else [],
     }
 
-    demand_planning = []
-    for _, row in crop_df.nlargest(8, "demand_score").iterrows():
-        di = next((c for c in demand_intel if c["crop_name"] == row["crop_name"]), None)
-        demand_planning.append({
+    demand_planning = [
+        {
             "crop_name": row["crop_name"],
-            "demand_score": float(row["demand_score"]),
-            "avg_price": float(di["current_price"]) if di else float(row["avg_price"]),
-        })
+            "demand_score": round(min(100, float(row["total_quantity"]) * 0.5), 2),
+            "avg_price": round(float(row["avg_unit_cost"]), 2),
+        }
+        for _, row in summary.iterrows()
+    ]
 
     return {
         "procurement_forecast": procurement_planning,
         "procurement_planning": procurement_planning,
         "supplier_ranking": supplier_ranking,
         "supplier_reliability_ranking": supplier_ranking,
-        "supply_risks": supply_risk_alerts[:8],
-        "supply_risk_alerts": supply_risk_alerts[:8],
+        "supply_risks": supply_risk_alerts,
+        "supply_risk_alerts": supply_risk_alerts,
         "cost_forecasting": cost_forecasting,
         "future_cost_forecasting": cost_forecasting,
         "demand_planning": demand_planning,
-        "procurement_order_count": int(len(procurement_orders)) if not procurement_orders.empty else 0,
+        "procurement_order_count": int(len(orders)) if not orders.empty else int(items["order_id"].nunique()) if not items.empty and "order_id" in items.columns else 0,
+        "procurement_item_count": int(len(items)),
+        "total_procurement_spend": round(total_spend, 2),
+        "model_version": MODEL_VERSION,
+    }
+
+
+def _empty_payload() -> dict:
+    empty_cost = {
+        "current_annual_spend": 0.0,
+        "forecast_1y": 0.0,
+        "forecast_3y": 0.0,
+        "forecast_5y": 0.0,
+        "scenarios": {"optimistic": 0.0, "realistic": 0.0, "conservative": 0.0},
+        "confidence": 0.0,
+        "monthly_history": [],
+    }
+    return {
+        "procurement_forecast": [],
+        "procurement_planning": [],
+        "supplier_ranking": [],
+        "supplier_reliability_ranking": [],
+        "supply_risks": [],
+        "supply_risk_alerts": [],
+        "cost_forecasting": empty_cost,
+        "future_cost_forecasting": empty_cost,
+        "demand_planning": [],
+        "procurement_order_count": 0,
+        "procurement_item_count": 0,
+        "total_procurement_spend": 0.0,
         "model_version": MODEL_VERSION,
     }

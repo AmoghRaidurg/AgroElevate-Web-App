@@ -95,7 +95,7 @@ def run_copilot(
 
     if ctx.get("marketplace_insufficient") and role == "farmer" and intent in ("general", "grow_recommendation"):
         reply_parts.append(
-            "ℹ️ Marketplace activity is still limited — recommendations blend regional baselines with live listings. "
+            "ℹ️ Complete marketplace transactions to unlock personalized analytics from your order and wallet history. "
             "Confidence improves as more trades occur on AgroElevate."
         )
 

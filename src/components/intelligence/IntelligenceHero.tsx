@@ -14,7 +14,7 @@ interface IntelligenceHeroProps {
   subtitle: string;
   metrics: HeroMetricItem[];
   loading?: boolean;
-  useSynthetic?: boolean;
+  liveData?: boolean;
   modelVersion?: string;
   onRefresh: () => void;
   children?: ReactNode;
@@ -25,7 +25,7 @@ export function IntelligenceHero({
   subtitle,
   metrics,
   loading,
-  useSynthetic,
+  liveData,
   modelVersion,
   onRefresh,
   children,
@@ -43,9 +43,9 @@ export function IntelligenceHero({
                 <Zap className="h-3.5 w-3.5 text-highlight" />
                 <span className="text-xs font-bold uppercase tracking-widest text-highlight">AI Command Center</span>
               </div>
-              {useSynthetic && (
-                <Badge variant="outline" className="border-accent/40 text-accent gap-1">
-                  <Sparkles className="h-3 w-3" /> Synthetic baseline
+              {liveData && (
+                <Badge variant="outline" className="border-primary/40 text-primary gap-1">
+                  <Sparkles className="h-3 w-3" /> Live commerce data
                 </Badge>
               )}
               {modelVersion && (

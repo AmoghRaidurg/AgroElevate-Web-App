@@ -1,7 +1,6 @@
-"""Intelligence orchestration — Phase C."""
+"""Intelligence orchestration — live commerce analytics only."""
 from __future__ import annotations
 
-import pandas as pd
 from app.data_loader import load_marketplace_data, load_user_profile
 from app.india_geo import parse_location
 from app.models.crop_recommender import recommend_crops
@@ -12,7 +11,7 @@ from app.models.insight_generator import generate_insights
 from app.models.trader_intel import trader_intelligence
 from app.models.industrialist_intel import industrialist_intelligence
 from app.models.copilot import run_copilot
-from app.analytics import district_analytics, seasonal_analytics, historical_trends, marketplace_has_sufficient_data
+from app.analytics import district_analytics, seasonal_analytics, historical_trends
 from app.weather import fetch_weather_summary
 from app.role_commerce import (
     build_role_context,
@@ -34,15 +33,6 @@ def _role_normalize(role: str) -> str:
     return mapping.get(role, role)
 
 
-def _demand_ready(scoped_data: dict, demand_intel: list[dict], ctx) -> bool:
-    if not role_analytics_ready(ctx):
-        return False
-    return any(
-        float(d.get("marketplace_volume_kg") or 0) > 0 or not d.get("insufficient_data")
-        for d in demand_intel
-    )
-
-
 def refresh_intelligence(user_id: str, role: str, location: str | None = None, month: int | None = None) -> dict:
     role = _role_normalize(role)
     profile = load_user_profile(user_id)
@@ -50,20 +40,20 @@ def refresh_intelligence(user_id: str, role: str, location: str | None = None, m
     parsed = parse_location(loc)
 
     data = load_marketplace_data()
-    ctx = build_role_context(user_id, role, data)
+    ctx = build_role_context(user_id, role)
     scoped = scope_data_for_role(data, ctx)
     income_items = role_income_items(ctx)
     commerce_baseline = role_income_baseline(ctx)
+    analytics_ready = role_analytics_ready(ctx)
 
     recommendations = recommend_crops(scoped, user_id, role, loc, month) if role == "farmer" else []
-    market_preds = predict_markets(scoped, region=parsed.region)
-    demand_intel = generate_demand_intelligence(scoped)
+    demand_intel = generate_demand_intelligence(scoped) if analytics_ready else []
+    market_preds = predict_markets({**scoped, "order_items": scoped.get("order_items")}, region=parsed.region) if demand_intel else []
     income = forecast_income(scoped, user_id, role, income_items, commerce_baseline=commerce_baseline)
 
-    analytics_ready = role_analytics_ready(ctx)
-    income_insufficient = not analytics_ready
-    demand_insufficient = not _demand_ready(scoped, demand_intel, ctx)
-    insights = generate_insights(user_id, role, recommendations, market_preds, income)
+    income_insufficient = not analytics_ready or commerce_baseline <= 0
+    demand_insufficient = not analytics_ready or len(demand_intel) == 0
+    insights = generate_insights(user_id, role, recommendations, market_preds, income) if analytics_ready else []
 
     persist_recommendations(recommendations)
     realistic_income = [f for f in income if f.get("scenario") == "realistic"]
@@ -76,8 +66,10 @@ def refresh_intelligence(user_id: str, role: str, location: str | None = None, m
         "role": role,
         "location": loc,
         "geo": {"state": parsed.state, "district": parsed.district, "region": parsed.region},
-        "use_synthetic": data["use_synthetic"],
-        "model_version": "v2",
+        "live_data": data.get("live_data", False),
+        "model_version": "v3-commerce",
+        "commerce_ready": analytics_ready,
+        "commerce_baseline": round(commerce_baseline, 2),
         "recommendations": recommendations,
         "market_predictions": market_preds,
         "demand_intelligence": demand_intel,
@@ -88,13 +80,13 @@ def refresh_intelligence(user_id: str, role: str, location: str | None = None, m
         "marketplace_insufficient_data": not analytics_ready,
         "district_analytics": district_analytics(scoped, loc, products=scoped.get("products")),
         "seasonal_analytics": seasonal_analytics(month),
-        "historical_trends": historical_trends(scoped),
+        "historical_trends": historical_trends(scoped) if analytics_ready else [],
         "weather": fetch_weather_summary(loc),
         "insights": insights,
     }
 
     if role == "middleman":
-        payload["trader"] = trader_intelligence(scoped, ctx)
+        payload["trader"] = trader_intelligence(scoped, ctx) if analytics_ready else None
 
     if role == "industrialist":
         payload["industrialist"] = industrialist_intelligence(scoped, ctx)
@@ -125,7 +117,7 @@ def industrialist_dashboard(user_id: str) -> dict:
 
 def copilot_chat(user_id: str, message: str, role: str = "farmer", location: str | None = None, context: dict | None = None) -> dict:
     data = load_marketplace_data()
-    ctx = build_role_context(user_id, _role_normalize(role), data)
+    ctx = build_role_context(user_id, _role_normalize(role))
     scoped = scope_data_for_role(data, ctx)
     profile = load_user_profile(user_id)
     loc = location or profile.get("address")
