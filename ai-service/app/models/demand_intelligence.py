@@ -4,14 +4,13 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
-from app.feature_engineering import build_crop_demand_features
+from app.feature_engineering import build_crop_demand_features, crop_name_matches, TRADER_BUYER_ROLES, INDUSTRIALIST_BUYER_ROLES
 from app.config import MODEL_VERSION
 
 
-def _role_activity(items: pd.DataFrame, orders: pd.DataFrame, crop: str, role: str) -> float:
+def _role_activity(items: pd.DataFrame, orders: pd.DataFrame, crop: str, roles: frozenset[str]) -> float:
     if items.empty or "crop_name" not in items.columns:
         return 0.0
-    crop_lower = crop.lower()
     merged = items
     if "buyer_role" not in merged.columns:
         if orders.empty or "buyer_role" not in orders.columns:
@@ -19,8 +18,8 @@ def _role_activity(items: pd.DataFrame, orders: pd.DataFrame, crop: str, role: s
         merged = items.merge(orders[["order_id", "buyer_role"]], on="order_id", how="left")
     if "buyer_role" not in merged.columns:
         return 0.0
-    rows = merged[merged["crop_name"].str.lower() == crop_lower]
-    rows = rows[rows["buyer_role"] == role]
+    rows = merged[crop_name_matches(merged["crop_name"], crop)]
+    rows = rows[rows["buyer_role"].astype(str).isin(roles)]
     return float(rows["quantity"].sum()) if len(rows) else 0.0
 
 
@@ -44,8 +43,8 @@ def generate_demand_intelligence(data: dict) -> list[dict]:
         price = float(row["avg_price"])
         vol = float(row["volatility"])
 
-        trader_qty = _role_activity(items, orders, crop, "middleman")
-        ind_qty = _role_activity(items, orders, crop, "industrialist")
+        trader_qty = _role_activity(items, orders, crop, TRADER_BUYER_ROLES)
+        ind_qty = _role_activity(items, orders, crop, INDUSTRIALIST_BUYER_ROLES)
         farmer_qty = float(row["marketplace_qty"])
 
         X = np.array([[trader_qty, ind_qty, farmer_qty, row["listing_qty"]]])
@@ -63,7 +62,8 @@ def generate_demand_intelligence(data: dict) -> list[dict]:
         projected_price = float(max(1, price_reg.predict([[trader_qty + ind_qty]])[0]))
 
         activity_total = trader_qty + ind_qty + farmer_qty
-        insufficient = activity_total < 10 and row["marketplace_orders"] < 2
+        # Sufficient when this crop has any completed marketplace volume or ≥1 order line.
+        insufficient = activity_total < 1 and row["marketplace_orders"] < 1
         confidence = float(np.clip(
             0.45 + min(activity_total / 200, 0.25) + row["marketplace_orders"] * 0.03,
             0.42, 0.94

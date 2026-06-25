@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { Store } from 'lucide-react';
 import { getWalletInfo } from '@/lib/wallet';
 import { checkoutOrder } from '@/lib/checkout';
+import { notifyIntelligenceDirty } from '@/lib/intelligenceEvents';
 import { buildFarmerListingMeta } from '@/lib/commerceMeta';
 import { loadTraderInventory, relistTraderInventoryItem, type TraderInventoryItem } from '@/lib/marketplaceData';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -177,6 +178,7 @@ export default function Marketplace() {
       setCart([]);
       setCartOpen(false);
       await loadData();
+      notifyIntelligenceDirty();
     } catch (err: unknown) {
       const message = err && typeof err === 'object' && 'message' in err ? String((err as { message: string }).message) : 'Checkout failed';
       toast.error(message);
@@ -197,6 +199,7 @@ export default function Marketplace() {
     if (error) return toast.error('Failed to list produce');
     toast.success('Product listed!');
     await loadData();
+    notifyIntelligenceDirty();
     e.currentTarget.reset();
   };
 
@@ -209,6 +212,7 @@ export default function Marketplace() {
       toast.success('Product listed for Industrialists!');
       setRelistOpen(false);
       await loadData();
+      notifyIntelligenceDirty();
     } catch (err: unknown) {
       const message = err && typeof err === 'object' && 'message' in err ? String((err as { message: string }).message) : 'Failed to list';
       toast.error(message);

@@ -75,3 +75,5 @@ bun.lockb
 *.tmp
 *~
 .cache/
+.vercel
+.env*

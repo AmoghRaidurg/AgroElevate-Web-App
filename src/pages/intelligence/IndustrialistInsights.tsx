@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Badge } from '@/components/ui/badge';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from 'recharts';
 import { fetchIndustrialistDashboard, type IndustrialistDashboard } from '@/lib/aiApi';
+import { useIntelligenceRealtime } from '@/hooks/useIntelligenceRealtime';
 import { IntelligenceShell, InsightFeed } from '@/components/intelligence/IntelligenceShell';
 import { IntelligenceHero } from '@/components/intelligence/IntelligenceHero';
 import { IntelligencePanel } from '@/components/intelligence/IntelligencePanel';
@@ -34,6 +35,7 @@ export default function IndustrialistInsights() {
   }, [session]);
 
   useEffect(() => { load(); }, [load]);
+  useIntelligenceRealtime(session?.user.id, load);
 
   const ind = data?.industrialist;
   const planning = ind?.procurement_planning ?? ind?.procurement_forecast ?? [];

@@ -7,6 +7,22 @@ import pandas as pd
 from app.config import CROPS, SEASONS
 from app.india_geo import district_suitability, state_suitability
 
+TRADER_BUYER_ROLES = frozenset({"middleman", "trader"})
+INDUSTRIALIST_BUYER_ROLES = frozenset({"industrialist"})
+
+
+def crop_name_matches(series: pd.Series, crop: str) -> pd.Series:
+    """Match order/product names to canonical crop labels (e.g. 'Fresh Tomato' → Tomato)."""
+    if series.empty:
+        return pd.Series(dtype=bool)
+    crop_lower = crop.lower()
+    names = series.astype(str).str.lower()
+    return (
+        (names == crop_lower)
+        | names.str.contains(crop_lower, na=False, regex=False)
+        | names.apply(lambda n: crop_lower in n or n in crop_lower)
+    )
+
 
 def current_season(month: int | None = None) -> str:
     m = month or datetime.now().month
@@ -26,8 +42,10 @@ def build_crop_demand_features(data: dict) -> pd.DataFrame:
     for crop in CROPS:
         crop_lower = crop.lower()
         syn_rows = synthetic[synthetic["crop_name"].str.lower() == crop_lower]
-        item_rows = items[items["crop_name"].str.lower() == crop_lower] if not items.empty and "crop_name" in items.columns else pd.DataFrame()
-        prod_rows = products[products["name"].str.lower().str.contains(crop_lower, na=False)] if not products.empty else pd.DataFrame()
+        item_rows = items[crop_name_matches(items["crop_name"], crop)] if not items.empty and "crop_name" in items.columns else pd.DataFrame()
+        prod_rows = products[crop_name_matches(products["name"], crop)] if not products.empty and "name" in products.columns else pd.DataFrame()
+        if prod_rows.empty and not products.empty and "crop_type" in products.columns:
+            prod_rows = products[products["crop_type"].astype(str).str.lower().str.contains(crop_lower, na=False)]
 
         base_demand = float(syn_rows["demand_index"].mean()) if len(syn_rows) else 50.0
         base_price = float(syn_rows["avg_price"].mean()) if len(syn_rows) else 25.0
@@ -44,8 +62,9 @@ def build_crop_demand_features(data: dict) -> pd.DataFrame:
             if "buyer_role" not in merged.columns and not orders.empty and "buyer_role" in orders.columns:
                 merged = item_rows.merge(orders[["order_id", "buyer_role"]], on="order_id", how="left")
             if "buyer_role" in merged.columns:
-                trader_qty = float(merged[merged["buyer_role"] == "middleman"]["quantity"].sum())
-                ind_qty = float(merged[merged["buyer_role"] == "industrialist"]["quantity"].sum())
+                roles = merged["buyer_role"].astype(str)
+                trader_qty = float(merged[roles.isin(TRADER_BUYER_ROLES)]["quantity"].sum())
+                ind_qty = float(merged[roles.isin(INDUSTRIALIST_BUYER_ROLES)]["quantity"].sum())
 
         demand_boost = min(35, marketplace_qty / 8 + marketplace_orders * 2 + trader_qty / 15 + ind_qty / 20)
         demand_score = min(100, base_demand + demand_boost)

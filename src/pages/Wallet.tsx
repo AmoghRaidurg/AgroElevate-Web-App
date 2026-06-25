@@ -14,6 +14,7 @@ import {
   type PaymentReceipt,
 } from '@/lib/razorpayWallet';
 import { PaymentReceiptList } from '@/components/wallet/PaymentReceiptList';
+import { notifyIntelligenceDirty } from '@/lib/intelligenceEvents';
 import { toast } from 'sonner';
 import { Wallet as WalletIcon, ArrowUpRight, ArrowDownLeft, Plus, Send } from 'lucide-react';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -114,6 +115,7 @@ export default function Wallet() {
       setIsDialogOpen(false);
       setAmountToAdd('');
       fetchWallet();
+      notifyIntelligenceDirty();
     } catch (err: unknown) {
       const message = err && typeof err === 'object' && 'message' in err
         ? String((err as { message: string }).message)
@@ -138,6 +140,7 @@ export default function Wallet() {
       setTransferReceiverId('');
       setTransferAmount('');
       fetchWallet();
+      notifyIntelligenceDirty();
     } catch (err: unknown) {
       const message = err && typeof err === 'object' && 'message' in err
         ? String((err as { message: string }).message)

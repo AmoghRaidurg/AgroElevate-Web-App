@@ -14,6 +14,7 @@ from app.models.industrialist_intel import industrialist_intelligence
 from app.models.copilot import run_copilot
 from app.analytics import district_analytics, seasonal_analytics, historical_trends, marketplace_has_sufficient_data
 from app.weather import fetch_weather_summary
+from app.wallet_baseline import load_wallet_commerce_revenue
 from app.persistence import (
     persist_recommendations,
     persist_income_forecasts,
@@ -39,7 +40,12 @@ def refresh_intelligence(user_id: str, role: str, location: str | None = None, m
     if role == "farmer":
         user_items = data["order_items"]
         if not user_items.empty and "farmer_id" in user_items.columns:
-            user_items = user_items[user_items["farmer_id"].astype(str) == str(user_id)]
+            farmer_mask = user_items["farmer_id"].astype(str) == str(user_id)
+            if "original_farmer_id" in user_items.columns:
+                farmer_mask = farmer_mask | (user_items["original_farmer_id"].astype(str) == str(user_id))
+            user_items = user_items[farmer_mask]
+
+    wallet_baseline = load_wallet_commerce_revenue(user_id)
 
     buyer_orders = data["orders"]
     if not buyer_orders.empty and "buyer_id" in buyer_orders.columns:
@@ -50,9 +56,10 @@ def refresh_intelligence(user_id: str, role: str, location: str | None = None, m
     recommendations = recommend_crops(data, user_id, role, loc, month) if role == "farmer" else []
     market_preds = predict_markets(data, region=parsed.region)
     demand_intel = generate_demand_intelligence(data)
-    income = forecast_income(data, user_id, role, user_items)
+    income = forecast_income(data, user_id, role, user_items, wallet_baseline=wallet_baseline)
     income_insufficient = bool(income and income[0].get("insufficient_data"))
-    demand_insufficient = all(d.get("insufficient_data") for d in demand_intel) if demand_intel else True
+    has_actionable_demand = any(not d.get("insufficient_data") for d in demand_intel) if demand_intel else False
+    demand_insufficient = not has_actionable_demand
     mkt_sufficient = marketplace_has_sufficient_data(data)
     insights = generate_insights(user_id, role, recommendations, market_preds, income)
 
@@ -75,7 +82,7 @@ def refresh_intelligence(user_id: str, role: str, location: str | None = None, m
         "income_forecasts": income,
         "income_scenarios": _group_income_scenarios(income),
         "income_insufficient_data": income_insufficient,
-        "demand_insufficient_data": demand_insufficient or not mkt_sufficient,
+        "demand_insufficient_data": demand_insufficient and not mkt_sufficient,
         "marketplace_insufficient_data": not mkt_sufficient,
         "district_analytics": district_analytics(data, loc),
         "seasonal_analytics": seasonal_analytics(month),

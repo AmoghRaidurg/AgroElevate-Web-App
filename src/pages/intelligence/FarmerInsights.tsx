@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, LineChart, Line, Legend } from 'recharts';
 import { fetchFarmerDashboard, type FarmerDashboard } from '@/lib/aiApi';
+import { useIntelligenceRealtime } from '@/hooks/useIntelligenceRealtime';
 import { IntelligenceShell, InsightFeed } from '@/components/intelligence/IntelligenceShell';
 import { IntelligenceHero } from '@/components/intelligence/IntelligenceHero';
 import { IntelligencePanel } from '@/components/intelligence/IntelligencePanel';
@@ -37,6 +38,7 @@ export default function FarmerInsights() {
   }, [session, profile?.address]);
 
   useEffect(() => { load(); }, [load]);
+  useIntelligenceRealtime(session?.user.id, load);
 
   const realistic = data?.income_scenarios?.realistic ?? data?.income_forecasts?.filter((f) => f.scenario === 'realistic' || !f.scenario) ?? [];
   const incomeChart = useMemo(() => {

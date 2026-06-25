@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Badge } from '@/components/ui/badge';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { fetchTraderDashboard, type TraderDashboard } from '@/lib/aiApi';
+import { useIntelligenceRealtime } from '@/hooks/useIntelligenceRealtime';
 import { IntelligenceShell, InsightFeed } from '@/components/intelligence/IntelligenceShell';
 import { IntelligenceHero } from '@/components/intelligence/IntelligenceHero';
 import { IntelligencePanel } from '@/components/intelligence/IntelligencePanel';
@@ -34,6 +35,7 @@ export default function TraderInsights() {
   }, [session]);
 
   useEffect(() => { load(); }, [load]);
+  useIntelligenceRealtime(session?.user.id, load);
 
   const t = data?.trader;
   const health = t?.inventory_health ?? { score: t?.inventory_optimization?.health_score ?? 0, label: t?.inventory_optimization?.health_label ?? '—' };

@@ -6,7 +6,6 @@ import pandas as pd
 import numpy as np
 from app.feature_engineering import current_season
 from app.india_geo import parse_location, SEASON_CROP_BOOST
-from app.config import MIN_MARKETPLACE_ROWS
 
 
 def _marketplace_volume(data: dict) -> float:
@@ -18,9 +17,12 @@ def _marketplace_volume(data: dict) -> float:
 
 def marketplace_has_sufficient_data(data: dict) -> bool:
     items = data.get("order_items", pd.DataFrame())
-    if len(items) >= MIN_MARKETPLACE_ROWS:
+    if items.empty:
+        products = data.get("products", pd.DataFrame())
+        return not products.empty and len(products) >= 1
+    if len(items) >= 1:
         return True
-    return _marketplace_volume(data) >= 50
+    return _marketplace_volume(data) >= 1
 
 
 def district_analytics(data: dict, location: str) -> dict:

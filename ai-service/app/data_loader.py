@@ -44,7 +44,7 @@ def load_marketplace_data() -> dict:
         try:
             orders = sb.table("orders").select(
                 "id, buyerId, buyerRole, totalAmount, status, createdAt"
-            ).limit(500).execute()
+            ).order("createdAt", desc=True).limit(500).execute()
             if orders.data:
                 orders_df = pd.DataFrame(orders.data).rename(columns={
                     "buyerId": "buyer_id", "buyerRole": "buyer_role",
@@ -54,7 +54,7 @@ def load_marketplace_data() -> dict:
 
             items = sb.table("order_items").select(
                 "id, orderId, cropName, quantity, pricePerUnit, totalPrice, farmerId, originalFarmerId"
-            ).limit(2000).execute()
+            ).order("id", desc=True).limit(2000).execute()
             if items.data:
                 items_df = pd.DataFrame(items.data).rename(columns={
                     "orderId": "order_id", "cropName": "crop_name",
