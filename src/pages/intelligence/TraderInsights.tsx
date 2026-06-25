@@ -11,6 +11,7 @@ import { TrendBadge, ConfidenceBar } from '@/components/intelligence/Intelligenc
 import { ChartCard } from '@/components/design/ChartCard';
 import { ThemedChart, CHART_COLORS } from '@/components/design/ThemedChart';
 import { AiStatusBanner } from '@/components/intelligence/AiStatusBanner';
+import { InsufficientDataPanel } from '@/components/intelligence/InsufficientDataPanel';
 import { AlertTriangle, ShoppingCart, TrendingUp, Package } from 'lucide-react';
 
 export default function TraderInsights() {

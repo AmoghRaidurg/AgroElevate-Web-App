@@ -14,6 +14,7 @@ import { ChartCard } from '@/components/design/ChartCard';
 import { ThemedChart, CHART_COLORS, chartTooltipStyle } from '@/components/design/ThemedChart';
 import { FarmerIncomeProjectionChart } from '@/components/charts/FarmerIncomeProjectionChart';
 import { AiStatusBanner } from '@/components/intelligence/AiStatusBanner';
+import { InsufficientDataPanel } from '@/components/intelligence/InsufficientDataPanel';
 import { MapPin, Sprout, Cloud } from 'lucide-react';
 
 export default function FarmerInsights() {
