@@ -1,0 +1,21 @@
+# Render Blueprint — AgroElevate AI Service (repo root)
+# Deploy: Render Dashboard → New → Blueprint → connect this repo (main branch)
+# Blueprint path defaults to this file at repository root.
+
+services:
+  - type: web
+    name: agroelevate-ai
+    runtime: docker
+    dockerfilePath: ./ai-service/Dockerfile
+    dockerContext: ./ai-service
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: https://agro-fair-chain.vercel.app,http://localhost:8080,http://localhost:5173
+      - key: PORT
+        value: "8000"
