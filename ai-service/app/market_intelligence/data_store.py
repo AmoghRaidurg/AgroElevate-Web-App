@@ -157,6 +157,7 @@ class MarketDataStore:
         district: str | None = None,
         crop: str | None = None,
         limit: int = 500,
+        bypass_live: bool = False,
     ) -> list[NormalizedPrice]:
         self.ensure_loaded()
         key = f"prices:{source}:{state}:{district}:{crop}:{limit}"

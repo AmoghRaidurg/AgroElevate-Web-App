@@ -8,6 +8,7 @@ import numpy as np
 from app.data_loader import load_marketplace_data
 from app.india_geo import parse_location
 from app.market_intelligence.data_store import MarketDataStore
+from app.market_intelligence.providers.orchestrator import get_orchestrator
 
 
 def _demand_multiplier(score: float) -> float:
@@ -55,16 +56,19 @@ def suggest_price(
 ) -> dict[str, Any]:
     store = MarketDataStore.get()
     store.ensure_loaded()
+    orchestrator = get_orchestrator()
     loc = parse_location(location or f"{district or ''}, {state or ''}")
 
     st = state or loc.state
     dist = district or loc.district
 
-    prices = store.query_prices(state=st, district=dist, crop=crop, limit=50)
+    prices = orchestrator.fetch_prices(state=st, district=dist, crop=crop, limit=50)
     if not prices and st:
-        prices = store.query_prices(state=st, crop=crop, limit=50)
+        prices = orchestrator.fetch_prices(state=st, crop=crop, limit=50)
     if not prices:
-        prices = store.query_prices(crop=crop, limit=30)
+        prices = orchestrator.fetch_prices(crop=crop, limit=30)
+
+    data_source = orchestrator.data_source_status()
 
     if not prices:
         return {
@@ -79,7 +83,7 @@ def suggest_price(
     mandi_modal = float(np.median(modal_prices))
     highest = max(p.modal_price for p in prices)
     district_avg = float(np.mean(modal_prices))
-    state_prices = store.query_prices(state=st, crop=crop, limit=200)
+    state_prices = orchestrator.fetch_prices(state=st, crop=crop, limit=200)
     state_avg = float(np.mean([p.modal_price for p in state_prices])) if state_prices else district_avg
 
     agro_avg = _agroelevate_avg_for_crop(crop, st)
@@ -142,6 +146,7 @@ def suggest_price(
         "state": st,
         "district": dist,
         "insufficient_data": False,
+        "data_source": data_source,
     }
 
 
@@ -246,7 +251,8 @@ def price_comparison(crop: str, state: str, district: str | None = None) -> dict
     store = MarketDataStore.get()
     store.ensure_loaded()
     sug = suggest_price(crop, state=state, district=district)
-    national = store.query_prices(crop=crop, limit=500)
+    orchestrator = get_orchestrator()
+    national = orchestrator.fetch_prices(crop=crop, limit=500)
     national_avg = float(np.mean([p.modal_price for p in national])) if national else sug.get("mandi_modal_price", 0)
 
     mandi = sug.get("mandi_modal_price", 0)

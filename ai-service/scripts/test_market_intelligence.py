@@ -7,6 +7,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from app.market_intelligence.data_store import MarketDataStore
 from app.market_intelligence.models.price_engine import suggest_price, benchmark_comparison, price_comparison
 from app.market_intelligence.providers.base import get_all_providers
+from app.market_intelligence.providers.orchestrator import get_orchestrator
 
 
 def test_dataset_loaded():
@@ -24,13 +25,17 @@ def test_dataset_loaded():
 def test_providers():
     store = MarketDataStore.get()
     providers = get_all_providers(store)
-    assert len(providers) == 3
-    for p in providers:
-        h = p.health()
-        assert h["status"] == "ok"
-        prices = p.fetch_prices(state="Maharashtra", limit=10)
-        assert len(prices) > 0
-    print("PASS: all providers return data")
+    assert len(providers) == 4
+    # Fallback always returns data
+    fallback = providers[-1]
+    h = fallback.health()
+    assert h["status"] == "ok"
+    prices = fallback.fetch_prices(state="Maharashtra", limit=10)
+    assert len(prices) > 0
+    # AGMARKNET and eNAM have no public API without keys
+    ag = providers[0].health()
+    assert ag["api_available"] is False
+    print("PASS: all providers configured")
 
 
 def test_price_suggestion():
@@ -65,9 +70,32 @@ def test_cache_refresh():
     print("PASS: cache refresh")
 
 
+def test_orchestrator_fallback():
+    orch = get_orchestrator()
+    prices = orch.fetch_prices(state="Maharashtra", limit=5)
+    assert len(prices) > 0
+    ds = orch.data_source_status()
+    assert ds["data_mode"] in ("generated_dataset", "live_api", "cached_api")
+    assert ds["provider"] in ("fallback", "data.gov.in", "agmarknet", "enam")
+    print("PASS: orchestrator fallback", ds)
+
+
+def test_government_provider_without_key():
+    from app.market_intelligence.providers.data_gov_in import GovernmentDataProvider
+    gov = GovernmentDataProvider()
+    assert not gov.enabled
+    assert gov.fetch_prices(state="Maharashtra") == []
+    h = gov.health()
+    assert h["official_api"] is True
+    assert h["api_key_configured"] is False
+    print("PASS: government provider disabled without key")
+
+
 if __name__ == "__main__":
     test_dataset_loaded()
     test_providers()
+    test_orchestrator_fallback()
+    test_government_provider_without_key()
     test_price_suggestion()
     test_benchmark()
     test_comparison()

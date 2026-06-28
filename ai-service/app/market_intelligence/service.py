@@ -14,7 +14,7 @@ from app.market_intelligence.models.price_engine import (
     price_comparison,
     suggest_price,
 )
-from app.market_intelligence.providers.base import get_all_providers
+from app.market_intelligence.providers.orchestrator import get_orchestrator
 
 
 def _overview_cards(state: str, district: str | None, prices: list) -> dict[str, Any]:
@@ -69,18 +69,8 @@ def farmer_dashboard(
     st = state or loc.state
     dist = district or loc.district
 
-    providers = get_all_providers(store)
-    all_prices = []
-    for prov in providers:
-        all_prices.extend(prov.fetch_prices(state=st, district=dist, limit=200))
-    # dedupe by market+crop
-    seen = set()
-    unique = []
-    for p in all_prices:
-        k = (p.market_code, p.crop)
-        if k not in seen:
-            seen.add(k)
-            unique.append(p)
+    orchestrator = get_orchestrator()
+    unique = orchestrator.fetch_prices(state=st, district=dist, limit=200)
 
     nearby = store.nearest_markets(latitude or 18.5, longitude or 73.8, limit=10) if latitude else []
     comparisons = []
@@ -113,14 +103,16 @@ def farmer_dashboard(
         "recommendations": generate_recommendations(st, dist, latitude=latitude, longitude=longitude),
         "benchmark": benchmark_comparison(),
         "sync_status": store.sync_status(),
+        "data_source": orchestrator.data_source_status(),
     }
 
 
 def trader_dashboard(user_id: str, state: str | None = None, district: str | None = None) -> dict[str, Any]:
     store = MarketDataStore.get()
     store.ensure_loaded()
+    orchestrator = get_orchestrator()
     st = state or "Maharashtra"
-    prices = store.query_prices(state=st, limit=300)
+    prices = orchestrator.fetch_prices(state=st, district=district, limit=300)
 
     by_district: dict[str, list] = {}
     for p in prices:
@@ -145,14 +137,16 @@ def trader_dashboard(user_id: str, state: str | None = None, district: str | Non
         "arbitrage_opportunities": _arbitrage(prices),
         "nearby_markets": store.nearest_markets(19.0, 72.8, limit=8),
         "sync_status": store.sync_status(),
+        "data_source": orchestrator.data_source_status(),
     }
 
 
 def industrialist_dashboard(user_id: str, state: str | None = None) -> dict[str, Any]:
     store = MarketDataStore.get()
     store.ensure_loaded()
+    orchestrator = get_orchestrator()
     st = state or "Maharashtra"
-    prices = store.query_prices(state=st, limit=400)
+    prices = orchestrator.fetch_prices(state=st, limit=400)
     raw_materials = ["Soybean", "Wheat", "Rice", "Cotton", "Sugarcane", "Maize"]
     availability = []
     for crop in raw_materials:
@@ -179,23 +173,28 @@ def industrialist_dashboard(user_id: str, state: str | None = None) -> dict[str,
         "recommended_procurement_region": st,
         "nearby_markets": store.nearest_markets(19.0, 72.8, limit=6),
         "sync_status": store.sync_status(),
+        "data_source": orchestrator.data_source_status(),
     }
 
 
 def admin_monitor() -> dict[str, Any]:
     store = MarketDataStore.get()
     store.ensure_loaded()
+    orchestrator = get_orchestrator()
     status = store.sync_status()
-    providers = get_all_providers(store)
+    providers = orchestrator.all_provider_health()
+    ds = orchestrator.data_source_status()
     return {
         **status,
-        "providers": [p.health() for p in providers],
-        "logs": [{"time": status["last_sync"], "level": "info", "message": "Dataset loaded successfully"}],
+        **ds,
+        "providers": providers,
+        "logs": [{"time": status["last_sync"], "level": "info", "message": f"Runtime mode: {ds.get('data_mode')}"}],
     }
 
 
 def _demand_heatmap(store: MarketDataStore, state: str) -> list[dict[str, Any]]:
-    prices = store.query_prices(state=state, limit=500)
+    orchestrator = get_orchestrator()
+    prices = orchestrator.fetch_prices(state=state, limit=500)
     by_dist: dict[str, list] = {}
     for p in prices:
         if p.district_demand:

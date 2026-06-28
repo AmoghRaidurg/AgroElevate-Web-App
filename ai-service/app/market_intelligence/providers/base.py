@@ -1,4 +1,4 @@
-"""Market data provider abstraction — AGMARKNET, Government, eNAM."""
+"""Market data provider abstraction — AGMARKNET, Government, eNAM, Fallback."""
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -53,6 +53,7 @@ class NormalizedPrice:
 
 class MarketDataProvider(ABC):
     name: str
+    provider_id: str
 
     @abstractmethod
     def fetch_prices(
@@ -67,49 +68,18 @@ class MarketDataProvider(ABC):
     @abstractmethod
     def health(self) -> dict[str, Any]:
         ...
-
-
-class CSVBackedProvider(MarketDataProvider):
-    """Base provider reading normalized India dataset (simulates official API responses)."""
-
-    def __init__(self, name: str, source_filter: str, store: Any):
-        self.name = name
-        self.source_filter = source_filter
-        self._store = store
-
-    def fetch_prices(
-        self,
-        state: str | None = None,
-        district: str | None = None,
-        crop: str | None = None,
-        limit: int = 500,
-    ) -> list[NormalizedPrice]:
-        return self._store.query_prices(
-            source=self.source_filter,
-            state=state,
-            district=district,
-            crop=crop,
-            limit=limit,
-        )
-
-    def health(self) -> dict[str, Any]:
-        return {"provider": self.name, "status": "ok", "source": self.source_filter}
-
-
-class AGMARKNETProvider(CSVBackedProvider):
-    def __init__(self, store: Any):
-        super().__init__("AGMARKNET", "AGMARKNET", store)
-
-
-class GovernmentProvider(CSVBackedProvider):
-    def __init__(self, store: Any):
-        super().__init__("Government Open Data", "data.gov.in", store)
-
-
-class ENAMProvider(CSVBackedProvider):
-    def __init__(self, store: Any):
-        super().__init__("eNAM", "eNAM", store)
 
 
 def get_all_providers(store: Any) -> list[MarketDataProvider]:
-    return [AGMARKNETProvider(store), GovernmentProvider(store), ENAMProvider(store)]
+    """Return all registered providers including fallback (for health checks)."""
+    from app.market_intelligence.providers.agmarknet import AGMARKNETProvider
+    from app.market_intelligence.providers.data_gov_in import GovernmentDataProvider
+    from app.market_intelligence.providers.enam import ENAMProvider
+    from app.market_intelligence.providers.fallback import FallbackDatasetProvider
+
+    return [
+        AGMARKNETProvider(),
+        GovernmentDataProvider(),
+        ENAMProvider(),
+        FallbackDatasetProvider(store),
+    ]

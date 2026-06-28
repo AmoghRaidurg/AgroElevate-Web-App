@@ -11,17 +11,13 @@ from app.market_intelligence.service import (
 from app.market_intelligence.models.price_engine import suggest_price, price_comparison, benchmark_comparison, generate_recommendations
 from app.market_intelligence.data_store import MarketDataStore
 
+from app.market_intelligence.providers.orchestrator import get_orchestrator
+
 router = APIRouter(prefix="/api/market-intelligence", tags=["market-intelligence"])
 
 
 def _data_source_status() -> dict:
-    """Honest label: bundled CSV simulating official sources — not live API calls."""
-    return {
-        "data_mode": "generated_dataset",
-        "live_api": False,
-        "sources_simulated": ["AGMARKNET", "eNAM", "data.gov.in"],
-        "note": "Prices served from validated India-specific CSV dataset with 6-hour cache. Not live government API feeds.",
-    }
+    return get_orchestrator().data_source_status()
 
 
 @router.get("/health")
@@ -95,8 +91,7 @@ def api_dataset():
 
 @router.post("/refresh")
 def mi_refresh():
-    store = MarketDataStore.get()
-    return store.refresh()
+    return get_orchestrator().refresh()
 
 
 @router.get("/farmer/dashboard")
@@ -166,10 +161,13 @@ def api_live_prices(
     crop: str | None = Query(None),
     limit: int = Query(200, le=1000),
 ):
-    store = MarketDataStore.get()
-    store.ensure_loaded()
-    prices = store.query_prices(state=state, district=district, crop=crop, limit=limit)
-    return {"prices": [p.to_dict() for p in prices], "count": len(prices)}
+    orchestrator = get_orchestrator()
+    prices = orchestrator.fetch_prices(state=state, district=district, crop=crop, limit=limit)
+    return {
+        "prices": [p.to_dict() for p in prices],
+        "count": len(prices),
+        **_data_source_status(),
+    }
 
 
 @router.get("/nearby-markets")
