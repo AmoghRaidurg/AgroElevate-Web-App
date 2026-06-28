@@ -22,10 +22,11 @@ import {
   buildCropForecast,
   displayText,
   filterLivePrices,
+  firstPriceRecords,
   formatInrPerKg,
   formatInrQuintal,
   resolveOverview,
-  topCropPrices,
+  selectPricesGeographic,
   uniqueCrops,
 } from '@/lib/marketIntelligenceDisplay';
 import { MetricSkeleton, TableSkeleton, ChartSkeleton } from '@/components/design/skeletons';
@@ -77,15 +78,26 @@ export default function FarmerMarketIntelligence() {
 
   useEffect(() => { load(); }, [load]);
 
-  const overview = useMemo(() => resolveOverview(data), [data]);
   const allPrices = data?.live_prices ?? [];
-  const cropOptions = useMemo(() => uniqueCrops(allPrices), [allPrices]);
+  const scopedPrices = useMemo(
+    () => selectPricesGeographic(allPrices, location?.district, location?.state ?? data?.location?.state),
+    [allPrices, location?.district, location?.state, data?.location?.state],
+  );
+  const pricePool = scopedPrices.length ? scopedPrices : allPrices;
+
+  const overview = useMemo(
+    () => resolveOverview(data, pricePool, location?.district, location?.state ?? data?.location?.state),
+    [data, pricePool, location?.district, location?.state],
+  );
+
+  const cropOptions = useMemo(() => uniqueCrops(pricePool.length ? pricePool : allPrices), [pricePool, allPrices]);
 
   const displayPrices = useMemo(() => {
-    const hasFilter = search.trim() || cropFilter !== 'all';
-    if (hasFilter) return filterLivePrices(allPrices, search, cropFilter);
-    return topCropPrices(allPrices, 20);
-  }, [allPrices, search, cropFilter]);
+    const pool = pricePool.length ? pricePool : allPrices;
+    const hasFilter = Boolean(search.trim()) || cropFilter !== 'all';
+    if (hasFilter) return filterLivePrices(pool, search, cropFilter);
+    return firstPriceRecords(pool, 20);
+  }, [allPrices, pricePool, search, cropFilter]);
 
   const comparisonChart = (data?.comparisons ?? []).map((c) => ({
     crop: c.crop,
@@ -97,8 +109,8 @@ export default function FarmerMarketIntelligence() {
   }));
 
   const forecast = useMemo(
-    () => buildCropForecast(forecastCrop, data?.price_history ?? [], allPrices),
-    [forecastCrop, data?.price_history, allPrices],
+    () => buildCropForecast(forecastCrop, data?.price_history ?? [], pricePool.length ? pricePool : allPrices),
+    [forecastCrop, data?.price_history, pricePool, allPrices],
   );
 
   const benchmark = data?.benchmark;
@@ -177,7 +189,10 @@ export default function FarmerMarketIntelligence() {
                   <Download className="h-3.5 w-3.5 mr-1" /> Export CSV
                 </Button>
                 {!search.trim() && cropFilter === 'all' && (
-                  <span className="text-xs text-muted-foreground">Showing top 20 crops by modal price</span>
+                  <span className="text-xs text-muted-foreground">
+                    Showing {displayPrices.length} of {pricePool.length || allPrices.length} records
+                    {scopedPrices.length ? ' for your area' : ''}
+                  </span>
                 )}
               </div>
               <div className="overflow-x-auto rounded-lg border border-border/40">
@@ -193,7 +208,9 @@ export default function FarmerMarketIntelligence() {
                     {displayPrices.length === 0 ? (
                       <tr>
                         <td colSpan={10} className="p-8 text-center text-muted-foreground">
-                          No results found. Try a different crop or clear your filters.
+                          {allPrices.length
+                            ? 'No results found for your search. Try Wheat, Tomato, or Onion.'
+                            : 'Loading market records…'}
                         </td>
                       </tr>
                     ) : (

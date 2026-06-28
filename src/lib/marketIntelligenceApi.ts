@@ -1,5 +1,9 @@
+import { mergePriceLists, normalizeMarketPrices } from '@/lib/marketIntelligenceDisplay';
+
 const AI_BASE = import.meta.env.VITE_AI_API_URL || 'http://localhost:8000';
 const MI_TIMEOUT_MS = 20_000;
+const MI_DASHBOARD_TIMEOUT_MS = 90_000;
+const MI_LIVE_PRICES_TIMEOUT_MS = 60_000;
 
 export interface MarketPrice {
   crop: string;
@@ -190,10 +194,10 @@ export interface MarketLocation {
   source: 'gps' | 'manual';
 }
 
-async function miFetch<T>(path: string, params: Record<string, string> = {}): Promise<T> {
+async function miFetch<T>(path: string, params: Record<string, string> = {}, timeoutMs = MI_TIMEOUT_MS): Promise<T> {
   const qs = new URLSearchParams(params).toString();
   const controller = new AbortController();
-  const timeout = window.setTimeout(() => controller.abort(), MI_TIMEOUT_MS);
+  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
   try {
     const res = await fetch(`${AI_BASE}${path}?${qs}`, {
       signal: controller.signal,
@@ -215,14 +219,100 @@ function locParams(loc?: Partial<MarketLocation>) {
   return p;
 }
 
+export async function fetchLivePrices(opts?: {
+  state?: string;
+  district?: string;
+  crop?: string;
+  limit?: number;
+}): Promise<{ prices: MarketPrice[]; count?: number }> {
+  const params: Record<string, string> = {
+    limit: String(opts?.limit ?? 200),
+  };
+  if (opts?.state) params.state = opts.state;
+  if (opts?.district) params.district = opts.district;
+  if (opts?.crop) params.crop = opts.crop;
+  return miFetch<{ prices: MarketPrice[]; count?: number }>(
+    '/api/market-intelligence/live-prices',
+    params,
+    MI_LIVE_PRICES_TIMEOUT_MS,
+  );
+}
+
+/** District → state → national live price fetch (frontend only). */
+export async function fetchLivePricesCascade(opts?: {
+  district?: string | null;
+  state?: string | null;
+  limit?: number;
+}): Promise<MarketPrice[]> {
+  const limit = opts?.limit ?? 200;
+  const state = opts?.state ?? 'Maharashtra';
+  const district = opts?.district;
+
+  if (district) {
+    try {
+      const d = await fetchLivePrices({ state, district, limit });
+      const rows = normalizeMarketPrices(d.prices);
+      if (rows.length) return rows;
+    } catch { /* fall through */ }
+  }
+
+  try {
+    const s = await fetchLivePrices({ state, limit });
+    const rows = normalizeMarketPrices(s.prices);
+    if (rows.length) return rows;
+  } catch { /* fall through */ }
+
+  try {
+    const n = await fetchLivePrices({ limit });
+    return normalizeMarketPrices(n.prices);
+  } catch {
+    return [];
+  }
+}
+
 export async function fetchFarmerMarketDashboard(userId: string, loc?: Partial<MarketLocation>, location?: string) {
   const params: Record<string, string> = { user_id: userId, ...locParams(loc) };
   if (location) params.location = location;
+
+  const cascadePromise = fetchLivePricesCascade({
+    district: loc?.district,
+    state: loc?.state ?? 'Maharashtra',
+    limit: 200,
+  });
+
+  let dash: FarmerMarketDashboard | null = null;
   try {
-    return await miFetch<FarmerMarketDashboard>('/api/market-intelligence/farmer/dashboard', params);
+    dash = await miFetch<FarmerMarketDashboard>(
+      '/api/market-intelligence/farmer/dashboard',
+      params,
+      MI_DASHBOARD_TIMEOUT_MS,
+    );
   } catch {
+    dash = null;
+  }
+
+  const fromDash = normalizeMarketPrices(dash?.live_prices ?? []);
+  const supplemental = await cascadePromise;
+  const merged = mergePriceLists(fromDash, supplemental);
+
+  if (fromDash.length >= 20 && dash) {
+    return { ...dash, live_prices: fromDash };
+  }
+
+  if (!dash && merged.length === 0) {
     return { _fallback: true, module: 'market_intelligence' } as FarmerMarketDashboard;
   }
+
+  return {
+    ...(dash ?? {
+      module: 'market_intelligence',
+      model_version: 'mi-v1',
+      user_id: userId,
+      location: { state: loc?.state ?? 'Maharashtra', district: loc?.district ?? null },
+    } as FarmerMarketDashboard),
+    live_prices: merged,
+    _fallback: dash ? Boolean(dash._fallback) : merged.length === 0,
+  };
 }
 
 export async function fetchTraderMarketDashboard(userId: string, loc?: Partial<MarketLocation>) {
