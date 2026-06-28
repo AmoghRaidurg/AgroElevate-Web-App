@@ -9,7 +9,7 @@ from typing import Any
 import httpx
 
 from app.market_intelligence.providers.base import MarketDataProvider, NormalizedPrice
-from app.market_intelligence.providers.live_cache import LiveApiCache
+from app.market_intelligence.providers.live_cache import GOV_API_TIMEOUT_SEC, LiveApiCache
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +36,43 @@ class GovernmentDataProvider(MarketDataProvider):
     def enabled(self) -> bool:
         return bool(self._api_key)
 
+    def _cache_key(
+        self,
+        state: str | None,
+        district: str | None,
+        crop: str | None,
+        limit: int,
+    ) -> str:
+        return self._cache.cache_key(state, district, crop, limit)
+
+    def read_cached_only(
+        self,
+        state: str | None = None,
+        district: str | None = None,
+        crop: str | None = None,
+        limit: int = 500,
+    ) -> tuple[list[NormalizedPrice], bool]:
+        """Read cache only — never blocks on live API. Returns (prices, is_fresh)."""
+        if not self.enabled:
+            self._last_error = "DATA_GOV_API_KEY not configured"
+            return [], False
+
+        cache_key = self._cache_key(state, district, crop, limit)
+        fresh = self._cache.get_entry(cache_key)
+        if fresh:
+            self._last_mode = "cached_api"
+            self._last_error = None
+            return fresh[0][:limit], True
+
+        stale = self._cache.get_stale_entry(cache_key)
+        if stale:
+            data, _provider, is_fresh = stale
+            self._last_mode = "cached_api"
+            self._last_error = None
+            return data[:limit], is_fresh
+
+        return [], False
+
     def fetch_prices(
         self,
         state: str | None = None,
@@ -43,16 +80,26 @@ class GovernmentDataProvider(MarketDataProvider):
         crop: str | None = None,
         limit: int = 500,
     ) -> list[NormalizedPrice]:
+        """Request-path entry — cache only, never calls live government API."""
+        prices, _fresh = self.read_cached_only(state, district, crop, limit)
+        return prices
+
+    def fetch_live_and_cache(
+        self,
+        state: str | None = None,
+        district: str | None = None,
+        crop: str | None = None,
+        limit: int = 500,
+    ) -> list[NormalizedPrice]:
+        """Background-only live fetch with short timeout."""
         if not self.enabled:
             self._last_error = "DATA_GOV_API_KEY not configured"
             return []
+        if self._cache.is_circuit_open():
+            self._last_error = "Circuit breaker open"
+            return []
 
-        cache_key = f"gov:{state}:{district}:{crop}:{limit}"
-        cached = self._cache.get_entry(cache_key)
-        if cached:
-            self._last_mode = "cached_api"
-            return cached[0]
-
+        cache_key = self._cache_key(state, district, crop, limit)
         try:
             records = self._fetch_live(state, district, crop, limit)
             prices = [self._normalize(r) for r in records]
@@ -61,12 +108,16 @@ class GovernmentDataProvider(MarketDataProvider):
                 self._cache.set_entry(cache_key, prices, self.provider_id)
                 self._last_mode = "live_api"
                 self._last_error = None
+                self._cache.record_success()
+            else:
+                self._cache.record_failure()
             return prices[:limit]
         except Exception as exc:
             self._last_error = str(exc)
             self._last_mode = "error"
             self._cache.log_error(self.provider_id, str(exc))
-            logger.warning("data.gov.in fetch failed: %s", exc)
+            self._cache.record_failure()
+            logger.warning("data.gov.in background fetch failed: %s", exc)
             return []
 
     def _fetch_live(
@@ -90,7 +141,7 @@ class GovernmentDataProvider(MarketDataProvider):
             params[f"filters[commodity]"] = crop
 
         url = f"{BASE_URL}/resource/{RESOURCE_ID}"
-        with httpx.Client(timeout=30.0) as client:
+        with httpx.Client(timeout=GOV_API_TIMEOUT_SEC) as client:
             resp = client.get(url, params=params)
             resp.raise_for_status()
             payload = resp.json()

@@ -117,6 +117,14 @@ export interface BenchmarkData {
   projection_label: string;
 }
 
+export interface MarketDataSourceStatus {
+  data_badge?: string;
+  data_updated_ago?: string | null;
+  data_mode?: string;
+  provider?: string;
+  fallback_active?: boolean;
+}
+
 export interface FarmerMarketDashboard {
   module: string;
   model_version: string;
@@ -132,6 +140,7 @@ export interface FarmerMarketDashboard {
   recommendations: MarketRecommendation[];
   benchmark: BenchmarkData;
   sync_status: Record<string, unknown>;
+  data_source?: MarketDataSourceStatus;
   _fallback?: boolean;
 }
 
@@ -151,6 +160,7 @@ export interface TraderMarketDashboard {
   arbitrage_opportunities: Array<Record<string, unknown>>;
   nearby_markets: NearbyMarket[];
   sync_status: Record<string, unknown>;
+  data_source?: MarketDataSourceStatus;
   _fallback?: boolean;
 }
 
@@ -168,6 +178,7 @@ export interface IndustrialistMarketDashboard {
   recommended_procurement_region: string;
   nearby_markets: NearbyMarket[];
   sync_status: Record<string, unknown>;
+  data_source?: MarketDataSourceStatus;
   _fallback?: boolean;
 }
 

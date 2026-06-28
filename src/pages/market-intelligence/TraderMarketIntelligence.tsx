@@ -5,7 +5,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { IntelligenceShell } from '@/components/intelligence/IntelligenceShell';
 import { useAuth } from '@/hooks/useAuth';
 import { fetchTraderMarketDashboard, type TraderMarketDashboard } from '@/lib/marketIntelligenceApi';
-import { Badge } from '@/components/ui/badge';
+import { DataSourceBadge } from '@/components/market-intelligence/DataSourceBadge';
 import { TrendingUp } from 'lucide-react';
 
 export default function TraderMarketIntelligence() {
@@ -30,7 +30,11 @@ export default function TraderMarketIntelligence() {
 
   return (
     <>
-      <PageHeader title="Trader Market Intelligence" subtitle="Procurement analytics from live mandi data" />
+      <PageHeader
+        title="Trader Market Intelligence"
+        subtitle="Procurement analytics from live mandi data"
+        actions={<DataSourceBadge dataSource={data?.data_source} />}
+      />
       <IntelligenceShell loading={loading} error={error} onRetry={load}>
         {data && (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">

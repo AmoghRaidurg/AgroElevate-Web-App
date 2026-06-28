@@ -4,6 +4,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { IntelligenceShell } from '@/components/intelligence/IntelligenceShell';
 import { useAuth } from '@/hooks/useAuth';
 import { fetchIndustrialistMarketDashboard, type IndustrialistMarketDashboard } from '@/lib/marketIntelligenceApi';
+import { DataSourceBadge } from '@/components/market-intelligence/DataSourceBadge';
 import { Badge } from '@/components/ui/badge';
 import { Factory } from 'lucide-react';
 
@@ -29,7 +30,11 @@ export default function IndustrialistMarketIntelligence() {
 
   return (
     <>
-      <PageHeader title="Industrial Procurement Intelligence" subtitle="Raw material availability & cost forecasting" />
+      <PageHeader
+        title="Industrial Procurement Intelligence"
+        subtitle="Raw material availability & cost forecasting"
+        actions={<DataSourceBadge dataSource={data?.data_source} />}
+      />
       <IntelligenceShell loading={loading} error={error} onRetry={load}>
         {data && (
           <>

@@ -17,7 +17,8 @@ import {
   type FarmerMarketDashboard,
   type MarketPrice,
 } from '@/lib/marketIntelligenceApi';
-import { Globe2, Download, Info } from 'lucide-react';
+import { DataSourceBadge } from '@/components/market-intelligence/DataSourceBadge';
+import { Download, Info } from 'lucide-react';
 import { Tooltip as UiTooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 const COLORS = ['#22c55e', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
@@ -76,7 +77,7 @@ export default function FarmerMarketIntelligence() {
       <PageHeader
         title="Market Intelligence"
         subtitle="Live Indian agricultural market data — separate from Commerce Intelligence"
-        actions={<Badge variant="outline" className="gap-1"><Globe2 className="h-3 w-3" /> Live Mandi Data</Badge>}
+        actions={<DataSourceBadge dataSource={data?.data_source} />}
       />
 
       <LocationSelector

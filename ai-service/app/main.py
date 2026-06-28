@@ -27,6 +27,13 @@ app.include_router(intelligence_router)
 app.include_router(market_intelligence_router)
 
 
+@app.on_event("startup")
+def market_intelligence_startup() -> None:
+    from app.market_intelligence.providers.background_refresh import warmup_on_startup
+
+    warmup_on_startup()
+
+
 @app.exception_handler(Exception)
 async def unhandled_exception(_request: Request, exc: Exception):
     return JSONResponse(
