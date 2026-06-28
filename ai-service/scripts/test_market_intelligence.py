@@ -7,7 +7,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app.market_intelligence.data_store import MarketDataStore
-from app.market_intelligence.models.price_engine import suggest_price, benchmark_comparison, price_comparison
+from app.market_intelligence.models.price_engine import suggest_price, benchmark_comparison, price_comparison, validate_listing_price
 from app.market_intelligence.providers.base import get_all_providers
 from app.market_intelligence.providers.live_cache import LiveApiCache
 from app.market_intelligence.providers.orchestrator import get_orchestrator
@@ -66,6 +66,34 @@ def test_comparison():
     assert comp["mandi_price"] > 0
     assert elapsed < 5.0, f"comparison too slow: {elapsed:.2f}s"
     print("PASS: price comparison", f"({elapsed:.3f}s)")
+
+
+def test_listing_price_validation():
+    wheat = validate_listing_price("Wheat", 46.0, state="Punjab")
+    assert wheat["valid"] is True
+    assert wheat["minimum_price"] > 0
+    assert wheat["guidance_badge"] in {"excellent", "high", "very_high", "competitive", None}
+
+    below = validate_listing_price("Wheat", 1.0, state="Punjab")
+    assert below["valid"] is False
+    assert "Minimum selling price" in (below["message"] or "")
+
+    tomato = validate_listing_price("Tomato", 30.0, state="Maharashtra", district="Pune")
+    assert tomato["minimum_source"] in {"MSP", "Mandi"}
+    if tomato["msp_price"]:
+        assert tomato["minimum_price"] == tomato["msp_price"]
+    else:
+        assert tomato["minimum_price"] == tomato["mandi_modal_price"]
+
+    high = validate_listing_price(
+        "Tomato",
+        round(tomato["suggested_price"] * 1.1, 2),
+        state="Maharashtra",
+        district="Pune",
+    )
+    assert high["valid"] is True
+    assert high["guidance_badge"] == "high"
+    print("PASS: listing price validation")
 
 
 def test_cache_refresh():
@@ -130,5 +158,6 @@ if __name__ == "__main__":
     test_price_suggestion()
     test_benchmark()
     test_comparison()
+    test_listing_price_validation()
     test_cache_refresh()
     print("\nAll Market Intelligence tests passed.")

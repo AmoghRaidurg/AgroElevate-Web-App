@@ -9,28 +9,31 @@ interface Props {
   cropName: string;
   location?: Partial<MarketLocation>;
   onSuggestedPrice?: (price: number) => void;
+  onSuggestionChange?: (suggestion: PriceSuggestion | null) => void;
 }
 
-export function SmartPriceAssistant({ cropName, location, onSuggestedPrice }: Props) {
+export function SmartPriceAssistant({ cropName, location, onSuggestedPrice, onSuggestionChange }: Props) {
   const [suggestion, setSuggestion] = useState<PriceSuggestion | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!cropName || cropName.length < 2) {
       setSuggestion(null);
+      onSuggestionChange?.(null);
       return;
     }
     const timer = window.setTimeout(async () => {
       setLoading(true);
       const result = await fetchPriceSuggestion(cropName, location);
       setSuggestion(result);
+      onSuggestionChange?.(result);
       if (result.suggested_price && onSuggestedPrice) {
         onSuggestedPrice(result.suggested_price);
       }
       setLoading(false);
     }, 400);
     return () => window.clearTimeout(timer);
-  }, [cropName, location, onSuggestedPrice]);
+  }, [cropName, location, onSuggestedPrice, onSuggestionChange]);
 
   if (!cropName || cropName.length < 2) return null;
 

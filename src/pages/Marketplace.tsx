@@ -19,6 +19,9 @@ import { MarketplaceFilters } from '@/components/marketplace/MarketplaceFilters'
 import { FarmerMyListings } from '@/components/marketplace/FarmerMyListings';
 import { CartSheet } from '@/components/marketplace/CartSheet';
 import { SmartPriceAssistant } from '@/components/market-intelligence/SmartPriceAssistant';
+import { FarmerListingPriceField } from '@/components/marketplace/FarmerListingPriceField';
+import { validateListingQuantityInput } from '@/lib/listingPriceValidation';
+import { validateListingPriceOnServer, type PriceSuggestion } from '@/lib/marketIntelligenceApi';
 import { useMarketLocation } from '@/hooks/useMarketLocation';
 import { DashboardSkeleton } from '@/components/design/skeletons';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -53,7 +56,12 @@ export default function Marketplace() {
   const [farmerView, setFarmerView] = useState<'browse' | 'my-listings'>('browse');
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [listingCrop, setListingCrop] = useState('');
-  const [suggestedPrice, setSuggestedPrice] = useState('');
+  const [farmerPrice, setFarmerPrice] = useState('');
+  const [listingQuantity, setListingQuantity] = useState('');
+  const [listingSuggestion, setListingSuggestion] = useState<PriceSuggestion | null>(null);
+  const [priceAutoFilled, setPriceAutoFilled] = useState(false);
+  const [listingSubmitReady, setListingSubmitReady] = useState(false);
+  const [listingSubmitting, setListingSubmitting] = useState(false);
   const { location: marketLocation } = useMarketLocation();
 
   const isFarmer = profile?.role === 'farmer';
@@ -194,21 +202,64 @@ export default function Marketplace() {
 
   const listProduce = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!session?.user.id) return toast.error('Login required');
     const form = new FormData(e.currentTarget);
-    const { error } = await supabase.from('products').insert({
-      name: form.get('name'), crop_type: form.get('crop_type'),
-      price_per_unit: Number(form.get('price')), quantity: Number(form.get('quantity')),
-      unit: 'kg', seller_id: session?.user.id,
-      description: session?.user.id ? buildFarmerListingMeta(session.user.id, profile?.role ?? 'farmer') : undefined,
-    });
-    if (error) return toast.error('Failed to list produce');
-    toast.success('Product listed!');
-    await loadData();
-    notifyIntelligenceDirty();
-    e.currentTarget.reset();
-    setListingCrop('');
-    setSuggestedPrice('');
+    const name = String(form.get('name') ?? '').trim();
+    const cropType = String(form.get('crop_type') ?? '').trim();
+    const price = Number(farmerPrice);
+    const qtyCheck = validateListingQuantityInput(listingQuantity);
+    if (!name || !cropType) return toast.error('Crop name and type are required');
+    if (!qtyCheck.valid || qtyCheck.value == null) return toast.error(qtyCheck.message ?? 'Invalid quantity');
+    if (!Number.isFinite(price) || price <= 0) return toast.error('Enter a valid selling price');
+
+    setListingSubmitting(true);
+    try {
+      const serverValidation = await validateListingPriceOnServer(name, price, marketLocation ?? undefined);
+      if (!serverValidation.valid) {
+        toast.error(serverValidation.message ?? 'Price is below the minimum allowed');
+        return;
+      }
+
+      const { error } = await supabase.from('products').insert({
+        name,
+        crop_type: cropType,
+        price_per_unit: price,
+        quantity: qtyCheck.value,
+        unit: 'kg',
+        seller_id: session.user.id,
+        description: buildFarmerListingMeta(session.user.id, profile?.role ?? 'farmer'),
+      });
+      if (error) return toast.error('Failed to list produce');
+      toast.success('Product listed!');
+      await loadData();
+      notifyIntelligenceDirty();
+      e.currentTarget.reset();
+      setListingCrop('');
+      setFarmerPrice('');
+      setListingQuantity('');
+      setListingSuggestion(null);
+      setPriceAutoFilled(false);
+    } catch (err: unknown) {
+      const message = err && typeof err === 'object' && 'message' in err
+        ? String((err as { message: string }).message)
+        : 'Failed to validate listing price';
+      toast.error(message);
+    } finally {
+      setListingSubmitting(false);
+    }
   };
+
+  const handleSuggestedPrice = useCallback((p: number) => {
+    if (!priceAutoFilled && !farmerPrice) {
+      setFarmerPrice(String(p));
+      setPriceAutoFilled(true);
+    }
+  }, [priceAutoFilled, farmerPrice]);
+
+  const handleFarmerPriceChange = useCallback((value: string) => {
+    setFarmerPrice(value);
+    setPriceAutoFilled(true);
+  }, []);
 
   const submitRelist = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -250,14 +301,27 @@ export default function Marketplace() {
               <div className="glass-card rounded-xl p-5">
                 <h3 className="font-semibold mb-4 flex items-center gap-2"><Store className="h-4 w-4 text-primary" /> List Produce</h3>
                 <form onSubmit={listProduce} className="space-y-3">
-                  <div><Label>Crop Name</Label><Input name="name" placeholder="Wheat" required className="bg-muted/30" value={listingCrop} onChange={(e) => setListingCrop(e.target.value)} /></div>
+                  <div><Label>Crop Name</Label><Input name="name" placeholder="Wheat" required className="bg-muted/30" value={listingCrop} onChange={(e) => { setListingCrop(e.target.value); setPriceAutoFilled(false); }} /></div>
                   <div><Label>Crop Type</Label><Input name="crop_type" placeholder="Grain" required className="bg-muted/30" /></div>
-                  <SmartPriceAssistant cropName={listingCrop} location={marketLocation ?? undefined} onSuggestedPrice={(p) => setSuggestedPrice(String(p))} />
-                  <div className="grid grid-cols-2 gap-2">
-                    <div><Label>Price/kg</Label><Input name="price" type="number" required min="0.01" step="0.01" className="bg-muted/30" value={suggestedPrice} onChange={(e) => setSuggestedPrice(e.target.value)} /></div>
-                    <div><Label>Qty (kg)</Label><Input name="quantity" type="number" required min="1" className="bg-muted/30" /></div>
-                  </div>
-                  <Button type="submit" variant="hero" className="w-full">Submit Listing</Button>
+                  <SmartPriceAssistant
+                    cropName={listingCrop}
+                    location={marketLocation ?? undefined}
+                    onSuggestedPrice={handleSuggestedPrice}
+                    onSuggestionChange={setListingSuggestion}
+                  />
+                  <FarmerListingPriceField
+                    cropName={listingCrop}
+                    location={marketLocation ?? undefined}
+                    suggestion={listingSuggestion}
+                    price={farmerPrice}
+                    onPriceChange={handleFarmerPriceChange}
+                    quantity={listingQuantity}
+                    onQuantityChange={setListingQuantity}
+                    onSubmitReadyChange={setListingSubmitReady}
+                  />
+                  <Button type="submit" variant="hero" className="w-full" disabled={!listingSubmitReady || listingSubmitting}>
+                    {listingSubmitting ? 'Submitting...' : 'Submit Listing'}
+                  </Button>
                 </form>
               </div>
             )}

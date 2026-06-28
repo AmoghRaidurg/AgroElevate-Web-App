@@ -8,7 +8,13 @@ from app.market_intelligence.service import (
     industrialist_dashboard,
     trader_dashboard,
 )
-from app.market_intelligence.models.price_engine import suggest_price, price_comparison, benchmark_comparison, generate_recommendations
+from app.market_intelligence.models.price_engine import (
+    suggest_price,
+    price_comparison,
+    benchmark_comparison,
+    generate_recommendations,
+    validate_listing_price,
+)
 from app.market_intelligence.data_store import MarketDataStore
 
 from app.market_intelligence.providers.orchestrator import get_orchestrator
@@ -138,6 +144,19 @@ def api_price_suggest(
     longitude: float | None = Query(None),
 ):
     return suggest_price(crop, location, state, district, latitude, longitude)
+
+
+@router.get("/validate-listing-price")
+def api_validate_listing_price(
+    crop: str = Query(...),
+    price: float = Query(..., gt=0),
+    location: str | None = Query(None),
+    state: str | None = Query(None),
+    district: str | None = Query(None),
+    latitude: float | None = Query(None),
+    longitude: float | None = Query(None),
+):
+    return validate_listing_price(crop, price, location, state, district, latitude, longitude)
 
 
 @router.get("/comparison")

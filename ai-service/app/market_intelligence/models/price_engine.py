@@ -273,3 +273,73 @@ def price_comparison(crop: str, state: str, district: str | None = None) -> dict
         "weekly_trend": national[0].weekly_trend if national else 0,
         "monthly_trend": national[0].monthly_trend if national else 0,
     }
+
+
+def _listing_guidance_badge(farmer_price: float, suggested: float, minimum: float) -> str | None:
+    if farmer_price < minimum:
+        return None
+    if suggested <= 0:
+        return None
+    ratio = farmer_price / suggested
+    if 0.95 <= ratio <= 1.05:
+        return "excellent"
+    if 1.05 < ratio <= 1.20:
+        return "high"
+    if ratio > 1.20:
+        return "very_high"
+    if farmer_price < suggested:
+        return "competitive"
+    return "excellent"
+
+
+def validate_listing_price(
+    crop: str,
+    price: float,
+    location: str | None = None,
+    state: str | None = None,
+    district: str | None = None,
+    latitude: float | None = None,
+    longitude: float | None = None,
+) -> dict[str, Any]:
+    """Validate farmer listing price against MSP (if available) or mandi modal price."""
+    store = MarketDataStore.get()
+    store.ensure_loaded()
+    sug = suggest_price(crop, location, state, district, latitude, longitude)
+    msp_row = store.msp_for_crop(crop)
+    msp_price = float(msp_row["msp_price"]) if msp_row and msp_row.get("msp_price") else None
+    mandi = float(sug.get("mandi_modal_price") or 0)
+    suggested = float(sug.get("suggested_price") or 0)
+
+    if msp_price and msp_price > 0:
+        minimum_price = msp_price
+        minimum_source = "MSP"
+    elif mandi > 0:
+        minimum_price = mandi
+        minimum_source = "Mandi"
+    else:
+        minimum_price = 0.01
+        minimum_source = "Mandi"
+
+    valid = price >= minimum_price
+    message = None
+    if not valid:
+        label = "MSP" if minimum_source == "MSP" else "Current Mandi"
+        message = (
+            f"Minimum selling price is ₹{minimum_price:.2f}/kg ({label}). "
+            "Please increase your selling price."
+        )
+
+    return {
+        "crop": crop,
+        "valid": valid,
+        "message": message,
+        "minimum_price": round(minimum_price, 2),
+        "minimum_source": minimum_source,
+        "msp_price": round(msp_price, 2) if msp_price else None,
+        "mandi_modal_price": round(mandi, 2) if mandi else None,
+        "suggested_price": round(suggested, 2) if suggested else None,
+        "farmer_price": round(price, 2),
+        "expected_profit_per_kg": round(price - minimum_price, 2) if valid else None,
+        "guidance_badge": _listing_guidance_badge(price, suggested, minimum_price),
+        "data_source": sug.get("data_source") or get_orchestrator().data_source_status(),
+    }

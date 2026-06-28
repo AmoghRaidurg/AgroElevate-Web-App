@@ -343,6 +343,46 @@ export async function fetchPriceSuggestion(crop: string, loc?: Partial<MarketLoc
   }
 }
 
+export interface ListingPriceValidationResponse {
+  crop: string;
+  valid: boolean;
+  message: string | null;
+  minimum_price: number;
+  minimum_source: 'MSP' | 'Mandi';
+  msp_price: number | null;
+  mandi_modal_price: number | null;
+  suggested_price: number | null;
+  farmer_price: number;
+  expected_profit_per_kg: number | null;
+  guidance_badge: 'excellent' | 'high' | 'very_high' | 'competitive' | null;
+}
+
+export async function fetchMspForCrop(crop: string): Promise<number | null> {
+  try {
+    const res = await miFetch<{ msp: Array<{ crop: string; msp_price: number }> }>(
+      '/api/market-intelligence/msp',
+      { crop },
+    );
+    const row = res.msp?.[0];
+    return row?.msp_price && row.msp_price > 0 ? row.msp_price : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function validateListingPriceOnServer(
+  crop: string,
+  price: number,
+  loc?: Partial<MarketLocation>,
+): Promise<ListingPriceValidationResponse> {
+  const params: Record<string, string> = {
+    crop,
+    price: String(price),
+    ...locParams(loc),
+  };
+  return miFetch<ListingPriceValidationResponse>('/api/market-intelligence/validate-listing-price', params);
+}
+
 export async function fetchMarketAdminMonitor() {
   return miFetch<Record<string, unknown>>('/api/market-intelligence/admin/monitor');
 }
