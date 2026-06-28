@@ -1,0 +1,505 @@
+market_code,market_name,market_type,district_code,state_name,latitude,longitude,source
+MKT0001,Andaman APMC 1,APMC,AN001,Andaman and Nicobar Islands,31.816,80.3403,eNAM
+MKT0002,Andaman mandi 2,mandi,AN002,Andaman and Nicobar Islands,16.2745,74.382,data.gov.in
+MKT0003,Andaman eNAM hub 3,eNAM hub,AN003,Andaman and Nicobar Islands,28.1152,74.6749,AGMARKNET
+MKT0004,Andaman wholesale 4,wholesale,AN004,Andaman and Nicobar Islands,20.0076,69.776,eNAM
+MKT0005,Andaman APMC 5,APMC,AN005,Andaman and Nicobar Islands,27.1559,74.4667,data.gov.in
+MKT0006,Andaman mandi 6,mandi,AN006,Andaman and Nicobar Islands,29.2777,84.8937,AGMARKNET
+MKT0007,Andaman eNAM hub 7,eNAM hub,AN007,Andaman and Nicobar Islands,11.0312,88.1445,eNAM
+MKT0008,Andaman wholesale 8,wholesale,AN008,Andaman and Nicobar Islands,23.0047,69.6528,data.gov.in
+MKT0009,Andaman APMC 9,APMC,AN009,Andaman and Nicobar Islands,29.4292,84.5352,AGMARKNET
+MKT0010,Andaman mandi 10,mandi,AN010,Andaman and Nicobar Islands,11.0321,69.2393,eNAM
+MKT0011,Andaman eNAM hub 11,eNAM hub,AN011,Andaman and Nicobar Islands,29.8738,80.625,data.gov.in
+MKT0012,Andaman wholesale 12,wholesale,AN012,Andaman and Nicobar Islands,14.7664,79.71,AGMARKNET
+MKT0013,Andaman APMC 13,APMC,AN013,Andaman and Nicobar Islands,17.4133,81.1738,eNAM
+MKT0014,Andaman mandi 14,mandi,AN014,Andaman and Nicobar Islands,31.9775,81.082,data.gov.in
+MKT0015,Andhra APMC 1,APMC,AP001,Andhra Pradesh,27.7085,80.2446,AGMARKNET
+MKT0016,Andhra mandi 2,mandi,AP002,Andhra Pradesh,26.3078,84.0704,eNAM
+MKT0017,Andhra eNAM hub 3,eNAM hub,AP003,Andhra Pradesh,18.0116,90.2589,data.gov.in
+MKT0018,Andhra wholesale 4,wholesale,AP004,Andhra Pradesh,24.876,68.267,AGMARKNET
+MKT0019,Andhra APMC 5,APMC,AP005,Andhra Pradesh,28.8555,91.764,eNAM
+MKT0020,Andhra mandi 6,mandi,AP006,Andhra Pradesh,28.8096,81.4815,data.gov.in
+MKT0021,Andhra eNAM hub 7,eNAM hub,AP007,Andhra Pradesh,20.4545,76.6499,AGMARKNET
+MKT0022,Andhra wholesale 8,wholesale,AP008,Andhra Pradesh,8.9216,73.7505,eNAM
+MKT0023,Andhra APMC 9,APMC,AP009,Andhra Pradesh,8.6152,69.189,data.gov.in
+MKT0024,Andhra mandi 10,mandi,AP010,Andhra Pradesh,19.7323,68.8072,AGMARKNET
+MKT0025,Andhra eNAM hub 11,eNAM hub,AP011,Andhra Pradesh,33.3536,78.9261,eNAM
+MKT0026,Andhra wholesale 12,wholesale,AP012,Andhra Pradesh,30.3076,88.6998,data.gov.in
+MKT0027,Andhra APMC 13,APMC,AP013,Andhra Pradesh,29.8055,71.3005,AGMARKNET
+MKT0028,Andhra mandi 14,mandi,AP014,Andhra Pradesh,12.0549,68.3134,eNAM
+MKT0029,Arunachal APMC 1,APMC,AR001,Arunachal Pradesh,10.5664,76.4326,data.gov.in
+MKT0030,Arunachal mandi 2,mandi,AR002,Arunachal Pradesh,12.1742,91.0534,AGMARKNET
+MKT0031,Arunachal eNAM hub 3,eNAM hub,AR003,Arunachal Pradesh,21.025,79.3056,eNAM
+MKT0032,Arunachal wholesale 4,wholesale,AR004,Arunachal Pradesh,22.475,86.4979,data.gov.in
+MKT0033,Arunachal APMC 5,APMC,AR005,Arunachal Pradesh,22.2487,78.8454,AGMARKNET
+MKT0034,Arunachal mandi 6,mandi,AR006,Arunachal Pradesh,8.3511,70.0744,eNAM
+MKT0035,Arunachal eNAM hub 7,eNAM hub,AR007,Arunachal Pradesh,26.4008,84.1538,data.gov.in
+MKT0036,Arunachal wholesale 8,wholesale,AR008,Arunachal Pradesh,26.9954,73.0913,AGMARKNET
+MKT0037,Arunachal APMC 9,APMC,AR009,Arunachal Pradesh,27.7931,73.1745,eNAM
+MKT0038,Arunachal mandi 10,mandi,AR010,Arunachal Pradesh,24.1878,82.4746,data.gov.in
+MKT0039,Arunachal eNAM hub 11,eNAM hub,AR011,Arunachal Pradesh,20.2781,78.6146,AGMARKNET
+MKT0040,Arunachal wholesale 12,wholesale,AR012,Arunachal Pradesh,21.7064,80.3601,eNAM
+MKT0041,Arunachal APMC 13,APMC,AR013,Arunachal Pradesh,13.9599,80.1857,data.gov.in
+MKT0042,Arunachal mandi 14,mandi,AR014,Arunachal Pradesh,17.6056,89.6842,AGMARKNET
+MKT0043,Assam APMC 1,APMC,AS001,Assam,15.9492,82.7061,eNAM
+MKT0044,Assam mandi 2,mandi,AS002,Assam,32.8884,74.7159,data.gov.in
+MKT0045,Assam eNAM hub 3,eNAM hub,AS003,Assam,23.3308,72.6192,AGMARKNET
+MKT0046,Assam wholesale 4,wholesale,AS004,Assam,28.3732,89.5482,eNAM
+MKT0047,Assam APMC 5,APMC,AS005,Assam,10.198,90.5047,data.gov.in
+MKT0048,Assam mandi 6,mandi,AS006,Assam,10.6181,75.109,AGMARKNET
+MKT0049,Assam eNAM hub 7,eNAM hub,AS007,Assam,15.1121,91.9106,eNAM
+MKT0050,Assam wholesale 8,wholesale,AS008,Assam,18.0002,72.2904,data.gov.in
+MKT0051,Assam APMC 9,APMC,AS009,Assam,29.7415,81.5956,AGMARKNET
+MKT0052,Assam mandi 10,mandi,AS010,Assam,13.4464,86.4021,eNAM
+MKT0053,Assam eNAM hub 11,eNAM hub,AS011,Assam,16.5993,72.1441,data.gov.in
+MKT0054,Assam wholesale 12,wholesale,AS012,Assam,16.7297,72.9012,AGMARKNET
+MKT0055,Assam APMC 13,APMC,AS013,Assam,15.1513,89.959,eNAM
+MKT0056,Assam mandi 14,mandi,AS014,Assam,34.6994,79.1098,data.gov.in
+MKT0057,Bihar APMC 1,APMC,BR001,Bihar,28.2243,72.1127,AGMARKNET
+MKT0058,Bihar mandi 2,mandi,BR002,Bihar,24.8693,81.5742,eNAM
+MKT0059,Bihar eNAM hub 3,eNAM hub,BR003,Bihar,31.3302,71.7001,data.gov.in
+MKT0060,Bihar wholesale 4,wholesale,BR004,Bihar,17.2077,68.3765,AGMARKNET
+MKT0061,Bihar APMC 5,APMC,BR005,Bihar,14.5865,81.5538,eNAM
+MKT0062,Bihar mandi 6,mandi,BR006,Bihar,11.4169,89.2719,data.gov.in
+MKT0063,Bihar eNAM hub 7,eNAM hub,BR007,Bihar,12.6215,88.9009,AGMARKNET
+MKT0064,Bihar wholesale 8,wholesale,BR008,Bihar,32.7223,92.0899,eNAM
+MKT0065,Bihar APMC 9,APMC,BR009,Bihar,15.6779,92.4143,data.gov.in
+MKT0066,Bihar mandi 10,mandi,BR010,Bihar,16.3612,69.6457,AGMARKNET
+MKT0067,Bihar eNAM hub 11,eNAM hub,BR011,Bihar,31.7084,79.658,eNAM
+MKT0068,Bihar wholesale 12,wholesale,BR012,Bihar,31.0143,75.2753,data.gov.in
+MKT0069,Bihar APMC 13,APMC,BR013,Bihar,19.8772,79.3573,AGMARKNET
+MKT0070,Bihar mandi 14,mandi,BR014,Bihar,25.6249,85.3368,eNAM
+MKT0071,Chandigarh APMC 1,APMC,CH001,Chandigarh,33.8014,83.1579,data.gov.in
+MKT0072,Chandigarh mandi 2,mandi,CH002,Chandigarh,16.5173,80.244,AGMARKNET
+MKT0073,Chandigarh eNAM hub 3,eNAM hub,CH003,Chandigarh,19.5262,85.7557,eNAM
+MKT0074,Chandigarh wholesale 4,wholesale,CH004,Chandigarh,33.4379,89.3717,data.gov.in
+MKT0075,Chandigarh APMC 5,APMC,CH005,Chandigarh,8.6734,91.7865,AGMARKNET
+MKT0076,Chandigarh mandi 6,mandi,CH006,Chandigarh,13.1189,72.7191,eNAM
+MKT0077,Chandigarh eNAM hub 7,eNAM hub,CH007,Chandigarh,31.967,78.5426,data.gov.in
+MKT0078,Chandigarh wholesale 8,wholesale,CH008,Chandigarh,28.3519,91.715,AGMARKNET
+MKT0079,Chandigarh APMC 9,APMC,CH009,Chandigarh,27.7088,91.9796,eNAM
+MKT0080,Chandigarh mandi 10,mandi,CH010,Chandigarh,9.5836,87.5917,data.gov.in
+MKT0081,Chandigarh eNAM hub 11,eNAM hub,CH011,Chandigarh,15.0573,74.472,AGMARKNET
+MKT0082,Chandigarh wholesale 12,wholesale,CH012,Chandigarh,17.419,84.6702,eNAM
+MKT0083,Chandigarh APMC 13,APMC,CH013,Chandigarh,20.3879,72.5109,data.gov.in
+MKT0084,Chandigarh mandi 14,mandi,CH014,Chandigarh,32.6798,77.8883,AGMARKNET
+MKT0085,Chhattisgarh APMC 1,APMC,CT001,Chhattisgarh,18.9557,68.4726,eNAM
+MKT0086,Chhattisgarh mandi 2,mandi,CT002,Chhattisgarh,8.3536,81.6403,data.gov.in
+MKT0087,Chhattisgarh eNAM hub 3,eNAM hub,CT003,Chhattisgarh,28.3374,79.9955,AGMARKNET
+MKT0088,Chhattisgarh wholesale 4,wholesale,CT004,Chhattisgarh,29.5363,74.1053,eNAM
+MKT0089,Chhattisgarh APMC 5,APMC,CT005,Chhattisgarh,28.2115,76.5078,data.gov.in
+MKT0090,Chhattisgarh mandi 6,mandi,CT006,Chhattisgarh,18.4568,92.6229,AGMARKNET
+MKT0091,Chhattisgarh eNAM hub 7,eNAM hub,CT007,Chhattisgarh,8.6584,73.089,eNAM
+MKT0092,Chhattisgarh wholesale 8,wholesale,CT008,Chhattisgarh,26.4037,74.1607,data.gov.in
+MKT0093,Chhattisgarh APMC 9,APMC,CT009,Chhattisgarh,14.2914,86.5605,AGMARKNET
+MKT0094,Chhattisgarh mandi 10,mandi,CT010,Chhattisgarh,14.5565,92.1706,eNAM
+MKT0095,Chhattisgarh eNAM hub 11,eNAM hub,CT011,Chhattisgarh,24.5704,92.4159,data.gov.in
+MKT0096,Chhattisgarh wholesale 12,wholesale,CT012,Chhattisgarh,19.4769,85.6805,AGMARKNET
+MKT0097,Chhattisgarh APMC 13,APMC,CT013,Chhattisgarh,29.9813,78.3792,eNAM
+MKT0098,Chhattisgarh mandi 14,mandi,CT014,Chhattisgarh,23.1426,83.617,data.gov.in
+MKT0099,Dadra APMC 1,APMC,DN001,Dadra and Nagar Haveli and Daman and Diu,30.5417,86.7137,AGMARKNET
+MKT0100,Dadra mandi 2,mandi,DN002,Dadra and Nagar Haveli and Daman and Diu,23.2457,72.3626,eNAM
+MKT0101,Dadra eNAM hub 3,eNAM hub,DN003,Dadra and Nagar Haveli and Daman and Diu,34.8381,90.7257,data.gov.in
+MKT0102,Dadra wholesale 4,wholesale,DN004,Dadra and Nagar Haveli and Daman and Diu,25.0645,75.4777,AGMARKNET
+MKT0103,Dadra APMC 5,APMC,DN005,Dadra and Nagar Haveli and Daman and Diu,30.5192,76.0072,eNAM
+MKT0104,Dadra mandi 6,mandi,DN006,Dadra and Nagar Haveli and Daman and Diu,27.464,72.5257,data.gov.in
+MKT0105,Dadra eNAM hub 7,eNAM hub,DN007,Dadra and Nagar Haveli and Daman and Diu,34.7718,76.4585,AGMARKNET
+MKT0106,Dadra wholesale 8,wholesale,DN008,Dadra and Nagar Haveli and Daman and Diu,17.0916,80.4036,eNAM
+MKT0107,Dadra APMC 9,APMC,DN009,Dadra and Nagar Haveli and Daman and Diu,21.7516,68.7463,data.gov.in
+MKT0108,Dadra mandi 10,mandi,DN010,Dadra and Nagar Haveli and Daman and Diu,25.2238,90.0976,AGMARKNET
+MKT0109,Dadra eNAM hub 11,eNAM hub,DN011,Dadra and Nagar Haveli and Daman and Diu,25.2205,81.7202,eNAM
+MKT0110,Dadra wholesale 12,wholesale,DN012,Dadra and Nagar Haveli and Daman and Diu,9.8782,82.3473,data.gov.in
+MKT0111,Dadra APMC 13,APMC,DN013,Dadra and Nagar Haveli and Daman and Diu,23.7086,86.1279,AGMARKNET
+MKT0112,Dadra mandi 14,mandi,DN014,Dadra and Nagar Haveli and Daman and Diu,18.8437,69.1494,eNAM
+MKT0113,Delhi APMC 1,APMC,DL001,Delhi,21.32,70.1655,data.gov.in
+MKT0114,Delhi mandi 2,mandi,DL002,Delhi,10.7109,88.3085,AGMARKNET
+MKT0115,Delhi eNAM hub 3,eNAM hub,DL003,Delhi,22.1929,91.3903,eNAM
+MKT0116,Delhi wholesale 4,wholesale,DL004,Delhi,34.6434,92.2155,data.gov.in
+MKT0117,Delhi APMC 5,APMC,DL005,Delhi,24.4024,69.8042,AGMARKNET
+MKT0118,Delhi mandi 6,mandi,DL006,Delhi,16.5955,73.979,eNAM
+MKT0119,Delhi eNAM hub 7,eNAM hub,DL007,Delhi,24.694,84.5266,data.gov.in
+MKT0120,Delhi wholesale 8,wholesale,DL008,Delhi,23.4368,89.6646,AGMARKNET
+MKT0121,Delhi APMC 9,APMC,DL009,Delhi,15.8557,85.7732,eNAM
+MKT0122,Delhi mandi 10,mandi,DL010,Delhi,27.6672,70.4473,data.gov.in
+MKT0123,Delhi eNAM hub 11,eNAM hub,DL011,Delhi,30.3104,79.5222,AGMARKNET
+MKT0124,Delhi wholesale 12,wholesale,DL012,Delhi,21.1731,88.6149,eNAM
+MKT0125,Delhi APMC 13,APMC,DL013,Delhi,11.7551,88.9637,data.gov.in
+MKT0126,Delhi mandi 14,mandi,DL014,Delhi,15.2186,85.6127,AGMARKNET
+MKT0127,Goa APMC 1,APMC,GA001,Goa,28.5531,92.1656,eNAM
+MKT0128,Goa mandi 2,mandi,GA002,Goa,27.19,84.7586,data.gov.in
+MKT0129,Goa eNAM hub 3,eNAM hub,GA003,Goa,26.8336,77.8545,AGMARKNET
+MKT0130,Goa wholesale 4,wholesale,GA004,Goa,14.2453,85.4055,eNAM
+MKT0131,Goa APMC 5,APMC,GA005,Goa,22.7606,78.0723,data.gov.in
+MKT0132,Goa mandi 6,mandi,GA006,Goa,19.8655,81.6034,AGMARKNET
+MKT0133,Goa eNAM hub 7,eNAM hub,GA007,Goa,23.8559,79.964,eNAM
+MKT0134,Goa wholesale 8,wholesale,GA008,Goa,9.3308,86.4067,data.gov.in
+MKT0135,Goa APMC 9,APMC,GA009,Goa,27.4648,82.2491,AGMARKNET
+MKT0136,Goa mandi 10,mandi,GA010,Goa,30.7009,90.8314,eNAM
+MKT0137,Goa eNAM hub 11,eNAM hub,GA011,Goa,21.5915,67.9332,data.gov.in
+MKT0138,Goa wholesale 12,wholesale,GA012,Goa,13.8418,75.4937,AGMARKNET
+MKT0139,Goa APMC 13,APMC,GA013,Goa,33.5572,87.3961,eNAM
+MKT0140,Goa mandi 14,mandi,GA014,Goa,15.965,91.186,data.gov.in
+MKT0141,Gujarat APMC 1,APMC,GJ001,Gujarat,13.6858,72.0784,AGMARKNET
+MKT0142,Gujarat mandi 2,mandi,GJ002,Gujarat,27.8312,76.1044,eNAM
+MKT0143,Gujarat eNAM hub 3,eNAM hub,GJ003,Gujarat,12.3219,74.2909,data.gov.in
+MKT0144,Gujarat wholesale 4,wholesale,GJ004,Gujarat,33.5313,92.3377,AGMARKNET
+MKT0145,Gujarat APMC 5,APMC,GJ005,Gujarat,27.1793,86.1568,eNAM
+MKT0146,Gujarat mandi 6,mandi,GJ006,Gujarat,16.3151,84.5998,data.gov.in
+MKT0147,Gujarat eNAM hub 7,eNAM hub,GJ007,Gujarat,24.9526,86.0583,AGMARKNET
+MKT0148,Gujarat wholesale 8,wholesale,GJ008,Gujarat,24.1897,73.1865,eNAM
+MKT0149,Gujarat APMC 9,APMC,GJ009,Gujarat,20.5498,91.8116,data.gov.in
+MKT0150,Gujarat mandi 10,mandi,GJ010,Gujarat,13.9227,89.6749,AGMARKNET
+MKT0151,Gujarat eNAM hub 11,eNAM hub,GJ011,Gujarat,12.3218,74.127,eNAM
+MKT0152,Gujarat wholesale 12,wholesale,GJ012,Gujarat,22.0354,83.4255,data.gov.in
+MKT0153,Gujarat APMC 13,APMC,GJ013,Gujarat,29.7615,78.7008,AGMARKNET
+MKT0154,Gujarat mandi 14,mandi,GJ014,Gujarat,34.8104,80.4004,eNAM
+MKT0155,Haryana APMC 1,APMC,HR001,Haryana,23.67,81.1561,data.gov.in
+MKT0156,Haryana mandi 2,mandi,HR002,Haryana,21.2108,84.8172,AGMARKNET
+MKT0157,Haryana eNAM hub 3,eNAM hub,HR003,Haryana,27.1643,92.1114,eNAM
+MKT0158,Haryana wholesale 4,wholesale,HR004,Haryana,9.4473,82.6413,data.gov.in
+MKT0159,Haryana APMC 5,APMC,HR005,Haryana,27.689,91.7981,AGMARKNET
+MKT0160,Haryana mandi 6,mandi,HR006,Haryana,18.9518,71.7411,eNAM
+MKT0161,Haryana eNAM hub 7,eNAM hub,HR007,Haryana,29.0694,76.8374,data.gov.in
+MKT0162,Haryana wholesale 8,wholesale,HR008,Haryana,28.7424,84.6031,AGMARKNET
+MKT0163,Haryana APMC 9,APMC,HR009,Haryana,19.0849,82.9521,eNAM
+MKT0164,Haryana mandi 10,mandi,HR010,Haryana,21.5208,78.9062,data.gov.in
+MKT0165,Haryana eNAM hub 11,eNAM hub,HR011,Haryana,18.3725,87.0125,AGMARKNET
+MKT0166,Haryana wholesale 12,wholesale,HR012,Haryana,23.8167,69.0059,eNAM
+MKT0167,Haryana APMC 13,APMC,HR013,Haryana,17.4497,87.0269,data.gov.in
+MKT0168,Haryana mandi 14,mandi,HR014,Haryana,11.3732,90.5941,AGMARKNET
+MKT0169,Himachal APMC 1,APMC,HP001,Himachal Pradesh,12.9738,70.2045,eNAM
+MKT0170,Himachal mandi 2,mandi,HP002,Himachal Pradesh,16.3519,76.5294,data.gov.in
+MKT0171,Himachal eNAM hub 3,eNAM hub,HP003,Himachal Pradesh,34.415,82.4678,AGMARKNET
+MKT0172,Himachal wholesale 4,wholesale,HP004,Himachal Pradesh,27.9006,87.437,eNAM
+MKT0173,Himachal APMC 5,APMC,HP005,Himachal Pradesh,16.2867,79.4263,data.gov.in
+MKT0174,Himachal mandi 6,mandi,HP006,Himachal Pradesh,27.3852,90.432,AGMARKNET
+MKT0175,Himachal eNAM hub 7,eNAM hub,HP007,Himachal Pradesh,31.9642,68.782,eNAM
+MKT0176,Himachal wholesale 8,wholesale,HP008,Himachal Pradesh,19.4963,68.6247,data.gov.in
+MKT0177,Himachal APMC 9,APMC,HP009,Himachal Pradesh,24.7243,70.7756,AGMARKNET
+MKT0178,Himachal mandi 10,mandi,HP010,Himachal Pradesh,15.8063,90.153,eNAM
+MKT0179,Himachal eNAM hub 11,eNAM hub,HP011,Himachal Pradesh,32.1771,73.1238,data.gov.in
+MKT0180,Himachal wholesale 12,wholesale,HP012,Himachal Pradesh,23.516,69.3875,AGMARKNET
+MKT0181,Himachal APMC 13,APMC,HP013,Himachal Pradesh,24.3588,83.7947,eNAM
+MKT0182,Himachal mandi 14,mandi,HP014,Himachal Pradesh,9.5902,75.8738,data.gov.in
+MKT0183,Jammu APMC 1,APMC,JK001,Jammu and Kashmir,26.5519,88.9023,AGMARKNET
+MKT0184,Jammu mandi 2,mandi,JK002,Jammu and Kashmir,30.8791,74.0593,eNAM
+MKT0185,Jammu eNAM hub 3,eNAM hub,JK003,Jammu and Kashmir,21.5274,83.9726,data.gov.in
+MKT0186,Jammu wholesale 4,wholesale,JK004,Jammu and Kashmir,27.7324,80.3052,AGMARKNET
+MKT0187,Jammu APMC 5,APMC,JK005,Jammu and Kashmir,34.1233,81.6912,eNAM
+MKT0188,Jammu mandi 6,mandi,JK006,Jammu and Kashmir,17.0408,83.3819,data.gov.in
+MKT0189,Jammu eNAM hub 7,eNAM hub,JK007,Jammu and Kashmir,27.6671,77.5474,AGMARKNET
+MKT0190,Jammu wholesale 8,wholesale,JK008,Jammu and Kashmir,18.9529,68.0879,eNAM
+MKT0191,Jammu APMC 9,APMC,JK009,Jammu and Kashmir,31.0165,80.9833,data.gov.in
+MKT0192,Jammu mandi 10,mandi,JK010,Jammu and Kashmir,33.0999,80.2055,AGMARKNET
+MKT0193,Jammu eNAM hub 11,eNAM hub,JK011,Jammu and Kashmir,16.1342,91.0344,eNAM
+MKT0194,Jammu wholesale 12,wholesale,JK012,Jammu and Kashmir,19.2325,82.9052,data.gov.in
+MKT0195,Jammu APMC 13,APMC,JK013,Jammu and Kashmir,13.4203,91.7752,AGMARKNET
+MKT0196,Jammu mandi 14,mandi,JK014,Jammu and Kashmir,15.4586,92.1698,eNAM
+MKT0197,Jharkhand APMC 1,APMC,JH001,Jharkhand,16.7043,91.4699,data.gov.in
+MKT0198,Jharkhand mandi 2,mandi,JH002,Jharkhand,28.6297,88.6898,AGMARKNET
+MKT0199,Jharkhand eNAM hub 3,eNAM hub,JH003,Jharkhand,15.8626,84.6599,eNAM
+MKT0200,Jharkhand wholesale 4,wholesale,JH004,Jharkhand,26.6253,93.0189,data.gov.in
+MKT0201,Jharkhand APMC 5,APMC,JH005,Jharkhand,8.3468,83.8301,AGMARKNET
+MKT0202,Jharkhand mandi 6,mandi,JH006,Jharkhand,13.064,85.099,eNAM
+MKT0203,Jharkhand eNAM hub 7,eNAM hub,JH007,Jharkhand,17.83,92.6216,data.gov.in
+MKT0204,Jharkhand wholesale 8,wholesale,JH008,Jharkhand,22.1819,73.0234,AGMARKNET
+MKT0205,Jharkhand APMC 9,APMC,JH009,Jharkhand,32.0288,68.9946,eNAM
+MKT0206,Jharkhand mandi 10,mandi,JH010,Jharkhand,26.5184,90.9249,data.gov.in
+MKT0207,Jharkhand eNAM hub 11,eNAM hub,JH011,Jharkhand,25.5448,80.8655,AGMARKNET
+MKT0208,Jharkhand wholesale 12,wholesale,JH012,Jharkhand,32.0007,72.2106,eNAM
+MKT0209,Jharkhand APMC 13,APMC,JH013,Jharkhand,22.7776,70.3181,data.gov.in
+MKT0210,Jharkhand mandi 14,mandi,JH014,Jharkhand,34.6218,78.8357,AGMARKNET
+MKT0211,Karnataka APMC 1,APMC,KA001,Karnataka,29.4044,69.4178,eNAM
+MKT0212,Karnataka mandi 2,mandi,KA002,Karnataka,18.5229,85.2368,data.gov.in
+MKT0213,Karnataka eNAM hub 3,eNAM hub,KA003,Karnataka,23.0994,72.4395,AGMARKNET
+MKT0214,Karnataka wholesale 4,wholesale,KA004,Karnataka,25.2957,72.2873,eNAM
+MKT0215,Karnataka APMC 5,APMC,KA005,Karnataka,22.2321,91.0286,data.gov.in
+MKT0216,Karnataka mandi 6,mandi,KA006,Karnataka,27.6836,85.2072,AGMARKNET
+MKT0217,Karnataka eNAM hub 7,eNAM hub,KA007,Karnataka,20.9909,82.6111,eNAM
+MKT0218,Karnataka wholesale 8,wholesale,KA008,Karnataka,21.0188,70.1086,data.gov.in
+MKT0219,Karnataka APMC 9,APMC,KA009,Karnataka,20.246,83.9177,AGMARKNET
+MKT0220,Karnataka mandi 10,mandi,KA010,Karnataka,23.0925,82.2443,eNAM
+MKT0221,Karnataka eNAM hub 11,eNAM hub,KA011,Karnataka,30.5702,70.8095,data.gov.in
+MKT0222,Karnataka wholesale 12,wholesale,KA012,Karnataka,15.643,79.6308,AGMARKNET
+MKT0223,Karnataka APMC 13,APMC,KA013,Karnataka,17.9669,76.7541,eNAM
+MKT0224,Karnataka mandi 14,mandi,KA014,Karnataka,14.9941,92.588,data.gov.in
+MKT0225,Kerala APMC 1,APMC,KL001,Kerala,22.7096,92.8966,AGMARKNET
+MKT0226,Kerala mandi 2,mandi,KL002,Kerala,18.9168,80.5313,eNAM
+MKT0227,Kerala eNAM hub 3,eNAM hub,KL003,Kerala,28.8858,75.151,data.gov.in
+MKT0228,Kerala wholesale 4,wholesale,KL004,Kerala,19.9701,75.589,AGMARKNET
+MKT0229,Kerala APMC 5,APMC,KL005,Kerala,29.405,88.1856,eNAM
+MKT0230,Kerala mandi 6,mandi,KL006,Kerala,27.3403,67.939,data.gov.in
+MKT0231,Kerala eNAM hub 7,eNAM hub,KL007,Kerala,20.0143,78.7903,AGMARKNET
+MKT0232,Kerala wholesale 8,wholesale,KL008,Kerala,31.9013,83.798,eNAM
+MKT0233,Kerala APMC 9,APMC,KL009,Kerala,15.0842,75.4244,data.gov.in
+MKT0234,Kerala mandi 10,mandi,KL010,Kerala,25.1607,68.8153,AGMARKNET
+MKT0235,Kerala eNAM hub 11,eNAM hub,KL011,Kerala,28.0995,80.5765,eNAM
+MKT0236,Kerala wholesale 12,wholesale,KL012,Kerala,24.4151,73.4974,data.gov.in
+MKT0237,Kerala APMC 13,APMC,KL013,Kerala,21.4401,71.3916,AGMARKNET
+MKT0238,Kerala mandi 14,mandi,KL014,Kerala,19.3497,71.0701,eNAM
+MKT0239,Ladakh APMC 1,APMC,LA001,Ladakh,19.2397,80.0813,data.gov.in
+MKT0240,Ladakh mandi 2,mandi,LA002,Ladakh,15.0992,85.619,AGMARKNET
+MKT0241,Ladakh eNAM hub 3,eNAM hub,LA003,Ladakh,30.8833,71.1705,eNAM
+MKT0242,Ladakh wholesale 4,wholesale,LA004,Ladakh,29.3671,82.7367,data.gov.in
+MKT0243,Ladakh APMC 5,APMC,LA005,Ladakh,32.0806,74.7094,AGMARKNET
+MKT0244,Ladakh mandi 6,mandi,LA006,Ladakh,25.3114,68.6272,eNAM
+MKT0245,Ladakh eNAM hub 7,eNAM hub,LA007,Ladakh,11.3376,89.4127,data.gov.in
+MKT0246,Ladakh wholesale 8,wholesale,LA008,Ladakh,34.7433,74.657,AGMARKNET
+MKT0247,Ladakh APMC 9,APMC,LA009,Ladakh,10.2652,75.3061,eNAM
+MKT0248,Ladakh mandi 10,mandi,LA010,Ladakh,29.7396,74.2561,data.gov.in
+MKT0249,Ladakh eNAM hub 11,eNAM hub,LA011,Ladakh,34.1152,75.6116,AGMARKNET
+MKT0250,Ladakh wholesale 12,wholesale,LA012,Ladakh,12.5966,87.0223,eNAM
+MKT0251,Ladakh APMC 13,APMC,LA013,Ladakh,12.3706,76.171,data.gov.in
+MKT0252,Ladakh mandi 14,mandi,LA014,Ladakh,26.0342,90.9291,AGMARKNET
+MKT0253,Lakshadweep APMC 1,APMC,LD001,Lakshadweep,14.2101,69.754,eNAM
+MKT0254,Lakshadweep mandi 2,mandi,LD002,Lakshadweep,32.6439,68.5954,data.gov.in
+MKT0255,Lakshadweep eNAM hub 3,eNAM hub,LD003,Lakshadweep,9.9528,90.5593,AGMARKNET
+MKT0256,Lakshadweep wholesale 4,wholesale,LD004,Lakshadweep,13.8035,86.5432,eNAM
+MKT0257,Lakshadweep APMC 5,APMC,LD005,Lakshadweep,28.3379,68.4947,data.gov.in
+MKT0258,Lakshadweep mandi 6,mandi,LD006,Lakshadweep,15.4968,88.8992,AGMARKNET
+MKT0259,Lakshadweep eNAM hub 7,eNAM hub,LD007,Lakshadweep,8.8199,84.9167,eNAM
+MKT0260,Lakshadweep wholesale 8,wholesale,LD008,Lakshadweep,22.7242,73.7628,data.gov.in
+MKT0261,Lakshadweep APMC 9,APMC,LD009,Lakshadweep,31.4148,69.135,AGMARKNET
+MKT0262,Lakshadweep mandi 10,mandi,LD010,Lakshadweep,8.2758,75.6303,eNAM
+MKT0263,Lakshadweep eNAM hub 11,eNAM hub,LD011,Lakshadweep,31.977,91.8856,data.gov.in
+MKT0264,Lakshadweep wholesale 12,wholesale,LD012,Lakshadweep,30.847,79.802,AGMARKNET
+MKT0265,Lakshadweep APMC 13,APMC,LD013,Lakshadweep,17.5211,74.3469,eNAM
+MKT0266,Lakshadweep mandi 14,mandi,LD014,Lakshadweep,32.9228,78.8163,data.gov.in
+MKT0267,Madhya APMC 1,APMC,MP001,Madhya Pradesh,9.3998,73.7919,AGMARKNET
+MKT0268,Madhya mandi 2,mandi,MP002,Madhya Pradesh,20.569,79.275,eNAM
+MKT0269,Madhya eNAM hub 3,eNAM hub,MP003,Madhya Pradesh,22.3676,73.7854,data.gov.in
+MKT0270,Madhya wholesale 4,wholesale,MP004,Madhya Pradesh,22.3683,73.481,AGMARKNET
+MKT0271,Madhya APMC 5,APMC,MP005,Madhya Pradesh,32.628,90.9574,eNAM
+MKT0272,Madhya mandi 6,mandi,MP006,Madhya Pradesh,11.7275,71.1207,data.gov.in
+MKT0273,Madhya eNAM hub 7,eNAM hub,MP007,Madhya Pradesh,8.6271,80.8435,AGMARKNET
+MKT0274,Madhya wholesale 8,wholesale,MP008,Madhya Pradesh,9.3785,90.0873,eNAM
+MKT0275,Madhya APMC 9,APMC,MP009,Madhya Pradesh,32.1068,80.1374,data.gov.in
+MKT0276,Madhya mandi 10,mandi,MP010,Madhya Pradesh,15.9832,89.4126,AGMARKNET
+MKT0277,Madhya eNAM hub 11,eNAM hub,MP011,Madhya Pradesh,19.7556,78.106,eNAM
+MKT0278,Madhya wholesale 12,wholesale,MP012,Madhya Pradesh,31.3725,78.2638,data.gov.in
+MKT0279,Madhya APMC 13,APMC,MP013,Madhya Pradesh,26.7036,84.3881,AGMARKNET
+MKT0280,Madhya mandi 14,mandi,MP014,Madhya Pradesh,30.0745,77.8708,eNAM
+MKT0281,Maharashtra APMC 1,APMC,MH001,Maharashtra,27.0988,78.2391,data.gov.in
+MKT0282,Maharashtra mandi 2,mandi,MH002,Maharashtra,16.967,71.3097,AGMARKNET
+MKT0283,Maharashtra eNAM hub 3,eNAM hub,MH003,Maharashtra,16.1368,83.0195,eNAM
+MKT0284,Maharashtra wholesale 4,wholesale,MH004,Maharashtra,15.2514,80.6599,data.gov.in
+MKT0285,Maharashtra APMC 5,APMC,MH005,Maharashtra,9.7062,82.0994,AGMARKNET
+MKT0286,Maharashtra mandi 6,mandi,MH006,Maharashtra,7.7528,91.8564,eNAM
+MKT0287,Maharashtra eNAM hub 7,eNAM hub,MH007,Maharashtra,31.0661,71.9044,data.gov.in
+MKT0288,Maharashtra wholesale 8,wholesale,MH008,Maharashtra,19.6145,73.0346,AGMARKNET
+MKT0289,Maharashtra APMC 9,APMC,MH009,Maharashtra,14.6754,73.1281,eNAM
+MKT0290,Maharashtra mandi 10,mandi,MH010,Maharashtra,18.5763,79.1188,data.gov.in
+MKT0291,Maharashtra eNAM hub 11,eNAM hub,MH011,Maharashtra,23.166,87.9153,AGMARKNET
+MKT0292,Maharashtra wholesale 12,wholesale,MH012,Maharashtra,20.4358,86.2713,eNAM
+MKT0293,Maharashtra APMC 13,APMC,MH013,Maharashtra,27.496,71.9602,data.gov.in
+MKT0294,Maharashtra mandi 14,mandi,MH014,Maharashtra,29.3228,78.8362,AGMARKNET
+MKT0295,Manipur APMC 1,APMC,MN001,Manipur,16.6999,81.5603,eNAM
+MKT0296,Manipur mandi 2,mandi,MN002,Manipur,15.4544,71.8955,data.gov.in
+MKT0297,Manipur eNAM hub 3,eNAM hub,MN003,Manipur,9.3725,87.2146,AGMARKNET
+MKT0298,Manipur wholesale 4,wholesale,MN004,Manipur,24.9704,86.824,eNAM
+MKT0299,Manipur APMC 5,APMC,MN005,Manipur,28.9928,90.1815,data.gov.in
+MKT0300,Manipur mandi 6,mandi,MN006,Manipur,8.414,80.6281,AGMARKNET
+MKT0301,Manipur eNAM hub 7,eNAM hub,MN007,Manipur,23.6386,80.4293,eNAM
+MKT0302,Manipur wholesale 8,wholesale,MN008,Manipur,12.2165,74.4376,data.gov.in
+MKT0303,Manipur APMC 9,APMC,MN009,Manipur,17.9264,71.2818,AGMARKNET
+MKT0304,Manipur mandi 10,mandi,MN010,Manipur,32.3746,92.027,eNAM
+MKT0305,Manipur eNAM hub 11,eNAM hub,MN011,Manipur,27.0095,69.0029,data.gov.in
+MKT0306,Manipur wholesale 12,wholesale,MN012,Manipur,31.5977,83.4684,AGMARKNET
+MKT0307,Manipur APMC 13,APMC,MN013,Manipur,15.0339,75.7914,eNAM
+MKT0308,Manipur mandi 14,mandi,MN014,Manipur,9.1731,77.303,data.gov.in
+MKT0309,Meghalaya APMC 1,APMC,ML001,Meghalaya,31.8185,89.5653,AGMARKNET
+MKT0310,Meghalaya mandi 2,mandi,ML002,Meghalaya,25.9837,70.428,eNAM
+MKT0311,Meghalaya eNAM hub 3,eNAM hub,ML003,Meghalaya,29.5836,83.25,data.gov.in
+MKT0312,Meghalaya wholesale 4,wholesale,ML004,Meghalaya,17.5477,89.4527,AGMARKNET
+MKT0313,Meghalaya APMC 5,APMC,ML005,Meghalaya,8.4645,79.0192,eNAM
+MKT0314,Meghalaya mandi 6,mandi,ML006,Meghalaya,31.9161,71.9653,data.gov.in
+MKT0315,Meghalaya eNAM hub 7,eNAM hub,ML007,Meghalaya,10.7759,89.828,AGMARKNET
+MKT0316,Meghalaya wholesale 8,wholesale,ML008,Meghalaya,13.3109,87.1616,eNAM
+MKT0317,Meghalaya APMC 9,APMC,ML009,Meghalaya,11.9937,91.3214,data.gov.in
+MKT0318,Meghalaya mandi 10,mandi,ML010,Meghalaya,20.955,90.5926,AGMARKNET
+MKT0319,Meghalaya eNAM hub 11,eNAM hub,ML011,Meghalaya,8.912,81.897,eNAM
+MKT0320,Meghalaya wholesale 12,wholesale,ML012,Meghalaya,12.7464,72.1288,data.gov.in
+MKT0321,Meghalaya APMC 13,APMC,ML013,Meghalaya,10.1358,68.5144,AGMARKNET
+MKT0322,Meghalaya mandi 14,mandi,ML014,Meghalaya,17.463,75.9928,eNAM
+MKT0323,Mizoram APMC 1,APMC,MZ001,Mizoram,26.7987,72.6178,data.gov.in
+MKT0324,Mizoram mandi 2,mandi,MZ002,Mizoram,11.9026,78.412,AGMARKNET
+MKT0325,Mizoram eNAM hub 3,eNAM hub,MZ003,Mizoram,32.2116,85.5925,eNAM
+MKT0326,Mizoram wholesale 4,wholesale,MZ004,Mizoram,23.1202,73.8529,data.gov.in
+MKT0327,Mizoram APMC 5,APMC,MZ005,Mizoram,15.7735,93.0959,AGMARKNET
+MKT0328,Mizoram mandi 6,mandi,MZ006,Mizoram,9.228,75.63,eNAM
+MKT0329,Mizoram eNAM hub 7,eNAM hub,MZ007,Mizoram,14.9113,68.8742,data.gov.in
+MKT0330,Mizoram wholesale 8,wholesale,MZ008,Mizoram,24.9391,83.6827,AGMARKNET
+MKT0331,Mizoram APMC 9,APMC,MZ009,Mizoram,33.3367,87.3896,eNAM
+MKT0332,Mizoram mandi 10,mandi,MZ010,Mizoram,33.3225,88.0803,data.gov.in
+MKT0333,Mizoram eNAM hub 11,eNAM hub,MZ011,Mizoram,31.2188,74.7844,AGMARKNET
+MKT0334,Mizoram wholesale 12,wholesale,MZ012,Mizoram,31.7541,76.5406,eNAM
+MKT0335,Mizoram APMC 13,APMC,MZ013,Mizoram,26.5408,69.2038,data.gov.in
+MKT0336,Mizoram mandi 14,mandi,MZ014,Mizoram,23.831,78.2233,AGMARKNET
+MKT0337,Nagaland APMC 1,APMC,NL001,Nagaland,24.1638,78.0713,eNAM
+MKT0338,Nagaland mandi 2,mandi,NL002,Nagaland,31.5203,72.5904,data.gov.in
+MKT0339,Nagaland eNAM hub 3,eNAM hub,NL003,Nagaland,8.2102,87.3824,AGMARKNET
+MKT0340,Nagaland wholesale 4,wholesale,NL004,Nagaland,20.3076,70.5451,eNAM
+MKT0341,Nagaland APMC 5,APMC,NL005,Nagaland,12.7475,71.9475,data.gov.in
+MKT0342,Nagaland mandi 6,mandi,NL006,Nagaland,27.7035,72.2749,AGMARKNET
+MKT0343,Nagaland eNAM hub 7,eNAM hub,NL007,Nagaland,9.9422,77.1544,eNAM
+MKT0344,Nagaland wholesale 8,wholesale,NL008,Nagaland,19.6791,79.6382,data.gov.in
+MKT0345,Nagaland APMC 9,APMC,NL009,Nagaland,22.2071,87.933,AGMARKNET
+MKT0346,Nagaland mandi 10,mandi,NL010,Nagaland,8.6374,71.5408,eNAM
+MKT0347,Nagaland eNAM hub 11,eNAM hub,NL011,Nagaland,25.7448,72.5875,data.gov.in
+MKT0348,Nagaland wholesale 12,wholesale,NL012,Nagaland,18.1156,76.1535,AGMARKNET
+MKT0349,Nagaland APMC 13,APMC,NL013,Nagaland,14.4106,79.9449,eNAM
+MKT0350,Nagaland mandi 14,mandi,NL014,Nagaland,20.7887,93.1191,data.gov.in
+MKT0351,Odisha APMC 1,APMC,OR001,Odisha,32.541,75.5623,AGMARKNET
+MKT0352,Odisha mandi 2,mandi,OR002,Odisha,12.8092,77.1033,eNAM
+MKT0353,Odisha eNAM hub 3,eNAM hub,OR003,Odisha,17.1383,73.4647,data.gov.in
+MKT0354,Odisha wholesale 4,wholesale,OR004,Odisha,25.6235,79.6852,AGMARKNET
+MKT0355,Odisha APMC 5,APMC,OR005,Odisha,12.8043,81.2776,eNAM
+MKT0356,Odisha mandi 6,mandi,OR006,Odisha,27.5224,76.559,data.gov.in
+MKT0357,Odisha eNAM hub 7,eNAM hub,OR007,Odisha,21.3825,76.1384,AGMARKNET
+MKT0358,Odisha wholesale 8,wholesale,OR008,Odisha,24.9531,79.0925,eNAM
+MKT0359,Odisha APMC 9,APMC,OR009,Odisha,8.9784,80.4701,data.gov.in
+MKT0360,Odisha mandi 10,mandi,OR010,Odisha,30.1585,85.7287,AGMARKNET
+MKT0361,Odisha eNAM hub 11,eNAM hub,OR011,Odisha,14.0651,71.8965,eNAM
+MKT0362,Odisha wholesale 12,wholesale,OR012,Odisha,21.487,88.1176,data.gov.in
+MKT0363,Odisha APMC 13,APMC,OR013,Odisha,15.8742,71.9669,AGMARKNET
+MKT0364,Odisha mandi 14,mandi,OR014,Odisha,24.1686,91.9632,eNAM
+MKT0365,Puducherry APMC 1,APMC,PY001,Puducherry,22.5698,71.2138,data.gov.in
+MKT0366,Puducherry mandi 2,mandi,PY002,Puducherry,24.931,77.4194,AGMARKNET
+MKT0367,Puducherry eNAM hub 3,eNAM hub,PY003,Puducherry,27.8353,85.1593,eNAM
+MKT0368,Puducherry wholesale 4,wholesale,PY004,Puducherry,31.2794,86.4915,data.gov.in
+MKT0369,Puducherry APMC 5,APMC,PY005,Puducherry,20.1926,91.1936,AGMARKNET
+MKT0370,Puducherry mandi 6,mandi,PY006,Puducherry,21.1562,73.1178,eNAM
+MKT0371,Puducherry eNAM hub 7,eNAM hub,PY007,Puducherry,16.3113,81.6618,data.gov.in
+MKT0372,Puducherry wholesale 8,wholesale,PY008,Puducherry,19.4522,69.4776,AGMARKNET
+MKT0373,Puducherry APMC 9,APMC,PY009,Puducherry,29.3502,74.2982,eNAM
+MKT0374,Puducherry mandi 10,mandi,PY010,Puducherry,10.6569,82.343,data.gov.in
+MKT0375,Puducherry eNAM hub 11,eNAM hub,PY011,Puducherry,14.839,89.0883,AGMARKNET
+MKT0376,Puducherry wholesale 12,wholesale,PY012,Puducherry,32.9756,79.9011,eNAM
+MKT0377,Puducherry APMC 13,APMC,PY013,Puducherry,16.5809,83.496,data.gov.in
+MKT0378,Puducherry mandi 14,mandi,PY014,Puducherry,28.2315,73.3002,AGMARKNET
+MKT0379,Punjab APMC 1,APMC,PB001,Punjab,16.8714,71.5745,eNAM
+MKT0380,Punjab mandi 2,mandi,PB002,Punjab,11.6054,74.6405,data.gov.in
+MKT0381,Punjab eNAM hub 3,eNAM hub,PB003,Punjab,27.2164,79.5782,AGMARKNET
+MKT0382,Punjab wholesale 4,wholesale,PB004,Punjab,31.7053,85.4447,eNAM
+MKT0383,Punjab APMC 5,APMC,PB005,Punjab,25.6957,80.7285,data.gov.in
+MKT0384,Punjab mandi 6,mandi,PB006,Punjab,29.7877,72.8195,AGMARKNET
+MKT0385,Punjab eNAM hub 7,eNAM hub,PB007,Punjab,19.3467,70.666,eNAM
+MKT0386,Punjab wholesale 8,wholesale,PB008,Punjab,24.287,88.7311,data.gov.in
+MKT0387,Punjab APMC 9,APMC,PB009,Punjab,31.8163,85.503,AGMARKNET
+MKT0388,Punjab mandi 10,mandi,PB010,Punjab,34.1774,76.5458,eNAM
+MKT0389,Punjab eNAM hub 11,eNAM hub,PB011,Punjab,18.5222,79.6453,data.gov.in
+MKT0390,Punjab wholesale 12,wholesale,PB012,Punjab,27.4191,72.8912,AGMARKNET
+MKT0391,Punjab APMC 13,APMC,PB013,Punjab,10.8401,73.2428,eNAM
+MKT0392,Punjab mandi 14,mandi,PB014,Punjab,14.8034,75.6535,data.gov.in
+MKT0393,Rajasthan APMC 1,APMC,RJ001,Rajasthan,22.4102,77.3213,AGMARKNET
+MKT0394,Rajasthan mandi 2,mandi,RJ002,Rajasthan,10.6788,85.7508,eNAM
+MKT0395,Rajasthan eNAM hub 3,eNAM hub,RJ003,Rajasthan,10.0962,84.0895,data.gov.in
+MKT0396,Rajasthan wholesale 4,wholesale,RJ004,Rajasthan,31.4098,86.6058,AGMARKNET
+MKT0397,Rajasthan APMC 5,APMC,RJ005,Rajasthan,15.9738,76.1742,eNAM
+MKT0398,Rajasthan mandi 6,mandi,RJ006,Rajasthan,15.9719,69.6888,data.gov.in
+MKT0399,Rajasthan eNAM hub 7,eNAM hub,RJ007,Rajasthan,11.5879,87.4629,AGMARKNET
+MKT0400,Rajasthan wholesale 8,wholesale,RJ008,Rajasthan,32.3041,76.3895,eNAM
+MKT0401,Rajasthan APMC 9,APMC,RJ009,Rajasthan,12.3384,75.1541,data.gov.in
+MKT0402,Rajasthan mandi 10,mandi,RJ010,Rajasthan,21.6111,72.0016,AGMARKNET
+MKT0403,Rajasthan eNAM hub 11,eNAM hub,RJ011,Rajasthan,11.4177,89.0088,eNAM
+MKT0404,Rajasthan wholesale 12,wholesale,RJ012,Rajasthan,20.8561,86.5041,data.gov.in
+MKT0405,Rajasthan APMC 13,APMC,RJ013,Rajasthan,9.2883,68.4354,AGMARKNET
+MKT0406,Rajasthan mandi 14,mandi,RJ014,Rajasthan,10.5001,83.4664,eNAM
+MKT0407,Sikkim APMC 1,APMC,SK001,Sikkim,18.7304,79.4807,data.gov.in
+MKT0408,Sikkim mandi 2,mandi,SK002,Sikkim,15.0165,80.9409,AGMARKNET
+MKT0409,Sikkim eNAM hub 3,eNAM hub,SK003,Sikkim,14.354,75.8545,eNAM
+MKT0410,Sikkim wholesale 4,wholesale,SK004,Sikkim,17.5815,68.1307,data.gov.in
+MKT0411,Sikkim APMC 5,APMC,SK005,Sikkim,13.6173,90.8549,AGMARKNET
+MKT0412,Sikkim mandi 6,mandi,SK006,Sikkim,16.0253,73.2675,eNAM
+MKT0413,Sikkim eNAM hub 7,eNAM hub,SK007,Sikkim,30.6983,83.057,data.gov.in
+MKT0414,Sikkim wholesale 8,wholesale,SK008,Sikkim,27.5066,87.6391,AGMARKNET
+MKT0415,Sikkim APMC 9,APMC,SK009,Sikkim,31.5154,85.3834,eNAM
+MKT0416,Sikkim mandi 10,mandi,SK010,Sikkim,22.0621,72.6117,data.gov.in
+MKT0417,Sikkim eNAM hub 11,eNAM hub,SK011,Sikkim,25.9366,77.1387,AGMARKNET
+MKT0418,Sikkim wholesale 12,wholesale,SK012,Sikkim,10.3337,80.549,eNAM
+MKT0419,Sikkim APMC 13,APMC,SK013,Sikkim,12.2421,72.0327,data.gov.in
+MKT0420,Sikkim mandi 14,mandi,SK014,Sikkim,20.6882,70.4421,AGMARKNET
+MKT0421,Tamil APMC 1,APMC,TN001,Tamil Nadu,21.6862,69.098,eNAM
+MKT0422,Tamil mandi 2,mandi,TN002,Tamil Nadu,25.1574,86.0786,data.gov.in
+MKT0423,Tamil eNAM hub 3,eNAM hub,TN003,Tamil Nadu,17.7021,83.8383,AGMARKNET
+MKT0424,Tamil wholesale 4,wholesale,TN004,Tamil Nadu,22.961,90.6364,eNAM
+MKT0425,Tamil APMC 5,APMC,TN005,Tamil Nadu,25.3325,88.407,data.gov.in
+MKT0426,Tamil mandi 6,mandi,TN006,Tamil Nadu,34.4501,71.3859,AGMARKNET
+MKT0427,Tamil eNAM hub 7,eNAM hub,TN007,Tamil Nadu,18.2301,75.4963,eNAM
+MKT0428,Tamil wholesale 8,wholesale,TN008,Tamil Nadu,24.8246,86.3668,data.gov.in
+MKT0429,Tamil APMC 9,APMC,TN009,Tamil Nadu,23.2156,86.6768,AGMARKNET
+MKT0430,Tamil mandi 10,mandi,TN010,Tamil Nadu,34.593,91.7515,eNAM
+MKT0431,Tamil eNAM hub 11,eNAM hub,TN011,Tamil Nadu,15.8316,83.012,data.gov.in
+MKT0432,Tamil wholesale 12,wholesale,TN012,Tamil Nadu,29.7102,76.1174,AGMARKNET
+MKT0433,Tamil APMC 13,APMC,TN013,Tamil Nadu,29.1396,84.1246,eNAM
+MKT0434,Tamil mandi 14,mandi,TN014,Tamil Nadu,26.7771,71.6461,data.gov.in
+MKT0435,Telangana APMC 1,APMC,TG001,Telangana,11.217,86.4637,AGMARKNET
+MKT0436,Telangana mandi 2,mandi,TG002,Telangana,21.3294,89.451,eNAM
+MKT0437,Telangana eNAM hub 3,eNAM hub,TG003,Telangana,11.6735,90.3866,data.gov.in
+MKT0438,Telangana wholesale 4,wholesale,TG004,Telangana,18.3897,82.5207,AGMARKNET
+MKT0439,Telangana APMC 5,APMC,TG005,Telangana,28.4221,86.6866,eNAM
+MKT0440,Telangana mandi 6,mandi,TG006,Telangana,17.9875,83.7971,data.gov.in
+MKT0441,Telangana eNAM hub 7,eNAM hub,TG007,Telangana,28.7348,77.4802,AGMARKNET
+MKT0442,Telangana wholesale 8,wholesale,TG008,Telangana,18.1907,78.5869,eNAM
+MKT0443,Telangana APMC 9,APMC,TG009,Telangana,27.9335,68.4894,data.gov.in
+MKT0444,Telangana mandi 10,mandi,TG010,Telangana,18.5336,82.199,AGMARKNET
+MKT0445,Telangana eNAM hub 11,eNAM hub,TG011,Telangana,11.5151,73.7375,eNAM
+MKT0446,Telangana wholesale 12,wholesale,TG012,Telangana,16.2047,70.3105,data.gov.in
+MKT0447,Telangana APMC 13,APMC,TG013,Telangana,33.8096,80.0981,AGMARKNET
+MKT0448,Telangana mandi 14,mandi,TG014,Telangana,12.1857,80.881,eNAM
+MKT0449,Tripura APMC 1,APMC,TR001,Tripura,26.5815,83.0382,data.gov.in
+MKT0450,Tripura mandi 2,mandi,TR002,Tripura,34.2705,88.4143,AGMARKNET
+MKT0451,Tripura eNAM hub 3,eNAM hub,TR003,Tripura,19.3485,79.3938,eNAM
+MKT0452,Tripura wholesale 4,wholesale,TR004,Tripura,14.4345,83.4701,data.gov.in
+MKT0453,Tripura APMC 5,APMC,TR005,Tripura,23.9473,75.3762,AGMARKNET
+MKT0454,Tripura mandi 6,mandi,TR006,Tripura,33.1602,71.6992,eNAM
+MKT0455,Tripura eNAM hub 7,eNAM hub,TR007,Tripura,27.5193,77.776,data.gov.in
+MKT0456,Tripura wholesale 8,wholesale,TR008,Tripura,21.0497,88.2267,AGMARKNET
+MKT0457,Tripura APMC 9,APMC,TR009,Tripura,29.3964,70.3645,eNAM
+MKT0458,Tripura mandi 10,mandi,TR010,Tripura,33.991,90.1339,data.gov.in
+MKT0459,Tripura eNAM hub 11,eNAM hub,TR011,Tripura,34.0932,79.033,AGMARKNET
+MKT0460,Tripura wholesale 12,wholesale,TR012,Tripura,15.5711,70.4977,eNAM
+MKT0461,Tripura APMC 13,APMC,TR013,Tripura,8.9258,92.2995,data.gov.in
+MKT0462,Tripura mandi 14,mandi,TR014,Tripura,19.5826,78.6853,AGMARKNET
+MKT0463,Uttar APMC 1,APMC,UP001,Uttar Pradesh,16.9971,72.5893,eNAM
+MKT0464,Uttar mandi 2,mandi,UP002,Uttar Pradesh,21.0612,84.0649,data.gov.in
+MKT0465,Uttar eNAM hub 3,eNAM hub,UP003,Uttar Pradesh,26.4271,85.9104,AGMARKNET
+MKT0466,Uttar wholesale 4,wholesale,UP004,Uttar Pradesh,30.2992,79.9425,eNAM
+MKT0467,Uttar APMC 5,APMC,UP005,Uttar Pradesh,13.7912,73.1583,data.gov.in
+MKT0468,Uttar mandi 6,mandi,UP006,Uttar Pradesh,33.5893,81.7446,AGMARKNET
+MKT0469,Uttar eNAM hub 7,eNAM hub,UP007,Uttar Pradesh,15.93,91.0534,eNAM
+MKT0470,Uttar wholesale 8,wholesale,UP008,Uttar Pradesh,26.4386,92.8318,data.gov.in
+MKT0471,Uttar APMC 9,APMC,UP009,Uttar Pradesh,33.5103,73.7823,AGMARKNET
+MKT0472,Uttar mandi 10,mandi,UP010,Uttar Pradesh,8.3604,89.4576,eNAM
+MKT0473,Uttar eNAM hub 11,eNAM hub,UP011,Uttar Pradesh,28.3138,76.4753,data.gov.in
+MKT0474,Uttar wholesale 12,wholesale,UP012,Uttar Pradesh,19.8655,68.2833,AGMARKNET
+MKT0475,Uttar APMC 13,APMC,UP013,Uttar Pradesh,22.8985,69.8525,eNAM
+MKT0476,Uttar mandi 14,mandi,UP014,Uttar Pradesh,15.5691,69.0297,data.gov.in
+MKT0477,Uttarakhand APMC 1,APMC,UK001,Uttarakhand,22.014,72.4074,AGMARKNET
+MKT0478,Uttarakhand mandi 2,mandi,UK002,Uttarakhand,23.2993,76.056,eNAM
+MKT0479,Uttarakhand eNAM hub 3,eNAM hub,UK003,Uttarakhand,19.7557,70.9585,data.gov.in
+MKT0480,Uttarakhand wholesale 4,wholesale,UK004,Uttarakhand,8.768,89.4767,AGMARKNET
+MKT0481,Uttarakhand APMC 5,APMC,UK005,Uttarakhand,15.2769,70.3211,eNAM
+MKT0482,Uttarakhand mandi 6,mandi,UK006,Uttarakhand,28.9669,69.0533,data.gov.in
+MKT0483,Uttarakhand eNAM hub 7,eNAM hub,UK007,Uttarakhand,12.9106,68.7092,AGMARKNET
+MKT0484,Uttarakhand wholesale 8,wholesale,UK008,Uttarakhand,11.5165,77.7998,eNAM
+MKT0485,Uttarakhand APMC 9,APMC,UK009,Uttarakhand,9.2185,86.4488,data.gov.in
+MKT0486,Uttarakhand mandi 10,mandi,UK010,Uttarakhand,17.229,76.736,AGMARKNET
+MKT0487,Uttarakhand eNAM hub 11,eNAM hub,UK011,Uttarakhand,25.6547,80.3558,eNAM
+MKT0488,Uttarakhand wholesale 12,wholesale,UK012,Uttarakhand,30.8426,70.164,data.gov.in
+MKT0489,Uttarakhand APMC 13,APMC,UK013,Uttarakhand,27.7019,81.2941,AGMARKNET
+MKT0490,Uttarakhand mandi 14,mandi,UK014,Uttarakhand,16.8838,84.8397,eNAM
+MKT0491,West APMC 1,APMC,WB001,West Bengal,22.836,90.5506,data.gov.in
+MKT0492,West mandi 2,mandi,WB002,West Bengal,10.0255,88.8676,AGMARKNET
+MKT0493,West eNAM hub 3,eNAM hub,WB003,West Bengal,21.521,75.7145,eNAM
+MKT0494,West wholesale 4,wholesale,WB004,West Bengal,33.3248,81.7689,data.gov.in
+MKT0495,West APMC 5,APMC,WB005,West Bengal,28.7829,72.2528,AGMARKNET
+MKT0496,West mandi 6,mandi,WB006,West Bengal,19.8413,68.5818,eNAM
+MKT0497,West eNAM hub 7,eNAM hub,WB007,West Bengal,21.9619,77.2974,data.gov.in
+MKT0498,West wholesale 8,wholesale,WB008,West Bengal,11.7453,90.2492,AGMARKNET
+MKT0499,West APMC 9,APMC,WB009,West Bengal,9.0037,84.0321,eNAM
+MKT0500,West mandi 10,mandi,WB010,West Bengal,30.7023,78.7704,data.gov.in
+MKT0501,West eNAM hub 11,eNAM hub,WB011,West Bengal,18.4695,83.0366,AGMARKNET
+MKT0502,West wholesale 12,wholesale,WB012,West Bengal,12.1367,69.9026,eNAM
+MKT0503,West APMC 13,APMC,WB013,West Bengal,32.4869,86.623,data.gov.in
+MKT0504,West mandi 14,mandi,WB014,West Bengal,18.3408,89.989,AGMARKNET

@@ -1,0 +1,37 @@
+state_code,state_name,region,is_union_territory
+AN,Andaman and Nicobar Islands,South India,True
+AP,Andhra Pradesh,South India,False
+AR,Arunachal Pradesh,East India,False
+AS,Assam,East India,False
+BR,Bihar,East India,False
+CH,Chandigarh,North India,True
+CT,Chhattisgarh,Central India,False
+DN,Dadra and Nagar Haveli and Daman and Diu,West India,True
+DL,Delhi,North India,True
+GA,Goa,West India,False
+GJ,Gujarat,West India,False
+HR,Haryana,North India,False
+HP,Himachal Pradesh,North India,False
+JK,Jammu and Kashmir,North India,True
+JH,Jharkhand,East India,False
+KA,Karnataka,South India,False
+KL,Kerala,South India,False
+LA,Ladakh,North India,True
+LD,Lakshadweep,South India,True
+MP,Madhya Pradesh,Central India,False
+MH,Maharashtra,West India,False
+MN,Manipur,East India,False
+ML,Meghalaya,East India,False
+MZ,Mizoram,East India,False
+NL,Nagaland,East India,False
+OR,Odisha,East India,False
+PY,Puducherry,South India,True
+PB,Punjab,North India,False
+RJ,Rajasthan,North India,False
+SK,Sikkim,East India,False
+TN,Tamil Nadu,South India,False
+TG,Telangana,South India,False
+TR,Tripura,East India,False
+UP,Uttar Pradesh,North India,False
+UK,Uttarakhand,North India,False
+WB,West Bengal,East India,False

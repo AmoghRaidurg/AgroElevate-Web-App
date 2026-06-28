@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import {
-  LayoutDashboard, Store, Package, Brain, Wallet, Shield, Menu, Sparkles, CreditCard,
+  LayoutDashboard, Store, Package, Brain, Wallet, Shield, Menu, Sparkles, CreditCard, Globe2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
@@ -13,6 +13,7 @@ const navItems = [
   { to: '/marketplace', label: 'Marketplace', icon: Store },
   { to: '/orders', label: 'Orders', icon: Package },
   { to: '/intelligence', label: 'Intelligence', icon: Brain, flagship: true },
+  { to: '/market-intelligence', label: 'Market Intelligence', icon: Globe2, flagship: true },
   { to: '/wallet', label: 'Wallet', icon: Wallet },
 ];
 
@@ -25,6 +26,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
         ...navItems,
         { to: '/admin', label: 'Admin', icon: Shield, flagship: false },
         { to: '/admin/payments', label: 'Payments', icon: CreditCard, flagship: false },
+        { to: '/admin/market-intelligence', label: 'Market Monitor', icon: Globe2, flagship: false },
       ]
     : navItems;
 

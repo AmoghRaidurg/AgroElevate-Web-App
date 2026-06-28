@@ -1,0 +1,121 @@
+crop_code,crop_name,category,unit
+C001,Wheat,cereal,kg
+C002,Rice,cereal,kg
+C003,Maize,cereal,kg
+C004,Bajra,cereal,kg
+C005,Jowar,cereal,kg
+C006,Ragi,cereal,kg
+C007,Barley,cereal,kg
+C008,Chickpea,pulse,kg
+C009,Pigeon Pea,pulse,kg
+C010,Moong,pulse,kg
+C011,Urad,pulse,kg
+C012,Lentil,pulse,kg
+C013,Masoor,pulse,kg
+C014,Soybean,oilseed,kg
+C015,Mustard,oilseed,kg
+C016,Groundnut,oilseed,kg
+C017,Sunflower,oilseed,kg
+C018,Sesame,oilseed,kg
+C019,Castor,oilseed,kg
+C020,Tomato,vegetable,kg
+C021,Onion,vegetable,kg
+C022,Potato,vegetable,kg
+C023,Brinjal,vegetable,kg
+C024,Cabbage,vegetable,kg
+C025,Cauliflower,vegetable,kg
+C026,Okra,vegetable,kg
+C027,Carrot,vegetable,kg
+C028,Beetroot,vegetable,kg
+C029,Spinach,vegetable,kg
+C030,Mango,fruit,kg
+C031,Banana,fruit,kg
+C032,Apple,fruit,kg
+C033,Grapes,fruit,kg
+C034,Pomegranate,fruit,kg
+C035,Orange,fruit,kg
+C036,Papaya,fruit,kg
+C037,Guava,fruit,kg
+C038,Cotton,cash,kg
+C039,Sugarcane,cash,kg
+C040,Jute,cash,kg
+C041,Tobacco,cash,kg
+C042,Tea,cash,kg
+C043,Coffee,cash,kg
+C044,Turmeric,spice,kg
+C045,Chilli,spice,kg
+C046,Coriander,spice,kg
+C047,Cumin,spice,kg
+C048,Ginger,spice,kg
+C049,Garlic,spice,kg
+C050,Black Pepper,spice,kg
+C051,Arhar,other,kg
+C052,Masoor Dal,other,kg
+C053,Moong Dal,other,kg
+C054,Urad Dal,other,kg
+C055,Toor Dal,other,kg
+C056,Green Peas,other,kg
+C057,French Beans,other,kg
+C058,Bottle Gourd,other,kg
+C059,Bitter Gourd,other,kg
+C060,Ridge Gourd,other,kg
+C061,Pumpkin,other,kg
+C062,Cucumber,other,kg
+C063,Capsicum,other,kg
+C064,Green Chilli,other,kg
+C065,Red Chilli,other,kg
+C066,Sweet Corn,other,kg
+C067,Baby Corn,other,kg
+C068,Broccoli,other,kg
+C069,Lettuce,other,kg
+C070,Mushroom,other,kg
+C071,Drumstick,other,kg
+C072,Tapioca,other,kg
+C073,Sweet Potato,other,kg
+C074,Yam,other,kg
+C075,Colocasia,other,kg
+C076,Elephant Foot Yam,other,kg
+C077,Cluster Beans,other,kg
+C078,Field Pea,other,kg
+C079,Horse Gram,other,kg
+C080,Niger Seed,other,kg
+C081,Safflower,other,kg
+C082,Linseed,other,kg
+C083,Coconut,other,kg
+C084,Arecanut,other,kg
+C085,Cashew,other,kg
+C086,Walnut,other,kg
+C087,Almond,other,kg
+C088,Cardamom,other,kg
+C089,Clove,other,kg
+C090,Nutmeg,other,kg
+C091,Vanilla,other,kg
+C092,Aloe Vera,other,kg
+C093,Stevia,other,kg
+C094,Lemongrass,other,kg
+C095,Basmati Rice,other,kg
+C096,Sona Masuri,other,kg
+C097,Parboiled Rice,other,kg
+C098,Broken Rice,other,kg
+C099,Wheat Flour,other,kg
+C100,Semolina,other,kg
+C101,Maize Grits,other,kg
+C102,Sorghum,other,kg
+C103,Foxtail Millet,other,kg
+C104,Barnyard Millet,other,kg
+C105,Little Millet,other,kg
+C106,Kodo Millet,other,kg
+C107,Proso Millet,other,kg
+C108,Pearl Millet,other,kg
+C109,Hybrid Cotton,other,kg
+C110,Desi Cotton,other,kg
+C111,Raw Jute,other,kg
+C112,Mesta,other,kg
+C113,Kenaf,other,kg
+C114,Sann Hemp,other,kg
+C115,Natural Rubber,other,kg
+C116,Bamboo,other,kg
+C117,Neem Seeds,other,kg
+C118,Isabgol,other,kg
+C119,Psyllium,other,kg
+C120,Fenugreek,other,kg

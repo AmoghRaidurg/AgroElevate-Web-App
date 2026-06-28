@@ -30,6 +30,8 @@ const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const Wallet = lazy(() => import("./pages/Wallet"));
 const Orders = lazy(() => import("./pages/Orders"));
 const IntelligenceHub = lazy(() => import("./pages/intelligence/IntelligenceHub"));
+const MarketIntelligenceHub = lazy(() => import("./pages/market-intelligence/MarketIntelligenceHub"));
+const AdminMarketMonitor = lazy(() => import("./pages/market-intelligence/AdminMarketMonitor"));
 const Admin = lazy(() => import("./pages/Admin"));
 const AdminPayments = lazy(() => import("./pages/admin/AdminPayments"));
 
@@ -76,8 +78,10 @@ const App = () => (
               <Route path="/wallet" element={<ProtectedRoute>{withSuspense(<Wallet />)}</ProtectedRoute>} />
               <Route path="/orders" element={<ProtectedRoute>{withSuspense(<Orders />)}</ProtectedRoute>} />
               <Route path="/intelligence" element={<ProtectedRoute>{withSuspense(<IntelligenceHub />)}</ProtectedRoute>} />
+              <Route path="/market-intelligence" element={<ProtectedRoute>{withSuspense(<MarketIntelligenceHub />)}</ProtectedRoute>} />
               <Route path="/admin" element={<RoleRoute allowedRole="admin">{withSuspense(<Admin />)}</RoleRoute>} />
               <Route path="/admin/payments" element={<RoleRoute allowedRole="admin">{withSuspense(<AdminPayments />)}</RoleRoute>} />
+              <Route path="/admin/market-intelligence" element={<RoleRoute allowedRole="admin">{withSuspense(<AdminMarketMonitor />)}</RoleRoute>} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

@@ -4,6 +4,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.routers.intelligence import router as intelligence_router
+from app.routers.market_intelligence import router as market_intelligence_router
 
 _origins = os.getenv("ALLOWED_ORIGINS", "*")
 ALLOWED_ORIGINS = [o.strip() for o in _origins.split(",") if o.strip()] or ["*"]
@@ -23,6 +24,7 @@ app.add_middleware(
 )
 
 app.include_router(intelligence_router)
+app.include_router(market_intelligence_router)
 
 
 @app.exception_handler(Exception)

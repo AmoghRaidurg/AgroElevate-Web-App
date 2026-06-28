@@ -1,0 +1,10 @@
+{
+  "states": 36,
+  "districts": 792,
+  "markets": 504,
+  "crops": 120,
+  "current_prices": 7560,
+  "history_records": 104755,
+  "forecasts": 160,
+  "msp_records": 50
+}

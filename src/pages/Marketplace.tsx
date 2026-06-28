@@ -18,6 +18,8 @@ import { ProductCard, getProductImage } from '@/components/marketplace/ProductCa
 import { MarketplaceFilters } from '@/components/marketplace/MarketplaceFilters';
 import { FarmerMyListings } from '@/components/marketplace/FarmerMyListings';
 import { CartSheet } from '@/components/marketplace/CartSheet';
+import { SmartPriceAssistant } from '@/components/market-intelligence/SmartPriceAssistant';
+import { useMarketLocation } from '@/hooks/useMarketLocation';
 import { DashboardSkeleton } from '@/components/design/skeletons';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -50,6 +52,9 @@ export default function Marketplace() {
   const [relistSubmitting, setRelistSubmitting] = useState(false);
   const [farmerView, setFarmerView] = useState<'browse' | 'my-listings'>('browse');
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [listingCrop, setListingCrop] = useState('');
+  const [suggestedPrice, setSuggestedPrice] = useState('');
+  const { location: marketLocation } = useMarketLocation();
 
   const isFarmer = profile?.role === 'farmer';
   const isTrader = profile?.role === 'middleman';
@@ -201,6 +206,8 @@ export default function Marketplace() {
     await loadData();
     notifyIntelligenceDirty();
     e.currentTarget.reset();
+    setListingCrop('');
+    setSuggestedPrice('');
   };
 
   const submitRelist = async (e: React.FormEvent) => {
@@ -243,10 +250,11 @@ export default function Marketplace() {
               <div className="glass-card rounded-xl p-5">
                 <h3 className="font-semibold mb-4 flex items-center gap-2"><Store className="h-4 w-4 text-primary" /> List Produce</h3>
                 <form onSubmit={listProduce} className="space-y-3">
-                  <div><Label>Crop Name</Label><Input name="name" placeholder="Wheat" required className="bg-muted/30" /></div>
+                  <div><Label>Crop Name</Label><Input name="name" placeholder="Wheat" required className="bg-muted/30" value={listingCrop} onChange={(e) => setListingCrop(e.target.value)} /></div>
                   <div><Label>Crop Type</Label><Input name="crop_type" placeholder="Grain" required className="bg-muted/30" /></div>
+                  <SmartPriceAssistant cropName={listingCrop} location={marketLocation ?? undefined} onSuggestedPrice={(p) => setSuggestedPrice(String(p))} />
                   <div className="grid grid-cols-2 gap-2">
-                    <div><Label>Price/kg</Label><Input name="price" type="number" required min="0.01" step="0.01" className="bg-muted/30" /></div>
+                    <div><Label>Price/kg</Label><Input name="price" type="number" required min="0.01" step="0.01" className="bg-muted/30" value={suggestedPrice} onChange={(e) => setSuggestedPrice(e.target.value)} /></div>
                     <div><Label>Qty (kg)</Label><Input name="quantity" type="number" required min="1" className="bg-muted/30" /></div>
                   </div>
                   <Button type="submit" variant="hero" className="w-full">Submit Listing</Button>

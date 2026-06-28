@@ -1,0 +1,793 @@
+district_code,district_name,state_code,state_name,region,latitude,longitude
+AN001,Andaman District 1,AN,Andaman and Nicobar Islands,South India,32.0347,80.1076
+AN002,Andaman District 2,AN,Andaman and Nicobar Islands,South India,16.0149,74.4147
+AN003,Andaman District 3,AN,Andaman and Nicobar Islands,South India,28.1823,74.8203
+AN004,Andaman District 4,AN,Andaman and Nicobar Islands,South India,19.9132,69.7804
+AN005,Andaman District 5,AN,Andaman and Nicobar Islands,South India,26.8774,74.2861
+AN006,Andaman District 6,AN,Andaman and Nicobar Islands,South India,29.3046,84.7131
+AN007,Andaman District 7,AN,Andaman and Nicobar Islands,South India,11.3062,87.9828
+AN008,Andaman District 8,AN,Andaman and Nicobar Islands,South India,23.3028,69.7771
+AN009,Andaman District 9,AN,Andaman and Nicobar Islands,South India,29.3627,84.2874
+AN010,Andaman District 10,AN,Andaman and Nicobar Islands,South India,11.152,69.3901
+AN011,Andaman District 11,AN,Andaman and Nicobar Islands,South India,29.774,80.3325
+AN012,Andaman District 12,AN,Andaman and Nicobar Islands,South India,14.7854,79.936
+AN013,Andaman District 13,AN,Andaman and Nicobar Islands,South India,17.1637,80.9061
+AN014,Andaman District 14,AN,Andaman and Nicobar Islands,South India,32.1109,81.0702
+AN015,Andaman District 15,AN,Andaman and Nicobar Islands,South India,8.844,90.862
+AN016,Andaman District 16,AN,Andaman and Nicobar Islands,South India,8.9264,73.32
+AN017,Andaman District 17,AN,Andaman and Nicobar Islands,South India,30.3985,86.7917
+AN018,Andaman District 18,AN,Andaman and Nicobar Islands,South India,17.6618,70.773
+AN019,Andaman District 19,AN,Andaman and Nicobar Islands,South India,19.3374,87.3988
+AN020,Andaman District 20,AN,Andaman and Nicobar Islands,South India,21.1989,69.2093
+AN021,Andaman District 21,AN,Andaman and Nicobar Islands,South India,17.1268,91.6631
+AN022,Andaman District 22,AN,Andaman and Nicobar Islands,South India,25.2178,80.2766
+AP001,Andhra District 1,AP,Andhra Pradesh,South India,27.9157,80.5358
+AP002,Andhra District 2,AP,Andhra Pradesh,South India,26.4133,83.7759
+AP003,Andhra District 3,AP,Andhra Pradesh,South India,18.0037,90.033
+AP004,Andhra District 4,AP,Andhra Pradesh,South India,25.1356,68.3965
+AP005,Andhra District 5,AP,Andhra Pradesh,South India,28.8742,91.6069
+AP006,Andhra District 6,AP,Andhra Pradesh,South India,28.556,81.5457
+AP007,Andhra District 7,AP,Andhra Pradesh,South India,20.197,76.6501
+AP008,Andhra District 8,AP,Andhra Pradesh,South India,8.7404,73.5126
+AP009,Andhra District 9,AP,Andhra Pradesh,South India,8.6259,68.9802
+AP010,Andhra District 10,AP,Andhra Pradesh,South India,19.8663,68.9031
+AP011,Andhra District 11,AP,Andhra Pradesh,South India,33.5906,78.9122
+AP012,Andhra District 12,AP,Andhra Pradesh,South India,30.2185,88.46
+AP013,Andhra District 13,AP,Andhra Pradesh,South India,30.0432,71.4135
+AP014,Andhra District 14,AP,Andhra Pradesh,South India,12.308,68.0507
+AP015,Andhra District 15,AP,Andhra Pradesh,South India,16.1543,91.3436
+AP016,Andhra District 16,AP,Andhra Pradesh,South India,34.4147,81.759
+AP017,Andhra District 17,AP,Andhra Pradesh,South India,29.0238,69.9771
+AP018,Andhra District 18,AP,Andhra Pradesh,South India,9.1527,69.8761
+AP019,Andhra District 19,AP,Andhra Pradesh,South India,18.8403,78.6059
+AP020,Andhra District 20,AP,Andhra Pradesh,South India,22.9903,88.4757
+AP021,Andhra District 21,AP,Andhra Pradesh,South India,24.8423,71.8744
+AP022,Andhra District 22,AP,Andhra Pradesh,South India,34.587,72.9794
+AR001,Arunachal District 1,AR,Arunachal Pradesh,East India,10.2909,76.6179
+AR002,Arunachal District 2,AR,Arunachal Pradesh,East India,11.9018,91.087
+AR003,Arunachal District 3,AR,Arunachal Pradesh,East India,21.1669,79.2037
+AR004,Arunachal District 4,AR,Arunachal Pradesh,East India,22.5492,86.2066
+AR005,Arunachal District 5,AR,Arunachal Pradesh,East India,22.1485,78.5505
+AR006,Arunachal District 6,AR,Arunachal Pradesh,East India,8.067,70.2655
+AR007,Arunachal District 7,AR,Arunachal Pradesh,East India,26.436,84.0501
+AR008,Arunachal District 8,AR,Arunachal Pradesh,East India,26.9033,73.1615
+AR009,Arunachal District 9,AR,Arunachal Pradesh,East India,27.6916,73.0426
+AR010,Arunachal District 10,AR,Arunachal Pradesh,East India,24.0178,82.582
+AR011,Arunachal District 11,AR,Arunachal Pradesh,East India,20.5199,78.4139
+AR012,Arunachal District 12,AR,Arunachal Pradesh,East India,21.9913,80.5168
+AR013,Arunachal District 13,AR,Arunachal Pradesh,East India,13.7456,80.4554
+AR014,Arunachal District 14,AR,Arunachal Pradesh,East India,17.7891,89.6987
+AR015,Arunachal District 15,AR,Arunachal Pradesh,East India,16.6167,83.0943
+AR016,Arunachal District 16,AR,Arunachal Pradesh,East India,26.6647,74.5151
+AR017,Arunachal District 17,AR,Arunachal Pradesh,East India,23.3547,69.2255
+AR018,Arunachal District 18,AR,Arunachal Pradesh,East India,32.6157,79.5612
+AR019,Arunachal District 19,AR,Arunachal Pradesh,East India,17.8695,68.9505
+AR020,Arunachal District 20,AR,Arunachal Pradesh,East India,30.9144,83.1136
+AR021,Arunachal District 21,AR,Arunachal Pradesh,East India,25.7023,74.9893
+AR022,Arunachal District 22,AR,Arunachal Pradesh,East India,14.6134,83.12
+AS001,Assam District 1,AS,Assam,East India,16.1081,82.7906
+AS002,Assam District 2,AS,Assam,East India,33.1013,74.9345
+AS003,Assam District 3,AS,Assam,East India,23.5721,72.8282
+AS004,Assam District 4,AS,Assam,East India,28.5865,89.8305
+AS005,Assam District 5,AS,Assam,East India,10.0605,90.399
+AS006,Assam District 6,AS,Assam,East India,10.652,75.3341
+AS007,Assam District 7,AS,Assam,East India,15.3066,91.8448
+AS008,Assam District 8,AS,Assam,East India,18.1371,72.1627
+AS009,Assam District 9,AS,Assam,East India,29.8219,81.7277
+AS010,Assam District 10,AS,Assam,East India,13.2175,86.6021
+AS011,Assam District 11,AS,Assam,East India,16.8388,71.8596
+AS012,Assam District 12,AS,Assam,East India,16.4558,73.126
+AS013,Assam District 13,AS,Assam,East India,15.3724,90.0547
+AS014,Assam District 14,AS,Assam,East India,34.6991,78.9013
+AS015,Assam District 15,AS,Assam,East India,30.091,87.8202
+AS016,Assam District 16,AS,Assam,East India,28.3748,85.4659
+AS017,Assam District 17,AS,Assam,East India,31.7377,90.0918
+AS018,Assam District 18,AS,Assam,East India,32.2812,84.711
+AS019,Assam District 19,AS,Assam,East India,32.6408,74.8621
+AS020,Assam District 20,AS,Assam,East India,9.0927,83.3991
+AS021,Assam District 21,AS,Assam,East India,33.6417,88.4489
+AS022,Assam District 22,AS,Assam,East India,8.996,76.0387
+BR001,Bihar District 1,BR,Bihar,East India,28.1834,72.2828
+BR002,Bihar District 2,BR,Bihar,East India,24.7964,81.6425
+BR003,Bihar District 3,BR,Bihar,East India,31.3993,71.8866
+BR004,Bihar District 4,BR,Bihar,East India,16.9333,68.6026
+BR005,Bihar District 5,BR,Bihar,East India,14.8346,81.4928
+BR006,Bihar District 6,BR,Bihar,East India,11.3594,89.4963
+BR007,Bihar District 7,BR,Bihar,East India,12.5525,89.0045
+BR008,Bihar District 8,BR,Bihar,East India,32.8151,92.1855
+BR009,Bihar District 9,BR,Bihar,East India,15.9045,92.1448
+BR010,Bihar District 10,BR,Bihar,East India,16.4489,69.6514
+BR011,Bihar District 11,BR,Bihar,East India,31.9709,79.6644
+BR012,Bihar District 12,BR,Bihar,East India,31.1044,74.9987
+BR013,Bihar District 13,BR,Bihar,East India,20.0188,79.2158
+BR014,Bihar District 14,BR,Bihar,East India,25.6257,85.0807
+BR015,Bihar District 15,BR,Bihar,East India,29.1394,80.5885
+BR016,Bihar District 16,BR,Bihar,East India,33.6093,89.7392
+BR017,Bihar District 17,BR,Bihar,East India,20.9439,71.4996
+BR018,Bihar District 18,BR,Bihar,East India,15.1974,91.3462
+BR019,Bihar District 19,BR,Bihar,East India,12.4048,71.759
+BR020,Bihar District 20,BR,Bihar,East India,13.5012,73.4364
+BR021,Bihar District 21,BR,Bihar,East India,9.1789,86.7985
+BR022,Bihar District 22,BR,Bihar,East India,34.5957,82.986
+CH001,Chandigarh District 1,CH,Chandigarh,North India,33.6956,83.4143
+CH002,Chandigarh District 2,CH,Chandigarh,North India,16.6607,80.4319
+CH003,Chandigarh District 3,CH,Chandigarh,North India,19.4396,86.0185
+CH004,Chandigarh District 4,CH,Chandigarh,North India,33.5337,89.377
+CH005,Chandigarh District 5,CH,Chandigarh,North India,8.5025,92.0654
+CH006,Chandigarh District 6,CH,Chandigarh,North India,13.0535,72.6647
+CH007,Chandigarh District 7,CH,Chandigarh,North India,32.239,78.736
+CH008,Chandigarh District 8,CH,Chandigarh,North India,28.1715,91.8536
+CH009,Chandigarh District 9,CH,Chandigarh,North India,27.8706,91.7694
+CH010,Chandigarh District 10,CH,Chandigarh,North India,9.3646,87.6339
+CH011,Chandigarh District 11,CH,Chandigarh,North India,14.9972,74.5906
+CH012,Chandigarh District 12,CH,Chandigarh,North India,17.5028,84.5069
+CH013,Chandigarh District 13,CH,Chandigarh,North India,20.3171,72.3796
+CH014,Chandigarh District 14,CH,Chandigarh,North India,32.6988,77.6674
+CH015,Chandigarh District 15,CH,Chandigarh,North India,31.3534,69.5166
+CH016,Chandigarh District 16,CH,Chandigarh,North India,12.9355,68.7754
+CH017,Chandigarh District 17,CH,Chandigarh,North India,28.5964,81.1182
+CH018,Chandigarh District 18,CH,Chandigarh,North India,27.451,87.1821
+CH019,Chandigarh District 19,CH,Chandigarh,North India,26.7471,69.9641
+CH020,Chandigarh District 20,CH,Chandigarh,North India,23.3292,73.7061
+CH021,Chandigarh District 21,CH,Chandigarh,North India,23.2458,85.2952
+CH022,Chandigarh District 22,CH,Chandigarh,North India,32.6645,76.3088
+CT001,Chhattisgarh District 1,CT,Chhattisgarh,Central India,19.2404,68.34
+CT002,Chhattisgarh District 2,CT,Chhattisgarh,Central India,8.4293,81.8485
+CT003,Chhattisgarh District 3,CT,Chhattisgarh,Central India,28.3617,80.0616
+CT004,Chhattisgarh District 4,CT,Chhattisgarh,Central India,29.4421,73.8056
+CT005,Chhattisgarh District 5,CT,Chhattisgarh,Central India,28.3883,76.3702
+CT006,Chhattisgarh District 6,CT,Chhattisgarh,Central India,18.3314,92.341
+CT007,Chhattisgarh District 7,CT,Chhattisgarh,Central India,8.5564,73.0699
+CT008,Chhattisgarh District 8,CT,Chhattisgarh,Central India,26.2615,74.3919
+CT009,Chhattisgarh District 9,CT,Chhattisgarh,Central India,14.2225,86.6738
+CT010,Chhattisgarh District 10,CT,Chhattisgarh,Central India,14.311,91.8743
+CT011,Chhattisgarh District 11,CT,Chhattisgarh,Central India,24.2934,92.5741
+CT012,Chhattisgarh District 12,CT,Chhattisgarh,Central India,19.6013,85.5032
+CT013,Chhattisgarh District 13,CT,Chhattisgarh,Central India,30.0753,78.5852
+CT014,Chhattisgarh District 14,CT,Chhattisgarh,Central India,23.0675,83.7898
+CT015,Chhattisgarh District 15,CT,Chhattisgarh,Central India,15.4193,76.4703
+CT016,Chhattisgarh District 16,CT,Chhattisgarh,Central India,25.7691,87.381
+CT017,Chhattisgarh District 17,CT,Chhattisgarh,Central India,18.2533,81.0138
+CT018,Chhattisgarh District 18,CT,Chhattisgarh,Central India,14.6169,90.0469
+CT019,Chhattisgarh District 19,CT,Chhattisgarh,Central India,20.7364,82.1399
+CT020,Chhattisgarh District 20,CT,Chhattisgarh,Central India,10.4376,86.1467
+CT021,Chhattisgarh District 21,CT,Chhattisgarh,Central India,29.8923,75.0609
+CT022,Chhattisgarh District 22,CT,Chhattisgarh,Central India,31.403,83.9175
+DN001,Dadra District 1,DN,Dadra and Nagar Haveli and Daman and Diu,West India,30.5164,86.4883
+DN002,Dadra District 2,DN,Dadra and Nagar Haveli and Daman and Diu,West India,23.1993,72.4152
+DN003,Dadra District 3,DN,Dadra and Nagar Haveli and Daman and Diu,West India,34.7166,90.474
+DN004,Dadra District 4,DN,Dadra and Nagar Haveli and Daman and Diu,West India,25.0755,75.6335
+DN005,Dadra District 5,DN,Dadra and Nagar Haveli and Daman and Diu,West India,30.243,75.8926
+DN006,Dadra District 6,DN,Dadra and Nagar Haveli and Daman and Diu,West India,27.1692,72.5993
+DN007,Dadra District 7,DN,Dadra and Nagar Haveli and Daman and Diu,West India,34.9624,76.328
+DN008,Dadra District 8,DN,Dadra and Nagar Haveli and Daman and Diu,West India,17.2979,80.5354
+DN009,Dadra District 9,DN,Dadra and Nagar Haveli and Daman and Diu,West India,21.8793,68.7624
+DN010,Dadra District 10,DN,Dadra and Nagar Haveli and Daman and Diu,West India,25.1241,89.895
+DN011,Dadra District 11,DN,Dadra and Nagar Haveli and Daman and Diu,West India,25.2748,81.4676
+DN012,Dadra District 12,DN,Dadra and Nagar Haveli and Daman and Diu,West India,10.1185,82.211
+DN013,Dadra District 13,DN,Dadra and Nagar Haveli and Daman and Diu,West India,23.7768,86.0425
+DN014,Dadra District 14,DN,Dadra and Nagar Haveli and Daman and Diu,West India,18.8621,69.3354
+DN015,Dadra District 15,DN,Dadra and Nagar Haveli and Daman and Diu,West India,14.3639,91.5306
+DN016,Dadra District 16,DN,Dadra and Nagar Haveli and Daman and Diu,West India,32.1409,71.1944
+DN017,Dadra District 17,DN,Dadra and Nagar Haveli and Daman and Diu,West India,33.715,84.1858
+DN018,Dadra District 18,DN,Dadra and Nagar Haveli and Daman and Diu,West India,17.7569,90.1041
+DN019,Dadra District 19,DN,Dadra and Nagar Haveli and Daman and Diu,West India,17.5336,92.6454
+DN020,Dadra District 20,DN,Dadra and Nagar Haveli and Daman and Diu,West India,15.7074,80.4995
+DN021,Dadra District 21,DN,Dadra and Nagar Haveli and Daman and Diu,West India,20.6671,83.0157
+DN022,Dadra District 22,DN,Dadra and Nagar Haveli and Daman and Diu,West India,13.7897,68.9044
+DL001,Delhi District 1,DL,Delhi,North India,21.0627,69.916
+DL002,Delhi District 2,DL,Delhi,North India,10.6358,88.3032
+DL003,Delhi District 3,DL,Delhi,North India,22.0959,91.2016
+DL004,Delhi District 4,DL,Delhi,North India,34.7878,92.3455
+DL005,Delhi District 5,DL,Delhi,North India,24.2778,69.9634
+DL006,Delhi District 6,DL,Delhi,North India,16.4588,73.8339
+DL007,Delhi District 7,DL,Delhi,North India,24.8132,84.6054
+DL008,Delhi District 8,DL,Delhi,North India,23.1569,89.6178
+DL009,Delhi District 9,DL,Delhi,North India,15.6081,85.7079
+DL010,Delhi District 10,DL,Delhi,North India,27.5237,70.3533
+DL011,Delhi District 11,DL,Delhi,North India,30.4307,79.4642
+DL012,Delhi District 12,DL,Delhi,North India,21.2563,88.8647
+DL013,Delhi District 13,DL,Delhi,North India,11.7956,88.8572
+DL014,Delhi District 14,DL,Delhi,North India,15.3881,85.8466
+DL015,Delhi District 15,DL,Delhi,North India,28.4697,77.3496
+DL016,Delhi District 16,DL,Delhi,North India,16.7526,71.0965
+DL017,Delhi District 17,DL,Delhi,North India,14.6039,85.8183
+DL018,Delhi District 18,DL,Delhi,North India,25.2134,91.1486
+DL019,Delhi District 19,DL,Delhi,North India,33.5961,78.9483
+DL020,Delhi District 20,DL,Delhi,North India,9.1993,69.5503
+DL021,Delhi District 21,DL,Delhi,North India,21.8696,85.5803
+DL022,Delhi District 22,DL,Delhi,North India,25.4766,77.7139
+GA001,Goa District 1,GA,Goa,West India,28.2806,91.9451
+GA002,Goa District 2,GA,Goa,West India,27.2976,84.5236
+GA003,Goa District 3,GA,Goa,West India,27.0116,77.819
+GA004,Goa District 4,GA,Goa,West India,14.0334,85.3891
+GA005,Goa District 5,GA,Goa,West India,22.8639,77.8194
+GA006,Goa District 6,GA,Goa,West India,19.7192,81.4542
+GA007,Goa District 7,GA,Goa,West India,23.6356,79.8337
+GA008,Goa District 8,GA,Goa,West India,9.4446,86.243
+GA009,Goa District 9,GA,Goa,West India,27.2855,82.4176
+GA010,Goa District 10,GA,Goa,West India,30.7103,90.6877
+GA011,Goa District 11,GA,Goa,West India,21.4711,68.0352
+GA012,Goa District 12,GA,Goa,West India,14.0617,75.6679
+GA013,Goa District 13,GA,Goa,West India,33.3153,87.6786
+GA014,Goa District 14,GA,Goa,West India,15.9691,91.2583
+GA015,Goa District 15,GA,Goa,West India,15.5602,85.5609
+GA016,Goa District 16,GA,Goa,West India,16.8529,75.8109
+GA017,Goa District 17,GA,Goa,West India,21.5844,87.5208
+GA018,Goa District 18,GA,Goa,West India,29.5558,84.1847
+GA019,Goa District 19,GA,Goa,West India,18.4181,77.419
+GA020,Goa District 20,GA,Goa,West India,31.663,83.8596
+GA021,Goa District 21,GA,Goa,West India,20.7647,76.8836
+GA022,Goa District 22,GA,Goa,West India,25.2253,74.0049
+GJ001,Gujarat District 1,GJ,Gujarat,West India,13.4108,71.8657
+GJ002,Gujarat District 2,GJ,Gujarat,West India,28.0143,75.9967
+GJ003,Gujarat District 3,GJ,Gujarat,West India,12.4657,74.1705
+GJ004,Gujarat District 4,GJ,Gujarat,West India,33.8033,92.5224
+GJ005,Gujarat District 5,GJ,Gujarat,West India,26.9072,86.3686
+GJ006,Gujarat District 6,GJ,Gujarat,West India,16.4929,84.7144
+GJ007,Gujarat District 7,GJ,Gujarat,West India,25.0667,86.128
+GJ008,Gujarat District 8,GJ,Gujarat,West India,24.3984,73.3632
+GJ009,Gujarat District 9,GJ,Gujarat,West India,20.4481,92.0823
+GJ010,Gujarat District 10,GJ,Gujarat,West India,13.891,89.806
+GJ011,Gujarat District 11,GJ,Gujarat,West India,12.432,73.8728
+GJ012,Gujarat District 12,GJ,Gujarat,West India,22.1075,83.1553
+GJ013,Gujarat District 13,GJ,Gujarat,West India,29.7074,78.6076
+GJ014,Gujarat District 14,GJ,Gujarat,West India,34.9492,80.3259
+GJ015,Gujarat District 15,GJ,Gujarat,West India,8.8407,87.0491
+GJ016,Gujarat District 16,GJ,Gujarat,West India,23.4372,76.6551
+GJ017,Gujarat District 17,GJ,Gujarat,West India,13.7002,88.9876
+GJ018,Gujarat District 18,GJ,Gujarat,West India,9.9692,89.2909
+GJ019,Gujarat District 19,GJ,Gujarat,West India,25.2741,69.3965
+GJ020,Gujarat District 20,GJ,Gujarat,West India,24.4948,69.8882
+GJ021,Gujarat District 21,GJ,Gujarat,West India,25.1011,89.0546
+GJ022,Gujarat District 22,GJ,Gujarat,West India,18.8415,80.8524
+HR001,Haryana District 1,HR,Haryana,North India,23.3733,81.2102
+HR002,Haryana District 2,HR,Haryana,North India,20.9419,84.834
+HR003,Haryana District 3,HR,Haryana,North India,27.1894,91.8691
+HR004,Haryana District 4,HR,Haryana,North India,9.2342,82.8829
+HR005,Haryana District 5,HR,Haryana,North India,27.6657,91.6922
+HR006,Haryana District 6,HR,Haryana,North India,19.1277,71.9076
+HR007,Haryana District 7,HR,Haryana,North India,28.8691,76.7081
+HR008,Haryana District 8,HR,Haryana,North India,28.5355,84.8448
+HR009,Haryana District 9,HR,Haryana,North India,19.374,82.8651
+HR010,Haryana District 10,HR,Haryana,North India,21.6014,78.6433
+HR011,Haryana District 11,HR,Haryana,North India,18.4765,86.9345
+HR012,Haryana District 12,HR,Haryana,North India,24.1157,69.0966
+HR013,Haryana District 13,HR,Haryana,North India,17.3772,87.2902
+HR014,Haryana District 14,HR,Haryana,North India,11.1606,90.881
+HR015,Haryana District 15,HR,Haryana,North India,11.8632,71.2031
+HR016,Haryana District 16,HR,Haryana,North India,32.754,80.4512
+HR017,Haryana District 17,HR,Haryana,North India,28.3101,92.5825
+HR018,Haryana District 18,HR,Haryana,North India,26.0178,80.5629
+HR019,Haryana District 19,HR,Haryana,North India,20.8396,78.0882
+HR020,Haryana District 20,HR,Haryana,North India,17.5065,88.4956
+HR021,Haryana District 21,HR,Haryana,North India,34.3163,82.4652
+HR022,Haryana District 22,HR,Haryana,North India,9.5888,86.2884
+HP001,Himachal District 1,HP,Himachal Pradesh,North India,12.8602,69.9969
+HP002,Himachal District 2,HP,Himachal Pradesh,North India,16.2302,76.6443
+HP003,Himachal District 3,HP,Himachal Pradesh,North India,34.7024,82.2441
+HP004,Himachal District 4,HP,Himachal Pradesh,North India,27.8433,87.388
+HP005,Himachal District 5,HP,Himachal Pradesh,North India,16.1969,79.4118
+HP006,Himachal District 6,HP,Himachal Pradesh,North India,27.2556,90.2062
+HP007,Himachal District 7,HP,Himachal Pradesh,North India,32.2275,68.7538
+HP008,Himachal District 8,HP,Himachal Pradesh,North India,19.4159,68.9072
+HP009,Himachal District 9,HP,Himachal Pradesh,North India,24.7084,71.0651
+HP010,Himachal District 10,HP,Himachal Pradesh,North India,16.0615,89.8601
+HP011,Himachal District 11,HP,Himachal Pradesh,North India,32.1477,73.1876
+HP012,Himachal District 12,HP,Himachal Pradesh,North India,23.4999,69.5289
+HP013,Himachal District 13,HP,Himachal Pradesh,North India,24.5571,83.5722
+HP014,Himachal District 14,HP,Himachal Pradesh,North India,9.4056,76.0053
+HP015,Himachal District 15,HP,Himachal Pradesh,North India,16.0306,88.3299
+HP016,Himachal District 16,HP,Himachal Pradesh,North India,22.5242,69.8868
+HP017,Himachal District 17,HP,Himachal Pradesh,North India,20.641,73.1055
+HP018,Himachal District 18,HP,Himachal Pradesh,North India,32.8771,71.8688
+HP019,Himachal District 19,HP,Himachal Pradesh,North India,15.3311,78.5568
+HP020,Himachal District 20,HP,Himachal Pradesh,North India,16.6542,79.4432
+HP021,Himachal District 21,HP,Himachal Pradesh,North India,12.5592,84.2713
+HP022,Himachal District 22,HP,Himachal Pradesh,North India,14.8424,73.4255
+JK001,Jammu District 1,JK,Jammu and Kashmir,North India,26.27,89.0738
+JK002,Jammu District 2,JK,Jammu and Kashmir,North India,30.6855,73.9224
+JK003,Jammu District 3,JK,Jammu and Kashmir,North India,21.3562,84.078
+JK004,Jammu District 4,JK,Jammu and Kashmir,North India,27.4378,80.0301
+JK005,Jammu District 5,JK,Jammu and Kashmir,North India,34.0678,81.9079
+JK006,Jammu District 6,JK,Jammu and Kashmir,North India,16.9388,83.5399
+JK007,Jammu District 7,JK,Jammu and Kashmir,North India,27.8997,77.3465
+JK008,Jammu District 8,JK,Jammu and Kashmir,North India,18.8179,68.2072
+JK009,Jammu District 9,JK,Jammu and Kashmir,North India,31.2054,80.6912
+JK010,Jammu District 10,JK,Jammu and Kashmir,North India,33.1538,80.2776
+JK011,Jammu District 11,JK,Jammu and Kashmir,North India,16.411,91.3015
+JK012,Jammu District 12,JK,Jammu and Kashmir,North India,19.1178,83.1768
+JK013,Jammu District 13,JK,Jammu and Kashmir,North India,13.402,91.5875
+JK014,Jammu District 14,JK,Jammu and Kashmir,North India,15.6374,92.0648
+JK015,Jammu District 15,JK,Jammu and Kashmir,North India,34.1004,81.3933
+JK016,Jammu District 16,JK,Jammu and Kashmir,North India,10.7442,85.1437
+JK017,Jammu District 17,JK,Jammu and Kashmir,North India,21.9891,73.7588
+JK018,Jammu District 18,JK,Jammu and Kashmir,North India,34.2433,70.1349
+JK019,Jammu District 19,JK,Jammu and Kashmir,North India,22.0128,75.5989
+JK020,Jammu District 20,JK,Jammu and Kashmir,North India,21.5821,71.8242
+JK021,Jammu District 21,JK,Jammu and Kashmir,North India,21.3793,72.1726
+JK022,Jammu District 22,JK,Jammu and Kashmir,North India,24.4488,89.5315
+JH001,Jharkhand District 1,JH,Jharkhand,East India,16.9236,91.558
+JH002,Jharkhand District 2,JH,Jharkhand,East India,28.5499,88.9748
+JH003,Jharkhand District 3,JH,Jharkhand,East India,15.7322,84.8737
+JH004,Jharkhand District 4,JH,Jharkhand,East India,26.7213,92.9877
+JH005,Jharkhand District 5,JH,Jharkhand,East India,8.4345,83.9652
+JH006,Jharkhand District 6,JH,Jharkhand,East India,12.8021,84.9009
+JH007,Jharkhand District 7,JH,Jharkhand,East India,17.8549,92.8922
+JH008,Jharkhand District 8,JH,Jharkhand,East India,22.3954,73.0096
+JH009,Jharkhand District 9,JH,Jharkhand,East India,32.2547,69.1048
+JH010,Jharkhand District 10,JH,Jharkhand,East India,26.5776,90.7101
+JH011,Jharkhand District 11,JH,Jharkhand,East India,25.7805,80.6661
+JH012,Jharkhand District 12,JH,Jharkhand,East India,31.85,72.3915
+JH013,Jharkhand District 13,JH,Jharkhand,East India,22.8914,70.3602
+JH014,Jharkhand District 14,JH,Jharkhand,East India,34.8362,78.9585
+JH015,Jharkhand District 15,JH,Jharkhand,East India,30.6657,77.5007
+JH016,Jharkhand District 16,JH,Jharkhand,East India,14.6228,76.4279
+JH017,Jharkhand District 17,JH,Jharkhand,East India,23.7688,78.829
+JH018,Jharkhand District 18,JH,Jharkhand,East India,25.3914,76.3122
+JH019,Jharkhand District 19,JH,Jharkhand,East India,27.2589,80.8838
+JH020,Jharkhand District 20,JH,Jharkhand,East India,14.9374,78.5553
+JH021,Jharkhand District 21,JH,Jharkhand,East India,32.7219,68.4284
+JH022,Jharkhand District 22,JH,Jharkhand,East India,17.6689,83.254
+KA001,Karnataka District 1,KA,Karnataka,South India,29.642,69.2182
+KA002,Karnataka District 2,KA,Karnataka,South India,18.4924,85.4321
+KA003,Karnataka District 3,KA,Karnataka,South India,22.8705,72.2493
+KA004,Karnataka District 4,KA,Karnataka,South India,25.5285,72.0652
+KA005,Karnataka District 5,KA,Karnataka,South India,22.2503,90.9507
+KA006,Karnataka District 6,KA,Karnataka,South India,27.6991,85.2666
+KA007,Karnataka District 7,KA,Karnataka,South India,20.8483,82.8379
+KA008,Karnataka District 8,KA,Karnataka,South India,20.9767,69.8666
+KA009,Karnataka District 9,KA,Karnataka,South India,20.2667,84.0117
+KA010,Karnataka District 10,KA,Karnataka,South India,22.9838,81.9479
+KA011,Karnataka District 11,KA,Karnataka,South India,30.7434,70.8476
+KA012,Karnataka District 12,KA,Karnataka,South India,15.7815,79.4225
+KA013,Karnataka District 13,KA,Karnataka,South India,18.0076,76.9857
+KA014,Karnataka District 14,KA,Karnataka,South India,14.9914,92.8174
+KA015,Karnataka District 15,KA,Karnataka,South India,20.5473,80.2271
+KA016,Karnataka District 16,KA,Karnataka,South India,19.3528,84.7936
+KA017,Karnataka District 17,KA,Karnataka,South India,34.5009,78.3104
+KA018,Karnataka District 18,KA,Karnataka,South India,34.1001,91.0775
+KA019,Karnataka District 19,KA,Karnataka,South India,28.7458,89.8491
+KA020,Karnataka District 20,KA,Karnataka,South India,18.9978,75.0218
+KA021,Karnataka District 21,KA,Karnataka,South India,25.8531,70.3718
+KA022,Karnataka District 22,KA,Karnataka,South India,10.1331,85.1564
+KL001,Kerala District 1,KL,Kerala,South India,22.8015,92.6539
+KL002,Kerala District 2,KL,Kerala,South India,19.0217,80.6162
+KL003,Kerala District 3,KL,Kerala,South India,28.7486,74.8831
+KL004,Kerala District 4,KL,Kerala,South India,20.1279,75.3228
+KL005,Kerala District 5,KL,Kerala,South India,29.6475,88.1367
+KL006,Kerala District 6,KL,Kerala,South India,27.5669,68.0355
+KL007,Kerala District 7,KL,Kerala,South India,19.8171,78.8835
+KL008,Kerala District 8,KL,Kerala,South India,31.9252,84.0564
+KL009,Kerala District 9,KL,Kerala,South India,15.1762,75.6113
+KL010,Kerala District 10,KL,Kerala,South India,25.3582,69.0053
+KL011,Kerala District 11,KL,Kerala,South India,28.3148,80.6151
+KL012,Kerala District 12,KL,Kerala,South India,24.6692,73.7214
+KL013,Kerala District 13,KL,Kerala,South India,21.2673,71.4319
+KL014,Kerala District 14,KL,Kerala,South India,19.2118,71.2313
+KL015,Kerala District 15,KL,Kerala,South India,32.1043,74.602
+KL016,Kerala District 16,KL,Kerala,South India,31.0178,84.5187
+KL017,Kerala District 17,KL,Kerala,South India,15.2272,77.5686
+KL018,Kerala District 18,KL,Kerala,South India,14.0856,73.9444
+KL019,Kerala District 19,KL,Kerala,South India,21.7542,69.5918
+KL020,Kerala District 20,KL,Kerala,South India,19.6454,81.2596
+KL021,Kerala District 21,KL,Kerala,South India,24.5517,68.6356
+KL022,Kerala District 22,KL,Kerala,South India,20.2492,81.3778
+LA001,Ladakh District 1,LA,Ladakh,North India,19.2507,79.9849
+LA002,Ladakh District 2,LA,Ladakh,North India,15.1852,85.5293
+LA003,Ladakh District 3,LA,Ladakh,North India,30.8506,70.971
+LA004,Ladakh District 4,LA,Ladakh,North India,29.5719,82.4778
+LA005,Ladakh District 5,LA,Ladakh,North India,32.3583,74.5645
+LA006,Ladakh District 6,LA,Ladakh,North India,25.411,68.4911
+LA007,Ladakh District 7,LA,Ladakh,North India,11.0985,89.6382
+LA008,Ladakh District 8,LA,Ladakh,North India,34.9558,74.6276
+LA009,Ladakh District 9,LA,Ladakh,North India,10.4011,75.3322
+LA010,Ladakh District 10,LA,Ladakh,North India,29.9241,73.9691
+LA011,Ladakh District 11,LA,Ladakh,North India,34.4133,75.4454
+LA012,Ladakh District 12,LA,Ladakh,North India,12.8444,87.0462
+LA013,Ladakh District 13,LA,Ladakh,North India,12.2004,76.3158
+LA014,Ladakh District 14,LA,Ladakh,North India,26.0558,90.9833
+LA015,Ladakh District 15,LA,Ladakh,North India,31.6935,78.0494
+LA016,Ladakh District 16,LA,Ladakh,North India,26.6066,88.2122
+LA017,Ladakh District 17,LA,Ladakh,North India,34.6834,69.5002
+LA018,Ladakh District 18,LA,Ladakh,North India,11.7113,92.5302
+LA019,Ladakh District 19,LA,Ladakh,North India,12.0305,80.0583
+LA020,Ladakh District 20,LA,Ladakh,North India,12.4079,80.9943
+LA021,Ladakh District 21,LA,Ladakh,North India,15.5424,72.6153
+LA022,Ladakh District 22,LA,Ladakh,North India,12.2072,91.8105
+LD001,Lakshadweep District 1,LD,Lakshadweep,South India,14.1248,69.97
+LD002,Lakshadweep District 2,LD,Lakshadweep,South India,32.6903,68.3869
+LD003,Lakshadweep District 3,LD,Lakshadweep,South India,9.7655,90.6433
+LD004,Lakshadweep District 4,LD,Lakshadweep,South India,13.8146,86.2567
+LD005,Lakshadweep District 5,LD,Lakshadweep,South India,28.4979,68.7706
+LD006,Lakshadweep District 6,LD,Lakshadweep,South India,15.4785,88.6816
+LD007,Lakshadweep District 7,LD,Lakshadweep,South India,9.0144,84.6262
+LD008,Lakshadweep District 8,LD,Lakshadweep,South India,22.5586,73.8439
+LD009,Lakshadweep District 9,LD,Lakshadweep,South India,31.6478,69.0173
+LD010,Lakshadweep District 10,LD,Lakshadweep,South India,8.3005,75.8547
+LD011,Lakshadweep District 11,LD,Lakshadweep,South India,32.1917,91.6932
+LD012,Lakshadweep District 12,LD,Lakshadweep,South India,30.8202,80.0781
+LD013,Lakshadweep District 13,LD,Lakshadweep,South India,17.4929,74.2115
+LD014,Lakshadweep District 14,LD,Lakshadweep,South India,32.9698,78.5421
+LD015,Lakshadweep District 15,LD,Lakshadweep,South India,31.2065,75.4094
+LD016,Lakshadweep District 16,LD,Lakshadweep,South India,10.7272,90.2407
+LD017,Lakshadweep District 17,LD,Lakshadweep,South India,16.3824,88.5881
+LD018,Lakshadweep District 18,LD,Lakshadweep,South India,9.4709,68.991
+LD019,Lakshadweep District 19,LD,Lakshadweep,South India,16.5947,89.7315
+LD020,Lakshadweep District 20,LD,Lakshadweep,South India,18.7146,74.1106
+LD021,Lakshadweep District 21,LD,Lakshadweep,South India,16.9351,72.5231
+LD022,Lakshadweep District 22,LD,Lakshadweep,South India,19.9033,79.6556
+MP001,Madhya District 1,MP,Madhya Pradesh,Central India,9.3846,73.5056
+MP002,Madhya District 2,MP,Madhya Pradesh,Central India,20.6305,79.0206
+MP003,Madhya District 3,MP,Madhya Pradesh,Central India,22.3211,73.5156
+MP004,Madhya District 4,MP,Madhya Pradesh,Central India,22.5176,73.3929
+MP005,Madhya District 5,MP,Madhya Pradesh,Central India,32.5136,90.9787
+MP006,Madhya District 6,MP,Madhya Pradesh,Central India,11.706,71.1063
+MP007,Madhya District 7,MP,Madhya Pradesh,Central India,8.8286,80.5555
+MP008,Madhya District 8,MP,Madhya Pradesh,Central India,9.122,89.8655
+MP009,Madhya District 9,MP,Madhya Pradesh,Central India,32.2415,79.8947
+MP010,Madhya District 10,MP,Madhya Pradesh,Central India,16.0996,89.2114
+MP011,Madhya District 11,MP,Madhya Pradesh,Central India,19.4729,77.8778
+MP012,Madhya District 12,MP,Madhya Pradesh,Central India,31.1841,77.9733
+MP013,Madhya District 13,MP,Madhya Pradesh,Central India,26.8262,84.2598
+MP014,Madhya District 14,MP,Madhya Pradesh,Central India,30.1924,77.8159
+MP015,Madhya District 15,MP,Madhya Pradesh,Central India,8.8961,84.0099
+MP016,Madhya District 16,MP,Madhya Pradesh,Central India,20.4789,85.1765
+MP017,Madhya District 17,MP,Madhya Pradesh,Central India,28.8424,86.6139
+MP018,Madhya District 18,MP,Madhya Pradesh,Central India,13.3524,79.6509
+MP019,Madhya District 19,MP,Madhya Pradesh,Central India,22.0295,76.1804
+MP020,Madhya District 20,MP,Madhya Pradesh,Central India,11.0372,68.7621
+MP021,Madhya District 21,MP,Madhya Pradesh,Central India,31.6189,75.9578
+MP022,Madhya District 22,MP,Madhya Pradesh,Central India,8.9273,85.0662
+MH001,Maharashtra District 1,MH,Maharashtra,West India,26.9643,78.2367
+MH002,Maharashtra District 2,MH,Maharashtra,West India,16.9402,71.4335
+MH003,Maharashtra District 3,MH,Maharashtra,West India,15.9955,83.0628
+MH004,Maharashtra District 4,MH,Maharashtra,West India,15.2989,80.7237
+MH005,Maharashtra District 5,MH,Maharashtra,West India,9.7194,82.0304
+MH006,Maharashtra District 6,MH,Maharashtra,West India,8.0243,91.9472
+MH007,Maharashtra District 7,MH,Maharashtra,West India,31.3572,71.7043
+MH008,Maharashtra District 8,MH,Maharashtra,West India,19.7582,72.8139
+MH009,Maharashtra District 9,MH,Maharashtra,West India,14.9035,73.1857
+MH010,Maharashtra District 10,MH,Maharashtra,West India,18.3158,79.0119
+MH011,Maharashtra District 11,MH,Maharashtra,West India,23.0753,87.7365
+MH012,Maharashtra District 12,MH,Maharashtra,West India,20.4931,85.9866
+MH013,Maharashtra District 13,MH,Maharashtra,West India,27.5806,71.8712
+MH014,Maharashtra District 14,MH,Maharashtra,West India,29.4951,79.0343
+MH015,Maharashtra District 15,MH,Maharashtra,West India,19.8974,77.2326
+MH016,Maharashtra District 16,MH,Maharashtra,West India,32.0032,74.1412
+MH017,Maharashtra District 17,MH,Maharashtra,West India,32.8368,92.9577
+MH018,Maharashtra District 18,MH,Maharashtra,West India,30.0545,70.9413
+MH019,Maharashtra District 19,MH,Maharashtra,West India,21.2407,82.2363
+MH020,Maharashtra District 20,MH,Maharashtra,West India,16.7989,80.1734
+MH021,Maharashtra District 21,MH,Maharashtra,West India,19.3188,76.0679
+MH022,Maharashtra District 22,MH,Maharashtra,West India,9.8067,92.5689
+MN001,Manipur District 1,MN,Manipur,East India,16.6316,81.8013
+MN002,Manipur District 2,MN,Manipur,East India,15.1693,72.0995
+MN003,Manipur District 3,MN,Manipur,East India,9.1265,87.3209
+MN004,Manipur District 4,MN,Manipur,East India,24.9506,87.0436
+MN005,Manipur District 5,MN,Manipur,East India,29.0736,90.0572
+MN006,Manipur District 6,MN,Manipur,East India,8.2926,80.8738
+MN007,Manipur District 7,MN,Manipur,East India,23.8018,80.5998
+MN008,Manipur District 8,MN,Manipur,East India,12.3379,74.6799
+MN009,Manipur District 9,MN,Manipur,East India,17.8973,71.2902
+MN010,Manipur District 10,MN,Manipur,East India,32.4337,92.2495
+MN011,Manipur District 11,MN,Manipur,East India,27.0069,68.8671
+MN012,Manipur District 12,MN,Manipur,East India,31.7116,83.4639
+MN013,Manipur District 13,MN,Manipur,East India,14.9045,75.5833
+MN014,Manipur District 14,MN,Manipur,East India,9.4235,77.4977
+MN015,Manipur District 15,MN,Manipur,East India,22.2491,83.6011
+MN016,Manipur District 16,MN,Manipur,East India,19.1157,90.0513
+MN017,Manipur District 17,MN,Manipur,East India,28.1827,70.4507
+MN018,Manipur District 18,MN,Manipur,East India,11.8743,68.2157
+MN019,Manipur District 19,MN,Manipur,East India,33.4586,84.1015
+MN020,Manipur District 20,MN,Manipur,East India,25.5051,77.0604
+MN021,Manipur District 21,MN,Manipur,East India,30.3653,90.3187
+MN022,Manipur District 22,MN,Manipur,East India,17.1858,87.5865
+ML001,Meghalaya District 1,ML,Meghalaya,East India,32.0524,89.5705
+ML002,Meghalaya District 2,ML,Meghalaya,East India,26.0551,70.7231
+ML003,Meghalaya District 3,ML,Meghalaya,East India,29.6318,83.5244
+ML004,Meghalaya District 4,ML,Meghalaya,East India,17.2486,89.6631
+ML005,Meghalaya District 5,ML,Meghalaya,East India,8.7514,79.2279
+ML006,Meghalaya District 6,ML,Meghalaya,East India,31.8545,71.7419
+ML007,Meghalaya District 7,ML,Meghalaya,East India,10.8045,89.8666
+ML008,Meghalaya District 8,ML,Meghalaya,East India,13.4758,87.4359
+ML009,Meghalaya District 9,ML,Meghalaya,East India,11.8115,91.4255
+ML010,Meghalaya District 10,ML,Meghalaya,East India,20.6763,90.777
+ML011,Meghalaya District 11,ML,Meghalaya,East India,8.9202,82.0401
+ML012,Meghalaya District 12,ML,Meghalaya,East India,12.488,72.3827
+ML013,Meghalaya District 13,ML,Meghalaya,East India,10.2978,68.7455
+ML014,Meghalaya District 14,ML,Meghalaya,East India,17.327,75.8769
+ML015,Meghalaya District 15,ML,Meghalaya,East India,23.1475,68.9439
+ML016,Meghalaya District 16,ML,Meghalaya,East India,12.0601,68.816
+ML017,Meghalaya District 17,ML,Meghalaya,East India,22.2472,74.2837
+ML018,Meghalaya District 18,ML,Meghalaya,East India,34.5978,82.4592
+ML019,Meghalaya District 19,ML,Meghalaya,East India,22.1072,82.5755
+ML020,Meghalaya District 20,ML,Meghalaya,East India,18.7527,77.8664
+ML021,Meghalaya District 21,ML,Meghalaya,East India,33.2136,83.4585
+ML022,Meghalaya District 22,ML,Meghalaya,East India,10.3914,88.4658
+MZ001,Mizoram District 1,MZ,Mizoram,East India,27.0968,72.5096
+MZ002,Mizoram District 2,MZ,Mizoram,East India,12.0344,78.404
+MZ003,Mizoram District 3,MZ,Mizoram,East India,32.0759,85.4823
+MZ004,Mizoram District 4,MZ,Mizoram,East India,23.2654,73.9947
+MZ005,Mizoram District 5,MZ,Mizoram,East India,15.853,92.9704
+MZ006,Mizoram District 6,MZ,Mizoram,East India,9.1529,75.4187
+MZ007,Mizoram District 7,MZ,Mizoram,East India,14.8962,68.617
+MZ008,Mizoram District 8,MZ,Mizoram,East India,25.0509,83.6362
+MZ009,Mizoram District 9,MZ,Mizoram,East India,33.6301,87.2688
+MZ010,Mizoram District 10,MZ,Mizoram,East India,33.4559,88.2199
+MZ011,Mizoram District 11,MZ,Mizoram,East India,31.2565,75.0513
+MZ012,Mizoram District 12,MZ,Mizoram,East India,31.544,76.3882
+MZ013,Mizoram District 13,MZ,Mizoram,East India,26.5272,69.3751
+MZ014,Mizoram District 14,MZ,Mizoram,East India,23.5966,77.9451
+MZ015,Mizoram District 15,MZ,Mizoram,East India,22.6098,88.789
+MZ016,Mizoram District 16,MZ,Mizoram,East India,11.1062,74.046
+MZ017,Mizoram District 17,MZ,Mizoram,East India,28.8742,70.2732
+MZ018,Mizoram District 18,MZ,Mizoram,East India,21.7836,87.8804
+MZ019,Mizoram District 19,MZ,Mizoram,East India,10.8676,71.5818
+MZ020,Mizoram District 20,MZ,Mizoram,East India,14.7469,71.6979
+MZ021,Mizoram District 21,MZ,Mizoram,East India,26.9445,75.1983
+MZ022,Mizoram District 22,MZ,Mizoram,East India,12.2415,80.7046
+NL001,Nagaland District 1,NL,Nagaland,East India,24.3479,78.1875
+NL002,Nagaland District 2,NL,Nagaland,East India,31.3082,72.2927
+NL003,Nagaland District 3,NL,Nagaland,East India,8.2555,87.2063
+NL004,Nagaland District 4,NL,Nagaland,East India,20.553,70.5089
+NL005,Nagaland District 5,NL,Nagaland,East India,12.9238,71.7591
+NL006,Nagaland District 6,NL,Nagaland,East India,27.8648,72.4383
+NL007,Nagaland District 7,NL,Nagaland,East India,9.8165,77.092
+NL008,Nagaland District 8,NL,Nagaland,East India,19.9059,79.4219
+NL009,Nagaland District 9,NL,Nagaland,East India,22.3304,87.8871
+NL010,Nagaland District 10,NL,Nagaland,East India,8.5729,71.5506
+NL011,Nagaland District 11,NL,Nagaland,East India,25.9204,72.2948
+NL012,Nagaland District 12,NL,Nagaland,East India,18.3147,75.9558
+NL013,Nagaland District 13,NL,Nagaland,East India,14.6136,79.9153
+NL014,Nagaland District 14,NL,Nagaland,East India,20.9475,92.8276
+NL015,Nagaland District 15,NL,Nagaland,East India,21.7635,91.9669
+NL016,Nagaland District 16,NL,Nagaland,East India,15.6734,76.7167
+NL017,Nagaland District 17,NL,Nagaland,East India,15.2601,90.4907
+NL018,Nagaland District 18,NL,Nagaland,East India,8.954,74.7235
+NL019,Nagaland District 19,NL,Nagaland,East India,9.031,84.3554
+NL020,Nagaland District 20,NL,Nagaland,East India,18.52,79.8662
+NL021,Nagaland District 21,NL,Nagaland,East India,16.6307,69.9745
+NL022,Nagaland District 22,NL,Nagaland,East India,18.3251,74.5145
+OR001,Odisha District 1,OR,Odisha,East India,32.7916,75.6354
+OR002,Odisha District 2,OR,Odisha,East India,12.5551,77.2796
+OR003,Odisha District 3,OR,Odisha,East India,16.9085,73.6075
+OR004,Odisha District 4,OR,Odisha,East India,25.7509,79.5541
+OR005,Odisha District 5,OR,Odisha,East India,12.7567,81.4481
+OR006,Odisha District 6,OR,Odisha,East India,27.2808,76.4318
+OR007,Odisha District 7,OR,Odisha,East India,21.2751,76.2999
+OR008,Odisha District 8,OR,Odisha,East India,25.243,79.3887
+OR009,Odisha District 9,OR,Odisha,East India,8.7918,80.5999
+OR010,Odisha District 10,OR,Odisha,East India,30.119,85.4495
+OR011,Odisha District 11,OR,Odisha,East India,14.2107,72.0071
+OR012,Odisha District 12,OR,Odisha,East India,21.6567,88.2366
+OR013,Odisha District 13,OR,Odisha,East India,16.0912,71.7722
+OR014,Odisha District 14,OR,Odisha,East India,24.3796,91.7556
+OR015,Odisha District 15,OR,Odisha,East India,21.2361,92.676
+OR016,Odisha District 16,OR,Odisha,East India,24.6567,90.0139
+OR017,Odisha District 17,OR,Odisha,East India,20.9273,88.9025
+OR018,Odisha District 18,OR,Odisha,East India,34.3355,70.0874
+OR019,Odisha District 19,OR,Odisha,East India,21.3669,75.4741
+OR020,Odisha District 20,OR,Odisha,East India,31.8034,78.9416
+OR021,Odisha District 21,OR,Odisha,East India,17.0839,85.5068
+OR022,Odisha District 22,OR,Odisha,East India,25.6215,73.932
+PY001,Puducherry District 1,PY,Puducherry,South India,22.5612,70.9143
+PY002,Puducherry District 2,PY,Puducherry,South India,24.7086,77.1924
+PY003,Puducherry District 3,PY,Puducherry,South India,27.5539,85.2484
+PY004,Puducherry District 4,PY,Puducherry,South India,31.3743,86.626
+PY005,Puducherry District 5,PY,Puducherry,South India,20.2455,91.2077
+PY006,Puducherry District 6,PY,Puducherry,South India,21.2186,72.9872
+PY007,Puducherry District 7,PY,Puducherry,South India,16.4984,81.9194
+PY008,Puducherry District 8,PY,Puducherry,South India,19.7329,69.4347
+PY009,Puducherry District 9,PY,Puducherry,South India,29.5082,74.4143
+PY010,Puducherry District 10,PY,Puducherry,South India,10.4765,82.1376
+PY011,Puducherry District 11,PY,Puducherry,South India,14.6146,89.0703
+PY012,Puducherry District 12,PY,Puducherry,South India,33.1394,79.6962
+PY013,Puducherry District 13,PY,Puducherry,South India,16.3524,83.2632
+PY014,Puducherry District 14,PY,Puducherry,South India,28.5199,73.2552
+PY015,Puducherry District 15,PY,Puducherry,South India,24.1125,90.8846
+PY016,Puducherry District 16,PY,Puducherry,South India,32.1938,81.1055
+PY017,Puducherry District 17,PY,Puducherry,South India,11.0711,83.5013
+PY018,Puducherry District 18,PY,Puducherry,South India,34.6718,84.3484
+PY019,Puducherry District 19,PY,Puducherry,South India,26.8796,74.3194
+PY020,Puducherry District 20,PY,Puducherry,South India,10.8257,74.3113
+PY021,Puducherry District 21,PY,Puducherry,South India,16.5445,71.7487
+PY022,Puducherry District 22,PY,Puducherry,South India,10.1173,82.2174
+PB001,Punjab District 1,PB,Punjab,North India,16.5792,71.4995
+PB002,Punjab District 2,PB,Punjab,North India,11.5947,74.512
+PB003,Punjab District 3,PB,Punjab,North India,27.1913,79.6037
+PB004,Punjab District 4,PB,Punjab,North India,31.6462,85.4863
+PB005,Punjab District 5,PB,Punjab,North India,25.4228,80.6054
+PB006,Punjab District 6,PB,Punjab,North India,29.902,72.554
+PB007,Punjab District 7,PB,Punjab,North India,19.4699,70.4291
+PB008,Punjab District 8,PB,Punjab,North India,24.5765,89.0027
+PB009,Punjab District 9,PB,Punjab,North India,31.7668,85.678
+PB010,Punjab District 10,PB,Punjab,North India,34.1286,76.2556
+PB011,Punjab District 11,PB,Punjab,North India,18.4473,79.4559
+PB012,Punjab District 12,PB,Punjab,North India,27.3284,72.6287
+PB013,Punjab District 13,PB,Punjab,North India,11.0989,73.0608
+PB014,Punjab District 14,PB,Punjab,North India,14.9291,75.8444
+PB015,Punjab District 15,PB,Punjab,North India,13.4873,78.4216
+PB016,Punjab District 16,PB,Punjab,North India,17.9713,70.0368
+PB017,Punjab District 17,PB,Punjab,North India,27.1248,73.3251
+PB018,Punjab District 18,PB,Punjab,North India,21.1909,75.9799
+PB019,Punjab District 19,PB,Punjab,North India,10.2075,77.2376
+PB020,Punjab District 20,PB,Punjab,North India,28.6728,73.1085
+PB021,Punjab District 21,PB,Punjab,North India,12.709,68.4345
+PB022,Punjab District 22,PB,Punjab,North India,23.2301,88.7246
+RJ001,Rajasthan District 1,RJ,Rajasthan,North India,22.673,77.2679
+RJ002,Rajasthan District 2,RJ,Rajasthan,North India,10.9783,86.0179
+RJ003,Rajasthan District 3,RJ,Rajasthan,North India,9.8979,83.9287
+RJ004,Rajasthan District 4,RJ,Rajasthan,North India,31.1599,86.3759
+RJ005,Rajasthan District 5,RJ,Rajasthan,North India,15.8199,76.1016
+RJ006,Rajasthan District 6,RJ,Rajasthan,North India,16.0615,69.726
+RJ007,Rajasthan District 7,RJ,Rajasthan,North India,11.3554,87.4481
+RJ008,Rajasthan District 8,RJ,Rajasthan,North India,32.3818,76.6447
+RJ009,Rajasthan District 9,RJ,Rajasthan,North India,12.6172,75.052
+RJ010,Rajasthan District 10,RJ,Rajasthan,North India,21.5557,71.7264
+RJ011,Rajasthan District 11,RJ,Rajasthan,North India,11.3492,89.061
+RJ012,Rajasthan District 12,RJ,Rajasthan,North India,20.8268,86.2401
+RJ013,Rajasthan District 13,RJ,Rajasthan,North India,9.5212,68.4008
+RJ014,Rajasthan District 14,RJ,Rajasthan,North India,10.608,83.6108
+RJ015,Rajasthan District 15,RJ,Rajasthan,North India,26.9836,68.0918
+RJ016,Rajasthan District 16,RJ,Rajasthan,North India,31.5306,73.4911
+RJ017,Rajasthan District 17,RJ,Rajasthan,North India,18.4562,91.2359
+RJ018,Rajasthan District 18,RJ,Rajasthan,North India,15.0457,82.4399
+RJ019,Rajasthan District 19,RJ,Rajasthan,North India,16.5857,75.4078
+RJ020,Rajasthan District 20,RJ,Rajasthan,North India,15.2276,84.8439
+RJ021,Rajasthan District 21,RJ,Rajasthan,North India,21.6965,76.0625
+RJ022,Rajasthan District 22,RJ,Rajasthan,North India,29.1672,71.1096
+SK001,Sikkim District 1,SK,Sikkim,East India,18.6185,79.4329
+SK002,Sikkim District 2,SK,Sikkim,East India,15.0747,80.7107
+SK003,Sikkim District 3,SK,Sikkim,East India,14.2067,75.7867
+SK004,Sikkim District 4,SK,Sikkim,East India,17.416,68.227
+SK005,Sikkim District 5,SK,Sikkim,East India,13.7749,90.7013
+SK006,Sikkim District 6,SK,Sikkim,East India,15.9465,73.2456
+SK007,Sikkim District 7,SK,Sikkim,East India,30.4785,82.81
+SK008,Sikkim District 8,SK,Sikkim,East India,27.2851,87.687
+SK009,Sikkim District 9,SK,Sikkim,East India,31.2864,85.4426
+SK010,Sikkim District 10,SK,Sikkim,East India,22.1816,72.8395
+SK011,Sikkim District 11,SK,Sikkim,East India,25.7524,77.0869
+SK012,Sikkim District 12,SK,Sikkim,East India,10.3775,80.3731
+SK013,Sikkim District 13,SK,Sikkim,East India,12.1161,71.8818
+SK014,Sikkim District 14,SK,Sikkim,East India,20.5037,70.1516
+SK015,Sikkim District 15,SK,Sikkim,East India,15.9873,74.2091
+SK016,Sikkim District 16,SK,Sikkim,East India,18.0687,79.7436
+SK017,Sikkim District 17,SK,Sikkim,East India,10.3365,70.8309
+SK018,Sikkim District 18,SK,Sikkim,East India,11.5899,80.2998
+SK019,Sikkim District 19,SK,Sikkim,East India,28.771,72.1338
+SK020,Sikkim District 20,SK,Sikkim,East India,27.0719,85.1303
+SK021,Sikkim District 21,SK,Sikkim,East India,10.4792,69.1205
+SK022,Sikkim District 22,SK,Sikkim,East India,13.8052,92.7178
+TN001,Tamil District 1,TN,Tamil Nadu,South India,21.716,68.9563
+TN002,Tamil District 2,TN,Tamil Nadu,South India,24.9964,86.1475
+TN003,Tamil District 3,TN,Tamil Nadu,South India,17.7912,84.0296
+TN004,Tamil District 4,TN,Tamil Nadu,South India,22.839,90.8576
+TN005,Tamil District 5,TN,Tamil Nadu,South India,25.4995,88.5639
+TN006,Tamil District 6,TN,Tamil Nadu,South India,34.3174,71.3422
+TN007,Tamil District 7,TN,Tamil Nadu,South India,18.0635,75.3242
+TN008,Tamil District 8,TN,Tamil Nadu,South India,24.5434,86.4986
+TN009,Tamil District 9,TN,Tamil Nadu,South India,22.9292,86.7218
+TN010,Tamil District 10,TN,Tamil Nadu,South India,34.8305,91.9032
+TN011,Tamil District 11,TN,Tamil Nadu,South India,15.8746,83.2103
+TN012,Tamil District 12,TN,Tamil Nadu,South India,29.4715,76.1324
+TN013,Tamil District 13,TN,Tamil Nadu,South India,29.3423,83.9096
+TN014,Tamil District 14,TN,Tamil Nadu,South India,26.8413,71.6992
+TN015,Tamil District 15,TN,Tamil Nadu,South India,26.935,75.8917
+TN016,Tamil District 16,TN,Tamil Nadu,South India,23.4113,89.0871
+TN017,Tamil District 17,TN,Tamil Nadu,South India,21.5374,85.8542
+TN018,Tamil District 18,TN,Tamil Nadu,South India,11.4891,82.7416
+TN019,Tamil District 19,TN,Tamil Nadu,South India,30.4027,74.582
+TN020,Tamil District 20,TN,Tamil Nadu,South India,33.0848,84.8241
+TN021,Tamil District 21,TN,Tamil Nadu,South India,31.5368,89.1776
+TN022,Tamil District 22,TN,Tamil Nadu,South India,21.8768,92.9555
+TG001,Telangana District 1,TG,Telangana,South India,11.5069,86.4697
+TG002,Telangana District 2,TG,Telangana,South India,21.5956,89.4097
+TG003,Telangana District 3,TG,Telangana,South India,11.8882,90.3148
+TG004,Telangana District 4,TG,Telangana,South India,18.6308,82.3057
+TG005,Telangana District 5,TG,Telangana,South India,28.6844,86.4468
+TG006,Telangana District 6,TG,Telangana,South India,17.8662,83.6832
+TG007,Telangana District 7,TG,Telangana,South India,29.0073,77.6161
+TG008,Telangana District 8,TG,Telangana,South India,18.1922,78.6104
+TG009,Telangana District 9,TG,Telangana,South India,27.9455,68.6679
+TG010,Telangana District 10,TG,Telangana,South India,18.5663,82.2201
+TG011,Telangana District 11,TG,Telangana,South India,11.2229,73.7462
+TG012,Telangana District 12,TG,Telangana,South India,16.0788,70.3054
+TG013,Telangana District 13,TG,Telangana,South India,33.9386,79.8802
+TG014,Telangana District 14,TG,Telangana,South India,12.2897,81.0693
+TG015,Telangana District 15,TG,Telangana,South India,19.8732,69.0485
+TG016,Telangana District 16,TG,Telangana,South India,17.7292,82.6187
+TG017,Telangana District 17,TG,Telangana,South India,25.9631,74.3225
+TG018,Telangana District 18,TG,Telangana,South India,29.5177,74.7842
+TG019,Telangana District 19,TG,Telangana,South India,8.8625,75.0123
+TG020,Telangana District 20,TG,Telangana,South India,30.8981,73.0085
+TG021,Telangana District 21,TG,Telangana,South India,24.5495,77.5974
+TG022,Telangana District 22,TG,Telangana,South India,23.1164,83.1872
+TR001,Tripura District 1,TR,Tripura,East India,26.4066,83.2413
+TR002,Tripura District 2,TR,Tripura,East India,34.1314,88.6603
+TR003,Tripura District 3,TR,Tripura,East India,19.6038,79.6457
+TR004,Tripura District 4,TR,Tripura,East India,14.3475,83.1966
+TR005,Tripura District 5,TR,Tripura,East India,23.7638,75.5798
+TR006,Tripura District 6,TR,Tripura,East India,33.2271,71.6649
+TR007,Tripura District 7,TR,Tripura,East India,27.5678,77.677
+TR008,Tripura District 8,TR,Tripura,East India,20.9777,88.3621
+TR009,Tripura District 9,TR,Tripura,East India,29.2575,70.1049
+TR010,Tripura District 10,TR,Tripura,East India,33.8061,89.9639
+TR011,Tripura District 11,TR,Tripura,East India,34.0645,78.7528
+TR012,Tripura District 12,TR,Tripura,East India,15.5661,70.5216
+TR013,Tripura District 13,TR,Tripura,East India,9.1209,92.1421
+TR014,Tripura District 14,TR,Tripura,East India,19.4254,78.8911
+TR015,Tripura District 15,TR,Tripura,East India,28.0656,69.7166
+TR016,Tripura District 16,TR,Tripura,East India,23.5726,81.2481
+TR017,Tripura District 17,TR,Tripura,East India,27.475,78.8973
+TR018,Tripura District 18,TR,Tripura,East India,22.3513,92.0363
+TR019,Tripura District 19,TR,Tripura,East India,27.2843,68.3026
+TR020,Tripura District 20,TR,Tripura,East India,25.8503,72.4684
+TR021,Tripura District 21,TR,Tripura,East India,10.1899,78.2315
+TR022,Tripura District 22,TR,Tripura,East India,30.4546,68.0507
+UP001,Uttar District 1,UP,Uttar Pradesh,North India,17.1565,72.6515
+UP002,Uttar District 2,UP,Uttar Pradesh,North India,21.0263,84.241
+UP003,Uttar District 3,UP,Uttar Pradesh,North India,26.2338,85.8786
+UP004,Uttar District 4,UP,Uttar Pradesh,North India,30.091,79.6607
+UP005,Uttar District 5,UP,Uttar Pradesh,North India,13.6591,73.2997
+UP006,Uttar District 6,UP,Uttar Pradesh,North India,33.8107,81.7586
+UP007,Uttar District 7,UP,Uttar Pradesh,North India,15.6824,90.931
+UP008,Uttar District 8,UP,Uttar Pradesh,North India,26.5047,92.7364
+UP009,Uttar District 9,UP,Uttar Pradesh,North India,33.4519,73.8914
+UP010,Uttar District 10,UP,Uttar Pradesh,North India,8.3001,89.7269
+UP011,Uttar District 11,UP,Uttar Pradesh,North India,28.2342,76.7545
+UP012,Uttar District 12,UP,Uttar Pradesh,North India,20.1644,68.0592
+UP013,Uttar District 13,UP,Uttar Pradesh,North India,22.877,69.8621
+UP014,Uttar District 14,UP,Uttar Pradesh,North India,15.7482,69.2502
+UP015,Uttar District 15,UP,Uttar Pradesh,North India,29.8837,75.8377
+UP016,Uttar District 16,UP,Uttar Pradesh,North India,33.5733,81.0597
+UP017,Uttar District 17,UP,Uttar Pradesh,North India,17.9126,80.0538
+UP018,Uttar District 18,UP,Uttar Pradesh,North India,27.8097,76.6419
+UP019,Uttar District 19,UP,Uttar Pradesh,North India,33.6989,77.1845
+UP020,Uttar District 20,UP,Uttar Pradesh,North India,9.1699,71.8895
+UP021,Uttar District 21,UP,Uttar Pradesh,North India,19.3177,74.0587
+UP022,Uttar District 22,UP,Uttar Pradesh,North India,34.9898,90.3523
+UK001,Uttarakhand District 1,UK,Uttarakhand,North India,22.003,72.6358
+UK002,Uttarakhand District 2,UK,Uttarakhand,North India,23.1447,75.8206
+UK003,Uttarakhand District 3,UK,Uttarakhand,North India,19.9888,71.0221
+UK004,Uttarakhand District 4,UK,Uttarakhand,North India,8.943,89.2562
+UK005,Uttarakhand District 5,UK,Uttarakhand,North India,15.0213,70.5495
+UK006,Uttarakhand District 6,UK,Uttarakhand,North India,29.0517,69.1782
+UK007,Uttarakhand District 7,UK,Uttarakhand,North India,13.1033,68.8849
+UK008,Uttarakhand District 8,UK,Uttarakhand,North India,11.5104,77.8389
+UK009,Uttarakhand District 9,UK,Uttarakhand,North India,9.49,86.4
+UK010,Uttarakhand District 10,UK,Uttarakhand,North India,17.1825,76.4434
+UK011,Uttarakhand District 11,UK,Uttarakhand,North India,25.845,80.5659
+UK012,Uttarakhand District 12,UK,Uttarakhand,North India,30.6961,70.3985
+UK013,Uttarakhand District 13,UK,Uttarakhand,North India,27.4476,81.3606
+UK014,Uttarakhand District 14,UK,Uttarakhand,North India,16.6348,85.0881
+UK015,Uttarakhand District 15,UK,Uttarakhand,North India,13.7195,80.5275
+UK016,Uttarakhand District 16,UK,Uttarakhand,North India,18.1566,88.3532
+UK017,Uttarakhand District 17,UK,Uttarakhand,North India,29.1187,77.3191
+UK018,Uttarakhand District 18,UK,Uttarakhand,North India,14.8096,81.9901
+UK019,Uttarakhand District 19,UK,Uttarakhand,North India,17.7327,84.3554
+UK020,Uttarakhand District 20,UK,Uttarakhand,North India,34.7663,76.4832
+UK021,Uttarakhand District 21,UK,Uttarakhand,North India,32.6144,74.7009
+UK022,Uttarakhand District 22,UK,Uttarakhand,North India,33.7353,70.6253
+WB001,West District 1,WB,West Bengal,East India,23.0984,90.6496
+WB002,West District 2,WB,West Bengal,East India,10.1113,88.5993
+WB003,West District 3,WB,West Bengal,East India,21.7138,75.8338
+WB004,West District 4,WB,West Bengal,East India,33.2118,81.6052
+WB005,West District 5,WB,West Bengal,East India,29.0606,72.3674
+WB006,West District 6,WB,West Bengal,East India,20.0877,68.5474
+WB007,West District 7,WB,West Bengal,East India,21.9357,77.2586
+WB008,West District 8,WB,West Bengal,East India,11.6735,90.0551
+WB009,West District 9,WB,West Bengal,East India,8.7608,84.1216
+WB010,West District 10,WB,West Bengal,East India,30.4929,78.5742
+WB011,West District 11,WB,West Bengal,East India,18.4741,83.323
+WB012,West District 12,WB,West Bengal,East India,11.9604,70.0442
+WB013,West District 13,WB,West Bengal,East India,32.4,86.6315
+WB014,West District 14,WB,West Bengal,East India,18.2158,90.2805
+WB015,West District 15,WB,West Bengal,East India,26.5891,86.2438
+WB016,West District 16,WB,West Bengal,East India,16.2049,73.4511
+WB017,West District 17,WB,West Bengal,East India,16.1724,92.1101
+WB018,West District 18,WB,West Bengal,East India,22.4036,88.4378
+WB019,West District 19,WB,West Bengal,East India,17.1321,78.9183
+WB020,West District 20,WB,West Bengal,East India,12.0871,73.9416
+WB021,West District 21,WB,West Bengal,East India,10.2088,68.5416
+WB022,West District 22,WB,West Bengal,East India,21.5858,85.0457

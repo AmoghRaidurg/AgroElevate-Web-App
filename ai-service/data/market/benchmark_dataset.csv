@@ -1,0 +1,9 @@
+metric,value,unit,source,season
+operational_holding_hectares,1.34,ha,NSSO reference,
+operational_holding_acres,3.3,acres,NSSO reference,
+annual_production_kg,4000.0,kg,Illustrative benchmark,
+annual_income_inr,245000.0,INR,Illustrative benchmark,
+income_per_kg,61.25,INR/kg,Derived benchmark,
+kharif_soybean_kg,1500.0,kg,,kharif
+rabi_wheat_kg,1800.0,kg,,rabi
+zaid_vegetables_kg,700.0,kg,,zaid
