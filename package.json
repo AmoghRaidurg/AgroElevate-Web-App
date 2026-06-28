@@ -15,6 +15,7 @@
     "commerce:apply-demo-v2": "node scripts/commerce-apply-migration.mjs supabase/migrations/production/20250625100018_demo_wallet_credit_custom_amount.sql",
     "ai:verify": "node scripts/verify-ai-health.mjs",
     "market:verify": "node scripts/market-intelligence-verify.mjs",
+    "market:production-verify": "node scripts/market-intelligence-production-verify.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
